@@ -1,4 +1,4 @@
-package com.example.shorthub
+package com.shorthub.app
 
 import io.flutter.embedding.android.FlutterActivity
 
