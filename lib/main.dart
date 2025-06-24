@@ -12,8 +12,14 @@ import 'providers/app_providers.dart';
 import 'screens/sharing_overlay_screen.dart';
 import 'screens/home_screen.dart';
 import 'theme/app_theme.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables
+  await dotenv.load(fileName: "assets/.env");
+
   runApp(
     ProviderScope(
       child: MyApp(),

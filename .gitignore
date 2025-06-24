@@ -19,6 +19,8 @@ migrate_working_dir/
 .idea/
 
 # .env files
+assets/.env
+assets/.env.*
 .env
 .env.*
 
