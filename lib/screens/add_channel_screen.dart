@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +9,7 @@ import '../providers/app_providers.dart';
 import '../models/channel_models.dart';
 import '../services/youtube_service.dart';
 import '../theme/app_theme.dart';
-import '../widgets/common_widgets.dart';
+// import '../widgets/common_widgets.dart';
 
 /// Screen for adding new channels
 class AddChannelScreen extends ConsumerStatefulWidget {
@@ -83,7 +85,6 @@ class _AddChannelScreenState extends ConsumerState<AddChannelScreen> {
       tag: _selectedTag!,
       type: _selectedType!,
       domain: _selectedType == ChannelType.only ? _selectedCategory?.value : null,
-      thumbnailUrl: _channelData!.thumbnailUrl,
     );
 
     try {

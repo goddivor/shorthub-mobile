@@ -37,13 +37,11 @@ enum ContentCategory {
 class YouTubeChannelData {
   final String username;
   final int subscriberCount;
-  final String? thumbnailUrl;
   final String? description;
 
   const YouTubeChannelData({
     required this.username,
     required this.subscriberCount,
-    this.thumbnailUrl,
     this.description,
   });
 
@@ -51,7 +49,6 @@ class YouTubeChannelData {
     return YouTubeChannelData(
       username: json['username'] as String,
       subscriberCount: json['subscriber_count'] as int,
-      thumbnailUrl: json['thumbnail_url'] as String?,
       description: json['description'] as String?,
     );
   }
@@ -60,7 +57,6 @@ class YouTubeChannelData {
     return {
       'username': username,
       'subscriber_count': subscriberCount,
-      'thumbnail_url': thumbnailUrl,
       'description': description,
     };
   }
@@ -75,7 +71,6 @@ class Channel {
   final ChannelType type;
   final String? domain;
   final DateTime? createdAt;
-  final String? thumbnailUrl;
 
   const Channel({
     this.id,
@@ -86,7 +81,6 @@ class Channel {
     required this.type,
     this.domain,
     this.createdAt,
-    this.thumbnailUrl,
   });
 
   factory Channel.fromJson(Map<String, dynamic> json) {
@@ -107,7 +101,6 @@ class Channel {
       createdAt: json['created_at'] != null 
         ? DateTime.parse(json['created_at'] as String)
         : null,
-      thumbnailUrl: json['thumbnail_url'] as String?,
     );
   }
 
@@ -121,7 +114,6 @@ class Channel {
       'type': type.value,
       'domain': domain,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
-      'thumbnail_url': thumbnailUrl,
     };
   }
 
@@ -134,7 +126,6 @@ class Channel {
     ChannelType? type,
     String? domain,
     DateTime? createdAt,
-    String? thumbnailUrl,
   }) {
     return Channel(
       id: id ?? this.id,
@@ -145,7 +136,6 @@ class Channel {
       type: type ?? this.type,
       domain: domain ?? this.domain,
       createdAt: createdAt ?? this.createdAt,
-      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
     );
   }
 }

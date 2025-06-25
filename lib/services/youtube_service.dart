@@ -194,7 +194,6 @@ class YouTubeService {
       return YouTubeChannelData(
         username: username,
         subscriberCount: subscriberCount,
-        thumbnailUrl: snippet['thumbnails']?['high']?['url'] as String?,
         description: snippet['description'] as String?,
       );
     } catch (e) {

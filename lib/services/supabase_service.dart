@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison, unused_local_variable
+// ignore_for_file: unnecessary_null_comparison, unused_local_variable, avoid_print
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/channel_models.dart';
@@ -238,7 +238,7 @@ class SupabaseService {
   static Future<bool> validateSchema() async {
     try {
       // Test channels table structure
-      await client.from('channels').select('id, youtube_url, username, subscriber_count, tag, type, domain, created_at, thumbnail_url').limit(1);
+      await client.from('channels').select('id, youtube_url, username, subscriber_count, tag, type, domain, created_at').limit(1);
       
       return true;
     } catch (e) {

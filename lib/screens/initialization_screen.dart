@@ -1,9 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../theme/app_theme.dart';
-import '../widgets/common_widgets.dart';
+// import '../widgets/common_widgets.dart';
 
 /// Screen shown during app initialization
 class InitializationScreen extends StatelessWidget {
@@ -120,7 +122,7 @@ class InitializationScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Loading Animation
-        Container(
+        SizedBox(
           width: 64.w,
           height: 64.w,
           child: CircularProgressIndicator(
