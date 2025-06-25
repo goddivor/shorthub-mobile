@@ -1,24 +1,40 @@
-// ignore_for_file: use_key_in_widget_constructors, unused_local_variable
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'dart:async';
 
 import 'providers/app_providers.dart';
-import 'screens/sharing_overlay_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/main_screen.dart';
+import 'screens/initialization_screen.dart';
 import 'theme/app_theme.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'services/supabase_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables
-  await dotenv.load(fileName: "assets/.env");
+  try {
+    // Load environment variables first
+    await dotenv.load(fileName: "assets/.env");
+    
+    // Initialize Supabase immediately
+    final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+    final supabaseKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+    
+    if (supabaseUrl.isNotEmpty && supabaseKey.isNotEmpty) {
+      await SupabaseService.initialize(
+        url: supabaseUrl,
+        anonKey: supabaseKey,
+      );
+      print('✅ Supabase initialized successfully');
+    } else {
+      print('❌ Supabase credentials not found in .env file');
+    }
+  } catch (e) {
+    print('❌ Error during initialization: $e');
+  }
 
   runApp(
     ProviderScope(
@@ -33,7 +49,6 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  late StreamSubscription _intentTextStreamSubscription;
   late StreamSubscription _intentMediaStreamSubscription;
 
   @override
@@ -43,56 +58,50 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   void _initSharingIntent() {
-    // Listen for shared text (URLs)
-    // _intentTextStreamSubscription = ReceiveSharingIntent.instance.getTextStream().listen(
-    //   (String value) {
-    //     if (value.isNotEmpty) {
-    //       _handleSharedText(value);
-    //     }
-    //   },
-    //   onError: (err) => debugPrint('Error in text sharing stream: $err'),
-    // );
-
-    // Listen for shared media files (if needed in future)
+    // Listen for shared media files (this includes URLs shared from YouTube)
     _intentMediaStreamSubscription =
         ReceiveSharingIntent.instance.getMediaStream().listen(
       (List<SharedMediaFile> value) {
-        // Handle shared media files if needed
-        debugPrint('Shared media files: ${value.map((f) => f.path)}');
+        if (value.isNotEmpty) {
+          // Handle shared content - extract URL from shared media
+          for (var file in value) {
+            if (file.path.contains('youtube.com') || 
+                file.path.contains('youtu.be')) {
+              _handleSharedUrl(file.path);
+              break;
+            }
+          }
+        }
       },
       onError: (err) => debugPrint('Error in media sharing stream: $err'),
     );
 
-    // Handle initial shared content when app is launched
-    // ReceiveSharingIntent.instance.getInitialText().then((String? value) {
-    //   if (value != null && value.isNotEmpty) {
-    //     _handleSharedText(value);
-    //   }
-    // });
-
+    // Handle initial shared content when app is launched via sharing
     ReceiveSharingIntent.instance
         .getInitialMedia()
         .then((List<SharedMediaFile> value) {
       if (value.isNotEmpty) {
-        // Handle initial shared media if needed
-        debugPrint('Initial shared media: ${value.map((f) => f.path)}');
+        for (var file in value) {
+          if (file.path.contains('youtube.com') || 
+              file.path.contains('youtu.be')) {
+            _handleSharedUrl(file.path);
+            break;
+          }
+        }
       }
     });
   }
 
-  // void _handleSharedText(String sharedText) {
-  //   debugPrint('Received shared text: $sharedText');
-
-  //   // Update shared URL in provider
-  //   ref.read(sharedUrlProvider.notifier).setUrl(sharedText);
-
-  //   // Process the shared URL
-  //   ref.read(shareIntentProvider.notifier).processSharedUrl(sharedText);
-  // }
+  void _handleSharedUrl(String sharedUrl) {
+    debugPrint('Received shared YouTube URL: $sharedUrl');
+    
+    // Set the shared URL in provider and navigate to form tab
+    ref.read(sharedUrlProvider.notifier).setUrl(sharedUrl);
+    ref.read(mainTabProvider.notifier).state = 1; // Switch to form tab
+  }
 
   @override
   void dispose() {
-    _intentTextStreamSubscription.cancel();
     _intentMediaStreamSubscription.cancel();
     super.dispose();
   }
@@ -109,28 +118,39 @@ class _MyAppState extends ConsumerState<MyApp> {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           debugShowCheckedModeBanner: false,
-          home: AppRouter(),
+          home: AppInitializationWrapper(),
         );
       },
     );
   }
 }
 
-/// Router widget that determines which screen to show
-class AppRouter extends ConsumerWidget {
+/// Wrapper to handle app initialization and show appropriate screen
+class AppInitializationWrapper extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch for shared URLs
-    final sharedUrl = ref.watch(sharedUrlProvider);
-    final shareIntentData = ref.watch(shareIntentProvider);
+    final appInitState = ref.watch(appInitProvider);
 
-    // If we have a shared URL, show the overlay
-    if (sharedUrl != null) {
-      return SharingOverlayScreen();
-    }
-
-    // Otherwise show the home screen
-    return HomeScreen();
+    return appInitState.when(
+      data: (isInitialized) {
+        if (isInitialized) {
+          return MainScreen();
+        } else {
+          return InitializationScreen(
+            onRetry: () {
+              ref.invalidate(appInitProvider);
+            },
+          );
+        }
+      },
+      loading: () => InitializationScreen(),
+      error: (error, stackTrace) => InitializationScreen(
+        error: error.toString(),
+        onRetry: () {
+          ref.invalidate(appInitProvider);
+        },
+      ),
+    );
   }
 }
 

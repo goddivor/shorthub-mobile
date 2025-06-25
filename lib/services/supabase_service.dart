@@ -76,7 +76,7 @@ class SupabaseService {
     }
   }
 
-  /// Get all channels
+  /// Get all channels ordered by creation date (newest first)
   static Future<List<Channel>> getChannels() async {
     try {
       final response = await client
@@ -92,22 +92,54 @@ class SupabaseService {
     }
   }
 
-  /// Get channels with statistics
-  static Future<List<Map<String, dynamic>>> getChannelsWithStats() async {
+  /// Get channels with search functionality
+  static Future<List<Channel>> searchChannels(String query) async {
     try {
-      // Try to use the view first, fallback to RPC function
-      try {
-        final response = await client
-            .from('channels_with_stats')
-            .select();
-        return List<Map<String, dynamic>>.from(response);
-      } catch (e) {
-        // Fallback to RPC function
-        final response = await client.rpc('get_channels_with_stats');
-        return List<Map<String, dynamic>>.from(response);
-      }
+      final response = await client
+          .from('channels')
+          .select()
+          .or('username.ilike.%$query%,domain.ilike.%$query%')
+          .order('created_at', ascending: false);
+
+      return (response as List)
+          .map((json) => Channel.fromJson(json))
+          .toList();
     } catch (e) {
-      throw Exception('Failed to get channels with stats: $e');
+      throw Exception('Failed to search channels: $e');
+    }
+  }
+
+  /// Get channels filtered by tag
+  static Future<List<Channel>> getChannelsByTag(TagType tag) async {
+    try {
+      final response = await client
+          .from('channels')
+          .select()
+          .eq('tag', tag.value)
+          .order('created_at', ascending: false);
+
+      return (response as List)
+          .map((json) => Channel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get channels by tag: $e');
+    }
+  }
+
+  /// Get channels filtered by type
+  static Future<List<Channel>> getChannelsByType(ChannelType type) async {
+    try {
+      final response = await client
+          .from('channels')
+          .select()
+          .eq('type', type.value)
+          .order('created_at', ascending: false);
+
+      return (response as List)
+          .map((json) => Channel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get channels by type: $e');
     }
   }
 
@@ -127,7 +159,7 @@ class SupabaseService {
     }
   }
 
-  /// Delete a channel
+  /// Delete a channel by ID
   static Future<void> deleteChannel(String id) async {
     try {
       await client
@@ -139,91 +171,74 @@ class SupabaseService {
     }
   }
 
-  /// Get database statistics
-  static Future<Map<String, int>> getStats() async {
+  /// Get channel by ID
+  static Future<Channel?> getChannelById(String id) async {
+    try {
+      final response = await client
+          .from('channels')
+          .select()
+          .eq('id', id)
+          .maybeSingle();
+
+      return response != null ? Channel.fromJson(response) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Get basic statistics
+  static Future<Map<String, int>> getBasicStats() async {
     try {
       // Get total channels
       final channelsResponse = await client
           .from('channels')
           .select('count');
 
-      // Get total shorts rolls
-      final shortsResponse = await client
-          .from('shorts_rolls')
-          .select('count');
-
-      // Get validated shorts
-      final validatedResponse = await client
-          .from('shorts_rolls')
+      // Get channels by tag
+      final vfChannels = await client
+          .from('channels')
           .select('count')
-          .eq('validated', true);
+          .eq('tag', 'VF');
+
+      final vostfrChannels = await client
+          .from('channels')
+          .select('count')
+          .eq('tag', 'VOSTFR');
+
+      // Get channels by type
+      final mixChannels = await client
+          .from('channels')
+          .select('count')
+          .eq('type', 'Mix');
+
+      final onlyChannels = await client
+          .from('channels')
+          .select('count')
+          .eq('type', 'Only');
 
       return {
         'total_channels': (channelsResponse as List).length,
-        'total_shorts': (shortsResponse as List).length,
-        'validated_shorts': (validatedResponse as List).length,
+        'vf_channels': (vfChannels as List).length,
+        'vostfr_channels': (vostfrChannels as List).length,
+        'mix_channels': (mixChannels as List).length,
+        'only_channels': (onlyChannels as List).length,
       };
     } catch (e) {
       return {
         'total_channels': 0,
-        'total_shorts': 0,
-        'validated_shorts': 0,
+        'vf_channels': 0,
+        'vostfr_channels': 0,
+        'mix_channels': 0,
+        'only_channels': 0,
       };
-    }
-  }
-
-  /// Save a shorts roll
-  static Future<void> saveShortRoll({
-    required String channelId,
-    required String videoUrl,
-  }) async {
-    try {
-      await client.from('shorts_rolls').insert({
-        'channel_id': channelId,
-        'video_url': videoUrl,
-        'validated': false,
-      });
-    } catch (e) {
-      throw Exception('Failed to save short roll: $e');
-    }
-  }
-
-  /// Validate a shorts roll
-  static Future<void> validateShortRoll(String rollId) async {
-    try {
-      await client
-          .from('shorts_rolls')
-          .update({'validated': true, 'validated_at': DateTime.now().toIso8601String()})
-          .eq('id', rollId);
-    } catch (e) {
-      throw Exception('Failed to validate short roll: $e');
-    }
-  }
-
-  /// Get unvalidated shorts for a channel
-  static Future<List<Map<String, dynamic>>> getUnvalidatedShorts(String channelId) async {
-    try {
-      final response = await client
-          .from('shorts_rolls')
-          .select()
-          .eq('channel_id', channelId)
-          .eq('validated', false)
-          .order('created_at', ascending: false);
-
-      return List<Map<String, dynamic>>.from(response);
-    } catch (e) {
-      throw Exception('Failed to get unvalidated shorts: $e');
     }
   }
 
   /// Check if the tables exist and have the right structure
   static Future<bool> validateSchema() async {
     try {
-      // Test channels table
-      await client.from('channels').select('id').limit(1);
-      
-      // Test shorts_rolls table
-      await client.from('shorts_rolls').select('id').limit(1);
+      // Test channels table structure
+      await client.from('channels').select('id, youtube_url, username, subscriber_count, tag, type, domain, created_at, thumbnail_url').limit(1);
       
       return true;
     } catch (e) {
@@ -231,7 +246,7 @@ class SupabaseService {
     }
   }
 
-  /// Handle realtime subscriptions if needed
+  /// Handle realtime subscriptions for channels
   static RealtimeChannel subscribeToChannels({
     required void Function(List<Channel>) onChannelsUpdated,
   }) {
@@ -248,9 +263,76 @@ class SupabaseService {
               onChannelsUpdated(channels);
             } catch (e) {
               // Handle error silently or log it
+              print('Error refreshing channels: $e');
             }
           },
         )
         .subscribe();
+  }
+
+  /// Bulk insert multiple channels (useful for imports)
+  static Future<List<Channel>> saveMultipleChannels(List<Channel> channels) async {
+    try {
+      final response = await client
+          .from('channels')
+          .insert(channels.map((c) => c.toJson()).toList())
+          .select();
+
+      return (response as List)
+          .map((json) => Channel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to save multiple channels: $e');
+    }
+  }
+
+  /// Get channels with pagination
+  static Future<List<Channel>> getChannelsPaginated({
+    int page = 0,
+    int limit = 20,
+  }) async {
+    try {
+      final start = page * limit;
+      final end = start + limit - 1;
+
+      final response = await client
+          .from('channels')
+          .select()
+          .order('created_at', ascending: false)
+          .range(start, end);
+
+      return (response as List)
+          .map((json) => Channel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to get paginated channels: $e');
+    }
+  }
+
+  /// Count total channels (useful for pagination)
+  static Future<int> getChannelsCount() async {
+    try {
+      final response = await client
+          .from('channels')
+          .select('count');
+
+      return (response as List).length;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /// Export all channels data (useful for backup)
+  static Future<List<Map<String, dynamic>>> exportChannels() async {
+    try {
+      final response = await client
+          .from('channels')
+          .select()
+          .order('created_at', ascending: false);
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      throw Exception('Failed to export channels: $e');
+    }
   }
 }

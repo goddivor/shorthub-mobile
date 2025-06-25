@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/channel_models.dart';
 import '../services/youtube_service.dart';
@@ -94,440 +95,323 @@ class _LoadingWidgetState extends State<LoadingWidget>
   }
 }
 
-/// Error widget with retry functionality
-class ErrorWidget extends StatelessWidget {
-  final String error;
-  final VoidCallback? onRetry;
-  final VoidCallback? onClose;
+/// Enhanced Channel card widget for displaying channels in list
+class ChannelCardWidget extends StatelessWidget {
+  final Channel channel;
+  final VoidCallback? onDelete;
 
-  const ErrorWidget({
+  const ChannelCardWidget({
     super.key,
-    required this.error,
-    this.onRetry,
-    this.onClose,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(24.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 64.w,
-            height: 64.w,
-            decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(
-                color: AppColors.error.withOpacity(0.3),
-                width: 2,
-              ),
-            ),
-            child: Icon(
-              Icons.error_outline_rounded,
-              color: AppColors.error,
-              size: 32.sp,
-            ),
-          ),
-          SizedBox(height: 24.h),
-          Text(
-            'Something went wrong',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppColors.error,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            error,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 24.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (onRetry != null) ...[
-                ElevatedButton.icon(
-                  onPressed: onRetry,
-                  icon: Icon(Icons.refresh_rounded),
-                  label: Text('Retry'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.youtubeRed,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-                if (onClose != null) SizedBox(width: 12.w),
-              ],
-              if (onClose != null)
-                OutlinedButton(
-                  onPressed: onClose,
-                  child: Text('Close'),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Success widget shown after saving
-class SuccessWidget extends StatefulWidget {
-  final VoidCallback onClose;
-  final String channelName;
-
-  const SuccessWidget({
-    super.key,
-    required this.onClose,
-    required this.channelName,
-  });
-
-  @override
-  State<SuccessWidget> createState() => _SuccessWidgetState();
-}
-
-class _SuccessWidgetState extends State<SuccessWidget>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _checkAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-    
-    _scaleAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    ));
-    
-    _checkAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.3, 1.0, curve: Curves.easeOut),
-    ));
-    
-    _controller.forward();
-    
-    // Auto close after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        widget.onClose();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(32.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _scaleAnimation.value,
-                child: Container(
-                  width: 80.w,
-                  height: 80.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.success,
-                    borderRadius: BorderRadius.circular(40.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.success.withOpacity(0.3),
-                        blurRadius: 12,
-                        spreadRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Transform.scale(
-                    scale: _checkAnimation.value,
-                    child: Icon(
-                      Icons.check_rounded,
-                      color: Colors.white,
-                      size: 40.sp,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          SizedBox(height: 24.h),
-          Text(
-            'Channel Added!',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppColors.success,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            '${widget.channelName} has been successfully added to your ShortHub collection.',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 32.h),
-          SizedBox(
-            width: double.infinity,
-            height: 48.h,
-            child: ElevatedButton(
-              onPressed: widget.onClose,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.success,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                'Done',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Stats card widget for displaying statistics
-class StatsCardWidget extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const StatsCardWidget({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.color,
+    required this.channel,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: color.withOpacity(0.2),
-          width: 1,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
+            blurRadius: 8,
             offset: Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Container(
-            width: 40.w,
-            height: 40.w,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 20.sp,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Channel card widget for displaying channels in list
-class ChannelCardWidget extends StatelessWidget {
-  final Channel channel;
-
-  const ChannelCardWidget({
-    super.key,
-    required this.channel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 8.h),
       child: Padding(
         padding: EdgeInsets.all(16.w),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Channel Avatar
-            Container(
-              width: 48.w,
-              height: 48.w,
-              decoration: BoxDecoration(
-                color: AppColors.youtubeRed,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: channel.thumbnailUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8.r),
-                      child: CachedNetworkImage(
-                        imageUrl: channel.thumbnailUrl!,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: AppColors.youtubeRed,
-                          child: Icon(
-                            Icons.person_rounded,
-                            color: Colors.white,
-                            size: 24.sp,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: AppColors.youtubeRed,
-                          child: Icon(
-                            Icons.person_rounded,
-                            color: Colors.white,
-                            size: 24.sp,
-                          ),
-                        ),
-                      ),
-                    )
-                  : Icon(
-                      Icons.person_rounded,
-                      color: Colors.white,
-                      size: 24.sp,
-                    ),
-            ),
-            SizedBox(width: 12.w),
-            
-            // Channel Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    channel.username,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+            // Header Row
+            Row(
+              children: [
+                // Channel Avatar
+                Container(
+                  width: 48.w,
+                  height: 48.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.youtubeRed,
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    '${YouTubeService.formatSubscriberCount(channel.subscriberCount)} subscribers',
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: Icon(
+                    Iconsax.user,
+                    color: Colors.white,
+                    size: 24.sp,
                   ),
-                  SizedBox(height: 8.h),
-                  Row(
+                ),
+                SizedBox(width: 12.w),
+                
+                // Channel Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                        decoration: BoxDecoration(
-                          color: channel.tag.backgroundColor,
-                          borderRadius: BorderRadius.circular(12.r),
+                      Text(
+                        channel.username,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
-                        child: Text(
-                          channel.tag.value,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: channel.tag.color,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(width: 8.w),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                        decoration: BoxDecoration(
-                          color: channel.type.backgroundColor,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Text(
-                          channel.type.value,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: channel.type.color,
-                            fontWeight: FontWeight.w600,
+                      SizedBox(height: 4.h),
+                      Row(
+                        children: [
+                          Icon(
+                            Iconsax.people,
+                            color: AppColors.youtubeRed,
+                            size: 14.sp,
                           ),
-                        ),
-                      ),
-                      if (channel.domain != null) ...[
-                        SizedBox(width: 8.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                          decoration: BoxDecoration(
-                            color: Colors.purple.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Text(
-                            channel.domain!,
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Colors.purple[700],
-                              fontWeight: FontWeight.w600,
+                          SizedBox(width: 4.w),
+                          Text(
+                            '${YouTubeService.formatSubscriberCount(channel.subscriberCount)} subscribers',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppColors.youtubeRed,
+                              fontWeight: FontWeight.w500,
                             ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Action Buttons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Open Channel Button
+                    IconButton(
+                      onPressed: () async {
+                        if (await canLaunchUrl(Uri.parse(channel.youtubeUrl))) {
+                          await launchUrl(
+                            Uri.parse(channel.youtubeUrl),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      },
+                      icon: Icon(
+                        Iconsax.export_1,
+                        color: AppColors.youtubeRed,
+                        size: 20.sp,
+                      ),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.youtubeRed.withOpacity(0.1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                    ),
+                    
+                    if (onDelete != null) ...[
+                      SizedBox(width: 8.w),
+                      // Delete Button
+                      IconButton(
+                        onPressed: onDelete,
+                        icon: Icon(
+                          Iconsax.trash,
+                          color: AppColors.error,
+                          size: 20.sp,
+                        ),
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.error.withOpacity(0.1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+            
+            SizedBox(height: 16.h),
+            
+            // Tags Row
+            Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: [
+                // Language Tag
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: channel.tag.backgroundColor,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: channel.tag.color.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Iconsax.language_square,
+                        color: channel.tag.color,
+                        size: 12.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        channel.tag.value,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: channel.tag.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Type Tag
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: channel.type.backgroundColor,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: channel.type.color.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        channel.type == ChannelType.mix ? Iconsax.element_4 : Iconsax.category_2,
+                        color: channel.type.color,
+                        size: 12.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        channel.type.value,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: channel.type.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Domain Tag (if only type)
+                if (channel.domain != null)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: Colors.purple.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16.r),
+                      border: Border.all(
+                        color: Colors.purple.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Iconsax.tag,
+                          color: Colors.purple[700],
+                          size: 12.sp,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          channel.domain!,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.purple[700],
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
-                    ],
+                    ),
+                  ),
+              ],
+            ),
+            
+            SizedBox(height: 12.h),
+            
+            // URL Preview
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: Colors.grey[200]!,
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Iconsax.link,
+                    color: Colors.grey[500],
+                    size: 14.sp,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      channel.youtubeUrl,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey[600],
+                        fontFamily: 'monospace',
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
             ),
             
-            // Actions
-            IconButton(
-              onPressed: () {
-                // Open channel URL
-                // Could implement URL launcher here
-              },
-              icon: Icon(
-                Icons.open_in_new_rounded,
-                size: 20.sp,
-                color: AppColors.youtubeRed,
+            // Created date (if available)
+            if (channel.createdAt != null) ...[
+              SizedBox(height: 8.h),
+              Row(
+                children: [
+                  Icon(
+                    Iconsax.calendar,
+                    color: Colors.grey[400],
+                    size: 12.sp,
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    'Added ${_formatDate(channel.createdAt!)}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
               ),
-            ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        return '${difference.inMinutes}m ago';
+      }
+      return '${difference.inHours}h ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}d ago';
+    } else if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      return '${weeks}w ago';
+    } else {
+      final months = (difference.inDays / 30).floor();
+      return '${months}mo ago';
+    }
   }
 }
