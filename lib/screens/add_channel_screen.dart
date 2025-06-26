@@ -316,6 +316,7 @@ class _AddChannelScreenState extends ConsumerState<AddChannelScreen> {
                         )
                       : Icon(
                           Iconsax.search_normal_1,
+                          color: AppColors.textOnDark,
                           size: 20.sp,
                         ),
                 ),
