@@ -1,5 +1,5 @@
 name: shorthub
-description: "YouTube link sharing target for Android with Supabase integration."
+description: "ShortHub - Plateforme collaborative de gestion de YouTube Shorts"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -30,25 +30,45 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  receive_sharing_intent: ^1.4.5
-  supabase_flutter: ^2.9.1
-  dio: ^5.8.0+1
+
+  # State Management
   flutter_riverpod: ^2.6.1
+
+  # GraphQL
+  graphql_flutter: ^5.2.0-beta.6
+
+  # Storage & Cache
+  shared_preferences: ^2.3.4
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # UI & Design
   flutter_screenutil: ^5.9.3
   google_fonts: ^6.2.1
+  iconsax: ^0.0.8
+  phosphor_flutter: ^2.1.0
+  cached_network_image: ^3.4.1
   flutter_animate: ^4.5.2
+  flutter_svg: ^2.0.10+1
   modal_bottom_sheet: ^3.0.0
+
+  # Utils
+  intl: ^0.19.0
   url_launcher: ^6.3.1
   package_info_plus: ^8.3.0
-  cached_network_image: ^3.4.1
-  flutter_dotenv: ^5.2.1
-  # flutter_overlay_window: ^0.5.0
-  iconsax: ^0.0.8
-  flutter_launcher_icons: ^0.14.4
+  dio: ^5.8.0+1
+  logger: ^2.5.0
+  json_annotation: ^4.9.0
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # YouTube Share (conservé)
+  receive_sharing_intent: ^1.4.5
+
+  # Env
+  flutter_dotenv: ^5.2.1
+
+  # Icons
   cupertino_icons: ^1.0.8
+  flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
   android: true
@@ -60,12 +80,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # Lints
   flutter_lints: ^5.0.0
+
+  # Code Generation (simplified - no conflicts)
+  json_serializable: ^6.8.0
+  build_runner: ^2.4.14
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -80,7 +100,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/
     - assets/icons/
     - assets/.env
 
