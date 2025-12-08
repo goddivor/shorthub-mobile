@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
-import '../../config/routes/app_routes.dart';
 import '../../core/models/short.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/shorts_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
+import '../../widgets/common/custom_app_bar.dart';
+import '../../widgets/common/custom_drawer.dart';
 
 class AssistantDashboardScreen extends ConsumerStatefulWidget {
   const AssistantDashboardScreen({super.key});
@@ -37,7 +38,8 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
         return Scaffold(
           backgroundColor: AppColors.background,
-          appBar: _buildAppBar(user),
+          appBar: CustomAppBar(user: user),
+          endDrawer: CustomDrawer(user: user),
           body: Column(
             children: [
               _buildStatsHeader(user),
@@ -63,53 +65,6 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
     );
   }
 
-  PreferredSizeWidget _buildAppBar(User user) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Validation',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.gray900,
-            ),
-          ),
-          Text(
-            'Bienvenue ${user.username}',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.gray600,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(Iconsax.notification, color: AppColors.gray700),
-          onPressed: () {
-            // TODO: Navigate to notifications
-          },
-        ),
-        IconButton(
-          icon: Icon(Iconsax.setting_2, color: AppColors.gray700),
-          onPressed: () {
-            // TODO: Navigate to settings
-          },
-        ),
-        IconButton(
-          icon: Icon(Iconsax.logout, color: AppColors.error),
-          onPressed: () {
-            ref.read(currentUserProvider.notifier).logout();
-            Navigator.of(context).pushReplacementNamed(AppRoutes.login);
-          },
-        ),
-      ],
-    );
-  }
 
   Widget _buildStatsHeader(User user) {
     final stats = user.stats;
