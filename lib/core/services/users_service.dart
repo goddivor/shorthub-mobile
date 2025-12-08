@@ -26,12 +26,14 @@ class UsersService {
       throw Exception(result.exception.toString());
     }
 
-    AppLogger.graphqlSuccess('getAllUsers', 'Received ${result.data?['users']?.length ?? 0} users');
+    final edges = result.data?['users']?['edges'] as List<dynamic>?;
+    if (edges == null) return [];
 
-    final List<dynamic>? data = result.data?['users'];
-    if (data == null) return [];
+    AppLogger.graphqlSuccess('getAllUsers', 'Received ${edges.length} users');
 
-    return data.map((json) => User.fromJson(json)).toList();
+    return edges
+        .map((edge) => User.fromJson(edge['node'] as Map<String, dynamic>))
+        .toList();
   }
 
   /// Fetch users by role
@@ -51,12 +53,14 @@ class UsersService {
       throw Exception(result.exception.toString());
     }
 
-    AppLogger.graphqlSuccess('getUsersByRole', 'Received ${result.data?['users']?.length ?? 0} users with role $role');
+    final edges = result.data?['users']?['edges'] as List<dynamic>?;
+    if (edges == null) return [];
 
-    final List<dynamic>? data = result.data?['users'];
-    if (data == null) return [];
+    AppLogger.graphqlSuccess('getUsersByRole', 'Received ${edges.length} users with role $role');
 
-    return data.map((json) => User.fromJson(json)).toList();
+    return edges
+        .map((edge) => User.fromJson(edge['node'] as Map<String, dynamic>))
+        .toList();
   }
 
   /// Get all videastes
@@ -86,10 +90,12 @@ class UsersService {
     final MutationOptions options = MutationOptions(
       document: gql(createUserMutation),
       variables: {
-        'username': username,
-        'password': password,
-        if (email != null) 'email': email,
-        'role': role,
+        'input': {
+          'username': username,
+          'password': password,
+          if (email != null) 'email': email,
+          'role': role,
+        }
       },
     );
 
@@ -108,14 +114,14 @@ class UsersService {
   /// Update user status
   Future<User> updateUserStatus(String userId, String status) async {
     AppLogger.graphqlMutation('updateUserStatus', {
-      'userId': userId,
+      'id': userId,
       'status': status,
     });
 
     final MutationOptions options = MutationOptions(
       document: gql(updateUserStatusMutation),
       variables: {
-        'userId': userId,
+        'id': userId,
         'status': status,
       },
     );
@@ -134,11 +140,11 @@ class UsersService {
 
   /// Delete a user
   Future<bool> deleteUser(String userId) async {
-    AppLogger.graphqlMutation('deleteUser', {'userId': userId});
+    AppLogger.graphqlMutation('deleteUser', {'id': userId});
 
     final MutationOptions options = MutationOptions(
       document: gql(deleteUserMutation),
-      variables: {'userId': userId},
+      variables: {'id': userId},
     );
 
     final result = await _client.mutate(options);
