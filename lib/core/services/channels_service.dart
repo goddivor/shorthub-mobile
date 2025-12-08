@@ -37,25 +37,21 @@ class ChannelsService {
 
   /// Create a source channel
   Future<SourceChannel> createSourceChannel({
-    required String channelId,
-    required String channelName,
+    required String youtubeUrl,
     required String contentType,
-    String? profileImageUrl,
   }) async {
     AppLogger.graphqlMutation('createSourceChannel', {
-      'channelId': channelId,
-      'channelName': channelName,
+      'youtubeUrl': youtubeUrl,
       'contentType': contentType,
-      if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
     });
 
     final MutationOptions options = MutationOptions(
       document: gql(createSourceChannelMutation),
       variables: {
-        'channelId': channelId,
-        'channelName': channelName,
-        'contentType': contentType,
-        if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
+        'input': {
+          'youtubeUrl': youtubeUrl,
+          'contentType': contentType,
+        }
       },
     );
 
@@ -66,7 +62,7 @@ class ChannelsService {
       throw Exception(result.exception.toString());
     }
 
-    AppLogger.graphqlSuccess('createSourceChannel', 'Source channel created: $channelName');
+    AppLogger.graphqlSuccess('createSourceChannel', 'Source channel created from URL: $youtubeUrl');
 
     return SourceChannel.fromJson(result.data!['createSourceChannel']);
   }
@@ -89,9 +85,11 @@ class ChannelsService {
       document: gql(updateSourceChannelMutation),
       variables: {
         'id': id,
-        if (channelName != null) 'channelName': channelName,
-        if (contentType != null) 'contentType': contentType,
-        if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
+        'input': {
+          if (channelName != null) 'channelName': channelName,
+          if (contentType != null) 'contentType': contentType,
+          if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
+        }
       },
     );
 
@@ -154,22 +152,21 @@ class ChannelsService {
 
   /// Create an admin channel
   Future<AdminChannel> createAdminChannel({
-    required String channelId,
-    required String channelName,
-    String? profileImageUrl,
+    required String youtubeUrl,
+    required String contentType,
   }) async {
     AppLogger.graphqlMutation('createAdminChannel', {
-      'channelId': channelId,
-      'channelName': channelName,
-      if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
+      'youtubeUrl': youtubeUrl,
+      'contentType': contentType,
     });
 
     final MutationOptions options = MutationOptions(
       document: gql(createAdminChannelMutation),
       variables: {
-        'channelId': channelId,
-        'channelName': channelName,
-        if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
+        'input': {
+          'youtubeUrl': youtubeUrl,
+          'contentType': contentType,
+        }
       },
     );
 
@@ -180,7 +177,7 @@ class ChannelsService {
       throw Exception(result.exception.toString());
     }
 
-    AppLogger.graphqlSuccess('createAdminChannel', 'Admin channel created: $channelName');
+    AppLogger.graphqlSuccess('createAdminChannel', 'Admin channel created from URL: $youtubeUrl');
 
     return AdminChannel.fromJson(result.data!['createAdminChannel']);
   }
