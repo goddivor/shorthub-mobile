@@ -6,12 +6,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'config/theme/app_theme.dart';
 import 'config/routes/app_routes.dart';
 import 'core/graphql/graphql_client.dart';
+import 'providers/theme_provider.dart';
 
 class ShortHubApp extends ConsumerWidget {
   const ShortHubApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
     return GraphQLProvider(
       client: GraphQLClientService.clientNotifier,
       child: ScreenUtilInit(
@@ -24,7 +27,7 @@ class ShortHubApp extends ConsumerWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.light,
+            themeMode: themeMode,
             initialRoute: AppRoutes.splash,
             onGenerateRoute: AppRouter.generateRoute,
           );

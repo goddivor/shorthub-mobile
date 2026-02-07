@@ -7,6 +7,8 @@ import '../../config/theme/app_colors.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/theme_provider.dart';
+import '../../providers/navigation_provider.dart';
 
 class CustomDrawer extends ConsumerWidget {
   final User user;
@@ -29,7 +31,7 @@ class CustomDrawer extends ConsumerWidget {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                _buildNavigationSection(context),
+                _buildNavigationSection(context, ref),
                 const Divider(height: 1),
                 _buildSettingsSection(context, ref),
               ],
@@ -114,7 +116,7 @@ class CustomDrawer extends ConsumerWidget {
     );
   }
 
-  Widget _buildNavigationSection(BuildContext context) {
+  Widget _buildNavigationSection(BuildContext context, WidgetRef ref) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     return Column(
@@ -136,33 +138,54 @@ class CustomDrawer extends ConsumerWidget {
         ),
 
         // Dashboard items based on role
-        ..._buildRoleBasedNavigation(context, currentRoute),
+        ..._buildRoleBasedNavigation(context, currentRoute, ref),
       ],
     );
   }
 
-  List<Widget> _buildRoleBasedNavigation(BuildContext context, String? currentRoute) {
+  List<Widget> _buildRoleBasedNavigation(BuildContext context, String? currentRoute, WidgetRef ref) {
     switch (user.role?.toUpperCase() ?? '') {
       case 'ADMIN':
+        final adminTab = ref.watch(adminTabIndexProvider);
+        final isOnAdmin = currentRoute == AppRoutes.adminDashboard;
         return [
           _buildDrawerItem(
             context: context,
             icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: 'Tableau de bord',
+            title: 'Suivi',
             route: AppRoutes.adminDashboard,
-            isActive: currentRoute == AppRoutes.adminDashboard,
+            isActive: isOnAdmin && adminTab == 0,
+            onTap: () {
+              ref.read(adminTabIndexProvider.notifier).state = 0;
+              Navigator.pop(context);
+              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
+            },
           ),
           _buildDrawerItem(
             context: context,
             icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
-            title: 'Vidéos',
+            title: 'Rolling',
             route: AppRoutes.adminDashboard,
-            isActive: false,
+            isActive: isOnAdmin && adminTab == 1,
             onTap: () {
+              ref.read(adminTabIndexProvider.notifier).state = 1;
               Navigator.pop(context);
-              // TODO: Navigate to videos tab
+              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
+            },
+          ),
+          _buildDrawerItem(
+            context: context,
+            icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
+            activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
+            title: 'Canaux',
+            route: AppRoutes.adminDashboard,
+            isActive: isOnAdmin && adminTab == 2,
+            onTap: () {
+              ref.read(adminTabIndexProvider.notifier).state = 2;
+              Navigator.pop(context);
+              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
             },
           ),
           _buildDrawerItem(
@@ -171,46 +194,30 @@ class CustomDrawer extends ConsumerWidget {
             activeIcon: PhosphorIcons.users(PhosphorIconsStyle.fill),
             title: 'Équipe',
             route: AppRoutes.adminDashboard,
-            isActive: false,
+            isActive: isOnAdmin && adminTab == 3,
             onTap: () {
+              ref.read(adminTabIndexProvider.notifier).state = 3;
               Navigator.pop(context);
-              // TODO: Navigate to users tab
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.chartLine(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.chartLine(PhosphorIconsStyle.fill),
-            title: 'Statistiques',
-            route: AppRoutes.adminDashboard,
-            isActive: false,
-            onTap: () {
-              Navigator.pop(context);
-              // TODO: Navigate to stats
+              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
             },
           ),
         ];
 
       case 'VIDEASTE':
+        final videasteTab = ref.watch(videasteTabIndexProvider);
+        final isOnVideaste = currentRoute == AppRoutes.videasteDashboard;
         return [
           _buildDrawerItem(
             context: context,
             icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: 'Tableau de bord',
+            title: 'Assignées',
             route: AppRoutes.videasteDashboard,
-            isActive: currentRoute == AppRoutes.videasteDashboard,
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
-            title: 'Vidéos assignées',
-            route: AppRoutes.videasteDashboard,
-            isActive: false,
+            isActive: isOnVideaste && videasteTab == 0,
             onTap: () {
+              ref.read(videasteTabIndexProvider.notifier).state = 0;
               Navigator.pop(context);
-              // TODO: Navigate to assigned videos tab
+              if (!isOnVideaste) Navigator.pushReplacementNamed(context, AppRoutes.videasteDashboard);
             },
           ),
           _buildDrawerItem(
@@ -219,10 +226,11 @@ class CustomDrawer extends ConsumerWidget {
             activeIcon: PhosphorIcons.clockCounterClockwise(PhosphorIconsStyle.fill),
             title: 'En cours',
             route: AppRoutes.videasteDashboard,
-            isActive: false,
+            isActive: isOnVideaste && videasteTab == 1,
             onTap: () {
+              ref.read(videasteTabIndexProvider.notifier).state = 1;
               Navigator.pop(context);
-              // TODO: Navigate to in progress tab
+              if (!isOnVideaste) Navigator.pushReplacementNamed(context, AppRoutes.videasteDashboard);
             },
           ),
           _buildDrawerItem(
@@ -231,34 +239,30 @@ class CustomDrawer extends ConsumerWidget {
             activeIcon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
             title: 'Terminées',
             route: AppRoutes.videasteDashboard,
-            isActive: false,
+            isActive: isOnVideaste && videasteTab == 2,
             onTap: () {
+              ref.read(videasteTabIndexProvider.notifier).state = 2;
               Navigator.pop(context);
-              // TODO: Navigate to completed tab
+              if (!isOnVideaste) Navigator.pushReplacementNamed(context, AppRoutes.videasteDashboard);
             },
           ),
         ];
 
       case 'ASSISTANT':
+        final assistantTab = ref.watch(assistantTabIndexProvider);
+        final isOnAssistant = currentRoute == AppRoutes.assistantDashboard;
         return [
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: 'Tableau de bord',
-            route: AppRoutes.assistantDashboard,
-            isActive: currentRoute == AppRoutes.assistantDashboard,
-          ),
           _buildDrawerItem(
             context: context,
             icon: PhosphorIcons.clipboardText(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.clipboardText(PhosphorIconsStyle.fill),
             title: 'À valider',
             route: AppRoutes.assistantDashboard,
-            isActive: false,
+            isActive: isOnAssistant && assistantTab == 0,
             onTap: () {
+              ref.read(assistantTabIndexProvider.notifier).state = 0;
               Navigator.pop(context);
-              // TODO: Navigate to pending validation tab
+              if (!isOnAssistant) Navigator.pushReplacementNamed(context, AppRoutes.assistantDashboard);
             },
           ),
           _buildDrawerItem(
@@ -267,10 +271,11 @@ class CustomDrawer extends ConsumerWidget {
             activeIcon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
             title: 'Validées',
             route: AppRoutes.assistantDashboard,
-            isActive: false,
+            isActive: isOnAssistant && assistantTab == 1,
             onTap: () {
+              ref.read(assistantTabIndexProvider.notifier).state = 1;
               Navigator.pop(context);
-              // TODO: Navigate to validated tab
+              if (!isOnAssistant) Navigator.pushReplacementNamed(context, AppRoutes.assistantDashboard);
             },
           ),
           _buildDrawerItem(
@@ -279,10 +284,11 @@ class CustomDrawer extends ConsumerWidget {
             activeIcon: PhosphorIcons.xCircle(PhosphorIconsStyle.fill),
             title: 'Rejetées',
             route: AppRoutes.assistantDashboard,
-            isActive: false,
+            isActive: isOnAssistant && assistantTab == 2,
             onTap: () {
+              ref.read(assistantTabIndexProvider.notifier).state = 2;
               Navigator.pop(context);
-              // TODO: Navigate to rejected tab
+              if (!isOnAssistant) Navigator.pushReplacementNamed(context, AppRoutes.assistantDashboard);
             },
           ),
         ];
@@ -325,24 +331,8 @@ class CustomDrawer extends ConsumerWidget {
           },
         ),
 
-        // Settings
-        _buildDrawerItem(
-          context: context,
-          icon: Iconsax.setting_2,
-          activeIcon: Iconsax.setting_2,
-          title: 'Paramètres',
-          route: '/settings', // TODO: Add route
-          isActive: false,
-          onTap: () {
-            Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Page paramètres à venir'),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          },
-        ),
+        // Dark mode toggle
+        _buildDarkModeToggle(context, ref),
 
         const Divider(height: 1),
 
@@ -412,6 +402,40 @@ class CustomDrawer extends ConsumerWidget {
               }
             },
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDarkModeToggle(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: SwitchListTile(
+        secondary: Icon(
+          isDark ? Iconsax.moon : Iconsax.sun_1,
+          color: AppColors.gray700,
+          size: 24,
+        ),
+        title: Text(
+          'Mode sombre',
+          style: TextStyle(
+            fontSize: 15,
+            color: AppColors.gray700,
+          ),
+        ),
+        value: isDark,
+        activeTrackColor: AppColors.primary,
+        onChanged: (_) {
+          ref.read(themeModeProvider.notifier).toggle();
+        },
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
