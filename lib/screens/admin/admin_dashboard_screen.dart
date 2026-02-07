@@ -8,7 +8,7 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
-import 'pages/admin_overview_page.dart';
+import 'pages/admin_shorts_tracking_page.dart';
 import 'pages/admin_rolling_page.dart';
 import 'pages/admin_channels_page.dart';
 import 'pages/admin_users_page.dart';
@@ -27,7 +27,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   String _getCurrentPageTitle() {
     switch (_selectedIndex) {
       case 0:
-        return 'Aperçu';
+        return 'Suivi';
       case 1:
         return 'Rolling';
       case 2:
@@ -118,7 +118,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
-        return const AdminOverviewPage();
+        return const AdminShortsTrackingPage();
       case 1:
         return const AdminRollingPage();
       case 2:
@@ -153,8 +153,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       unselectedItemColor: AppColors.gray400,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Iconsax.home),
-          label: 'Aperçu',
+          icon: Icon(Iconsax.document_text),
+          label: 'Suivi',
         ),
         BottomNavigationBarItem(
           icon: Icon(Iconsax.video_play),

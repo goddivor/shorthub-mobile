@@ -273,6 +273,11 @@ class ShortsService {
     return updateShortStatus(shortId, 'COMPLETED');
   }
 
+  /// Publish a validated short (admin action)
+  Future<Short> publishShort(String shortId) async {
+    return updateShortStatus(shortId, 'PUBLISHED');
+  }
+
   /// Delete a short
   Future<bool> deleteShort(String shortId) async {
     AppLogger.graphqlMutation('deleteShort', {'shortId': shortId});
