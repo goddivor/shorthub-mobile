@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/shorts_provider.dart';
@@ -28,7 +29,6 @@ class ShortDetailsScreen extends ConsumerWidget {
     final userRole = userAsync.valueOrNull?.role ?? '';
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: shortAsync.when(
         data: (short) => _ShortDetailsBody(short: short, userRole: userRole),
         loading: () => LoadingIndicator(message: AppLocalizations.of(context)!.loadingShort),
@@ -145,14 +145,15 @@ class _ShortDetailsBody extends ConsumerWidget {
 
                 // Channels section
                 _buildSection(
+                  context,
                   title: AppLocalizations.of(context)!.shortChannels,
                   icon: Iconsax.video_circle,
                   child: Column(
                     children: [
-                      _buildChannelRow(AppLocalizations.of(context)!.shortSource, short.sourceChannel.channelName, short.sourceChannel.profileImageUrl),
+                      _buildChannelRow(context, AppLocalizations.of(context)!.shortSource, short.sourceChannel.channelName, short.sourceChannel.profileImageUrl),
                       if (short.targetChannel != null) ...[
                         const SizedBox(height: 10),
-                        _buildChannelRow(AppLocalizations.of(context)!.shortPublication, short.targetChannel!.channelName, short.targetChannel!.profileImageUrl),
+                        _buildChannelRow(context, AppLocalizations.of(context)!.shortPublication, short.targetChannel!.channelName, short.targetChannel!.profileImageUrl),
                       ],
                     ],
                   ),
@@ -163,23 +164,26 @@ class _ShortDetailsBody extends ConsumerWidget {
                 if (short.assignedTo != null)
                   ...[
                     _buildSection(
+                      context,
                       title: AppLocalizations.of(context)!.shortAssignment,
                       icon: Iconsax.user_tick,
                       child: Column(
                         children: [
-                          _buildInfoRow(AppLocalizations.of(context)!.shortVideaste, short.assignedTo!.username),
+                          _buildInfoRow(context, AppLocalizations.of(context)!.shortVideaste, short.assignedTo!.username),
                           if (short.assignedBy != null)
-                            _buildInfoRow(AppLocalizations.of(context)!.shortAssignedBy, short.assignedBy!.username),
+                            _buildInfoRow(context, AppLocalizations.of(context)!.shortAssignedBy, short.assignedBy!.username),
                           if (short.assignedAt != null)
-                            _buildInfoRow(AppLocalizations.of(context)!.shortDate, dateFormat.format(short.assignedAt!)),
+                            _buildInfoRow(context, AppLocalizations.of(context)!.shortDate, dateFormat.format(short.assignedAt!)),
                           if (short.deadline != null)
                             _buildInfoRow(
+                              context,
                               AppLocalizations.of(context)!.shortDeadline,
                               dateFormat.format(short.deadline!),
                               valueColor: short.isLate ? AppColors.error : null,
                             ),
                           if (short.daysUntilDeadline != null)
                             _buildInfoRow(
+                              context,
                               AppLocalizations.of(context)!.shortDaysRemaining,
                               '${short.daysUntilDeadline}',
                               valueColor: short.daysUntilDeadline! < 0 ? AppColors.error : AppColors.success,
@@ -192,25 +196,26 @@ class _ShortDetailsBody extends ConsumerWidget {
 
                 // Timeline section
                 _buildSection(
+                  context,
                   title: AppLocalizations.of(context)!.shortTimeline,
                   icon: Iconsax.timer_1,
                   child: Column(
                     children: [
-                      _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineRolled, short.rolledAt, AppColors.statusRolled),
+                      _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelineRolled, short.rolledAt, AppColors.statusRolled),
                       if (short.retainedAt != null)
-                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineRetained, short.retainedAt!, AppColors.statusRetained),
+                        _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelineRetained, short.retainedAt!, AppColors.statusRetained),
                       if (short.assignedAt != null)
-                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineAssigned, short.assignedAt!, AppColors.statusAssigned),
+                        _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelineAssigned, short.assignedAt!, AppColors.statusAssigned),
                       if (short.completedAt != null)
-                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineCompleted, short.completedAt!, AppColors.statusCompleted),
+                        _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelineCompleted, short.completedAt!, AppColors.statusCompleted),
                       if (short.validatedAt != null)
-                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineValidated, short.validatedAt!, AppColors.statusValidated),
+                        _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelineValidated, short.validatedAt!, AppColors.statusValidated),
                       if (short.publishedAt != null)
-                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelinePublished, short.publishedAt!, AppColors.statusPublished),
+                        _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelinePublished, short.publishedAt!, AppColors.statusPublished),
                       if (short.rejectedAt != null)
-                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineRejected, short.rejectedAt!, AppColors.statusRejected),
+                        _buildTimelineRow(context, AppLocalizations.of(context)!.shortTimelineRejected, short.rejectedAt!, AppColors.statusRejected),
                       if (short.timeToComplete != null)
-                        _buildInfoRow(AppLocalizations.of(context)!.shortCompletionTime, AppLocalizations.of(context)!.shortCompletionTimeValue(short.timeToComplete!.toStringAsFixed(1))),
+                        _buildInfoRow(context, AppLocalizations.of(context)!.shortCompletionTime, AppLocalizations.of(context)!.shortCompletionTimeValue(short.timeToComplete!.toStringAsFixed(1))),
                     ],
                   ),
                 ),
@@ -219,9 +224,10 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Notes
                 if (short.notes != null && short.notes!.isNotEmpty) ...[
                   _buildSection(
+                    context,
                     title: AppLocalizations.of(context)!.shortNotes,
                     icon: Iconsax.note_1,
-                    child: Text(short.notes!, style: TextStyle(fontSize: 14, color: AppColors.gray700, height: 1.5)),
+                    child: Text(short.notes!, style: TextStyle(fontSize: 14, color: context.textSecondary, height: 1.5)),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -229,6 +235,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Admin feedback
                 if (short.adminFeedback != null && short.adminFeedback!.isNotEmpty) ...[
                   _buildSection(
+                    context,
                     title: AppLocalizations.of(context)!.shortAdminFeedback,
                     icon: Iconsax.message_text,
                     child: Container(
@@ -261,17 +268,18 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Drive file info
                 if (short.hasFile) ...[
                   _buildSection(
+                    context,
                     title: AppLocalizations.of(context)!.shortVideoFile,
                     icon: Iconsax.document_upload,
                     child: Column(
                       children: [
-                        _buildInfoRow(AppLocalizations.of(context)!.shortFileName, short.fileName ?? 'N/A'),
+                        _buildInfoRow(context, AppLocalizations.of(context)!.shortFileName, short.fileName ?? 'N/A'),
                         if (short.fileSize != null)
-                          _buildInfoRow(AppLocalizations.of(context)!.shortFileSize, _formatFileSize(short.fileSize!)),
+                          _buildInfoRow(context, AppLocalizations.of(context)!.shortFileSize, _formatFileSize(short.fileSize!)),
                         if (short.mimeType != null)
-                          _buildInfoRow(AppLocalizations.of(context)!.shortFileType, short.mimeType!),
+                          _buildInfoRow(context, AppLocalizations.of(context)!.shortFileType, short.mimeType!),
                         if (short.uploadedAt != null)
-                          _buildInfoRow(AppLocalizations.of(context)!.shortFileUpload, dateFormat.format(short.uploadedAt!)),
+                          _buildInfoRow(context, AppLocalizations.of(context)!.shortFileUpload, dateFormat.format(short.uploadedAt!)),
                       ],
                     ),
                   ),
@@ -281,6 +289,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Tags
                 if (short.tags.isNotEmpty) ...[
                   _buildSection(
+                    context,
                     title: AppLocalizations.of(context)!.shortTags,
                     icon: Iconsax.tag,
                     child: Wrap(
@@ -288,7 +297,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                       runSpacing: 6,
                       children: short.tags.map((tag) => Chip(
                         label: Text(tag, style: const TextStyle(fontSize: 11)),
-                        backgroundColor: AppColors.gray100,
+                        backgroundColor: context.chipBg,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                       )).toList(),
@@ -299,6 +308,7 @@ class _ShortDetailsBody extends ConsumerWidget {
 
                 // Comments
                 _buildSection(
+                  context,
                   title: AppLocalizations.of(context)!.shortComments(short.comments.length),
                   icon: Iconsax.message,
                   child: Column(
@@ -327,12 +337,12 @@ class _ShortDetailsBody extends ConsumerWidget {
     );
   }
 
-  Widget _buildSection({required String title, required IconData icon, required Widget child}) {
+  Widget _buildSection(BuildContext context, {required String title, required IconData icon, required Widget child}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -359,7 +369,7 @@ class _ShortDetailsBody extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
+  Widget _buildInfoRow(BuildContext context, String label, String value, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
@@ -367,12 +377,12 @@ class _ShortDetailsBody extends ConsumerWidget {
         children: [
           SizedBox(
             width: 120,
-            child: Text(label, style: TextStyle(fontSize: 13, color: AppColors.gray500)),
+            child: Text(label, style: TextStyle(fontSize: 13, color: context.textHint)),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: valueColor ?? AppColors.gray800),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: valueColor ?? context.textPrimary),
             ),
           ),
         ],
@@ -380,20 +390,20 @@ class _ShortDetailsBody extends ConsumerWidget {
     );
   }
 
-  Widget _buildChannelRow(String label, String name, String? imageUrl) {
+  Widget _buildChannelRow(BuildContext context, String label, String name, String? imageUrl) {
     return Row(
       children: [
         CircleAvatar(
           radius: 16,
           backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
-          backgroundColor: AppColors.gray200,
-          child: imageUrl == null ? Icon(Iconsax.video_circle, size: 14, color: AppColors.gray400) : null,
+          backgroundColor: context.borderColor,
+          child: imageUrl == null ? Icon(Iconsax.video_circle, size: 14, color: context.iconSubtle) : null,
         ),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: TextStyle(fontSize: 11, color: AppColors.gray400)),
+            Text(label, style: TextStyle(fontSize: 11, color: context.iconSubtle)),
             Text(name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
           ],
         ),
@@ -401,7 +411,7 @@ class _ShortDetailsBody extends ConsumerWidget {
     );
   }
 
-  Widget _buildTimelineRow(String label, DateTime date, Color color) {
+  Widget _buildTimelineRow(BuildContext context, String label, DateTime date, Color color) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -418,7 +428,7 @@ class _ShortDetailsBody extends ConsumerWidget {
           ),
           Text(
             DateFormat('dd/MM/yyyy HH:mm').format(date),
-            style: TextStyle(fontSize: 12, color: AppColors.gray500),
+            style: TextStyle(fontSize: 12, color: context.textHint),
           ),
         ],
       ),

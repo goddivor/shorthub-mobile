@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
@@ -40,7 +41,6 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
         }
 
         return Scaffold(
-          backgroundColor: AppColors.background,
           appBar: CustomAppBar(user: user),
           endDrawer: CustomDrawer(user: user),
           body: Column(
@@ -81,7 +81,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
 
     return Container(
       padding: const EdgeInsets.all(16),
-      color: Colors.white,
+      color: context.cardBg,
       child: Row(
         children: [
           Expanded(
@@ -139,7 +139,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
             label,
             style: TextStyle(
               fontSize: 12,
-              color: AppColors.gray600,
+              color: context.textTertiary,
             ),
           ),
         ],
@@ -149,7 +149,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
 
   Widget _buildTabBar() {
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       child: Row(
         children: [
           _buildTab(AppLocalizations.of(context)!.navAssigned, 0),
@@ -183,7 +183,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
             style: TextStyle(
               fontSize: 14,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? AppColors.primary : AppColors.gray600,
+              color: isSelected ? AppColors.primary : context.textTertiary,
             ),
           ),
         ),
@@ -270,7 +270,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                     children: [
                       Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
                       const SizedBox(height: 16),
-                      Text(emptyMessage, style: TextStyle(fontSize: 16, color: AppColors.gray600)),
+                      Text(emptyMessage, style: TextStyle(fontSize: 16, color: context.textTertiary)),
                     ],
                   ),
                 ),
@@ -292,7 +292,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -318,10 +318,10 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.gray200,
+                      color: context.borderColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(Iconsax.video, color: AppColors.gray400, size: 32),
+                    child: Icon(Iconsax.video, color: context.iconSubtle, size: 32),
                   ),
                 ),
               ),
@@ -335,7 +335,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.gray900,
+                        color: context.textPrimary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -343,18 +343,18 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                     const SizedBox(height: 4),
                     Text(
                       short.sourceChannel.channelName,
-                      style: TextStyle(fontSize: 14, color: AppColors.gray600),
+                      style: TextStyle(fontSize: 14, color: context.textTertiary),
                     ),
                     if (short.targetChannel != null) ...[
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          Icon(Iconsax.arrow_right_3, color: AppColors.gray400, size: 12),
+                          Icon(Iconsax.arrow_right_3, color: context.iconSubtle, size: 12),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               short.targetChannel!.channelName,
-                              style: TextStyle(fontSize: 12, color: AppColors.gray500),
+                              style: TextStyle(fontSize: 12, color: context.textHint),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -411,11 +411,11 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Iconsax.calendar_1, size: 14, color: AppColors.gray400),
+                Icon(Iconsax.calendar_1, size: 14, color: context.iconSubtle),
                 const SizedBox(width: 4),
                 Text(
                   'Deadline: ${dateFormat.format(short.deadline!)}',
-                  style: TextStyle(fontSize: 12, color: AppColors.gray500),
+                  style: TextStyle(fontSize: 12, color: context.textHint),
                 ),
               ],
             ),

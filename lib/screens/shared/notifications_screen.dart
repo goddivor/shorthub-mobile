@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/notification.dart';
 import '../../providers/notifications_provider.dart';
@@ -19,12 +20,9 @@ class NotificationsScreen extends ConsumerWidget {
     final notificationsAsync = ref.watch(notificationsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(AppLocalizations.of(context)!.notificationsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
-        foregroundColor: AppColors.gray900,
         actions: [
           TextButton(
             onPressed: () async {
@@ -45,7 +43,7 @@ class NotificationsScreen extends ConsumerWidget {
                 children: [
                   Icon(Iconsax.notification, size: 64, color: AppColors.gray300),
                   const SizedBox(height: 16),
-                  Text(AppLocalizations.of(context)!.notificationsEmpty, style: TextStyle(fontSize: 16, color: AppColors.gray600)),
+                  Text(AppLocalizations.of(context)!.notificationsEmpty, style: TextStyle(fontSize: 16, color: context.textTertiary)),
                 ],
               ),
             );
@@ -162,7 +160,7 @@ class _NotificationCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: notification.read ? Colors.white : color.withValues(alpha: 0.04),
+          color: notification.read ? context.cardBg : color.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(12),
           border: notification.read
               ? null
@@ -204,7 +202,7 @@ class _NotificationCard extends StatelessWidget {
                       const Spacer(),
                       Text(
                         _formatTimeAgo(notification.createdAt, context),
-                        style: TextStyle(fontSize: 11, color: AppColors.gray400),
+                        style: TextStyle(fontSize: 11, color: context.textHint),
                       ),
                     ],
                   ),
@@ -213,7 +211,7 @@ class _NotificationCard extends StatelessWidget {
                     notification.message,
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.gray700,
+                      color: context.textSecondary,
                       fontWeight: notification.read ? FontWeight.normal : FontWeight.w500,
                     ),
                     maxLines: 2,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/shorts_provider.dart';
@@ -40,7 +41,6 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
         }
 
         return Scaffold(
-          backgroundColor: AppColors.background,
           appBar: CustomAppBar(user: user),
           endDrawer: CustomDrawer(user: user),
           body: Column(
@@ -83,7 +83,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
     return Container(
       padding: const EdgeInsets.all(16),
-      color: Colors.white,
+      color: context.cardBg,
       child: Row(
         children: [
           Expanded(
@@ -141,7 +141,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
             label,
             style: TextStyle(
               fontSize: 12,
-              color: AppColors.gray600,
+              color: context.textTertiary,
             ),
           ),
         ],
@@ -151,7 +151,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
   Widget _buildTabBar() {
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       child: Row(
         children: [
           _buildTab(AppLocalizations.of(context)!.navToValidate, 0),
@@ -187,7 +187,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
             style: TextStyle(
               fontSize: 14,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected ? AppColors.primary : AppColors.gray600,
+              color: isSelected ? AppColors.primary : context.textTertiary,
             ),
           ),
         ),
@@ -280,7 +280,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                       const SizedBox(height: 16),
                       Text(
                         emptyMessage,
-                        style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                        style: TextStyle(fontSize: 16, color: context.textTertiary),
                       ),
                     ],
                   ),
@@ -305,7 +305,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -331,10 +331,10 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.gray200,
+                      color: context.borderColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(Iconsax.video, color: AppColors.gray400, size: 32),
+                    child: Icon(Iconsax.video, color: context.iconSubtle, size: 32),
                   ),
                 ),
               ),
@@ -348,7 +348,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.gray900,
+                        color: context.textPrimary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -358,18 +358,18 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                       short.sourceChannel.channelName,
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.gray600,
+                        color: context.textTertiary,
                       ),
                     ),
                     if (short.assignedTo != null) ...[
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Iconsax.user, color: AppColors.gray400, size: 14),
+                          Icon(Iconsax.user, color: context.iconSubtle, size: 14),
                           const SizedBox(width: 4),
                           Text(
                             short.assignedTo!.username,
-                            style: TextStyle(fontSize: 12, color: AppColors.gray500),
+                            style: TextStyle(fontSize: 12, color: context.textHint),
                           ),
                         ],
                       ),

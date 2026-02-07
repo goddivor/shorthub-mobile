@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/notifications_provider.dart';
@@ -34,7 +35,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     ref.listen(notificationSubscriptionProvider, (_, __) {});
 
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: context.cardBg,
       elevation: 0,
       toolbarHeight: 70,
       automaticallyImplyLeading: false,
@@ -43,7 +44,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: AppColors.gray900,
+          color: context.textPrimary,
           letterSpacing: -0.5,
         ),
       ),
@@ -54,7 +55,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ref.watch(themeModeProvider) == ThemeMode.dark
                 ? Iconsax.sun_1
                 : Iconsax.moon,
-            color: AppColors.gray700,
+            color: context.iconColor,
             size: 22,
           ),
           onPressed: () {
@@ -68,7 +69,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             IconButton(
               icon: Icon(
                 Iconsax.notification,
-                color: AppColors.gray700,
+                color: context.iconColor,
                 size: 24,
               ),
               onPressed: onNotificationTap ?? () {

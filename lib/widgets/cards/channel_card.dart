@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 
 class ChannelCard extends StatelessWidget {
   final String id;
@@ -37,7 +38,7 @@ class ChannelCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -61,7 +62,7 @@ class ChannelCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: AppColors.gray200,
+                    color: context.borderColor,
                     borderRadius: BorderRadius.circular(28),
                     image: profileImageUrl != null && profileImageUrl!.isNotEmpty
                         ? DecorationImage(
@@ -91,7 +92,7 @@ class ChannelCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.gray900,
+                          color: context.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -104,7 +105,7 @@ class ChannelCard extends StatelessWidget {
                           Icon(
                             Iconsax.link,
                             size: 12,
-                            color: AppColors.gray500,
+                            color: context.textHint,
                           ),
                           const SizedBox(width: 4),
                           Expanded(
@@ -112,7 +113,7 @@ class ChannelCard extends StatelessWidget {
                               channelId,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppColors.gray600,
+                                color: context.textTertiary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -163,14 +164,14 @@ class ChannelCard extends StatelessWidget {
                                 Icon(
                                   Iconsax.video,
                                   size: 12,
-                                  color: AppColors.gray500,
+                                  color: context.textHint,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '$totalVideos',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.gray600,
+                                    color: context.textTertiary,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -186,14 +187,14 @@ class ChannelCard extends StatelessWidget {
                                 Icon(
                                   Iconsax.people,
                                   size: 12,
-                                  color: AppColors.gray500,
+                                  color: context.textHint,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   _formatSubscriberCount(subscriberCount!),
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.gray600,
+                                    color: context.textTertiary,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -210,7 +211,7 @@ class ChannelCard extends StatelessWidget {
                 PopupMenuButton<String>(
                   icon: Icon(
                     PhosphorIcons.dotsThreeVertical(PhosphorIconsStyle.bold),
-                    color: AppColors.gray600,
+                    color: context.textTertiary,
                     size: 20,
                   ),
                   shape: RoundedRectangleBorder(

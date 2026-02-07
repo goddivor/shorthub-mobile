@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../core/models/source_channel.dart';
 import '../../providers/shorts_provider.dart';
@@ -100,9 +101,9 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -170,9 +171,9 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
           backgroundImage: widget.channel.profileImageUrl != null
               ? NetworkImage(widget.channel.profileImageUrl!)
               : null,
-          backgroundColor: AppColors.gray200,
+          backgroundColor: context.borderColor,
           child: widget.channel.profileImageUrl == null
-              ? Icon(Iconsax.video_circle, color: AppColors.gray400, size: 20)
+              ? Icon(Iconsax.video_circle, color: context.iconSubtle, size: 20)
               : null,
         ),
         const SizedBox(width: 12),
@@ -219,8 +220,8 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
               thumbnailUrl,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
-                color: AppColors.gray200,
-                child: Icon(Iconsax.video, color: AppColors.gray400, size: 48),
+                color: context.borderColor,
+                child: Icon(Iconsax.video, color: context.iconSubtle, size: 48),
               ),
             ),
           ),
@@ -235,7 +236,7 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
         const SizedBox(height: 4),
         Text(
           short.videoUrl,
-          style: TextStyle(fontSize: 12, color: AppColors.gray500),
+          style: TextStyle(fontSize: 12, color: context.textHint),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

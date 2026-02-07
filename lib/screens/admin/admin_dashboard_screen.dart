@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
@@ -95,7 +96,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         }
 
         return Scaffold(
-          backgroundColor: AppColors.background,
           appBar: CustomAppBar(
             user: user,
             title: _getCurrentPageTitle(selectedIndex, context),
@@ -156,7 +156,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       },
       type: BottomNavigationBarType.fixed,
       selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.gray400,
+      unselectedItemColor: context.iconSubtle,
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Iconsax.document_text),

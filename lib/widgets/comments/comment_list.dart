@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short_comment.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -18,11 +19,11 @@ class CommentList extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Icon(Iconsax.message, size: 32, color: AppColors.gray300),
+              Icon(Iconsax.message, size: 32, color: context.iconSubtle),
               const SizedBox(height: 8),
               Text(
                 AppLocalizations.of(context)!.commentEmpty,
-                style: TextStyle(fontSize: 13, color: AppColors.gray400),
+                style: TextStyle(fontSize: 13, color: context.textHint),
               ),
             ],
           ),
@@ -98,7 +99,7 @@ class _CommentTile extends StatelessWidget {
                       _timeAgo(comment.createdAt, context),
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.gray400,
+                        color: context.textHint,
                       ),
                     ),
                   ],
@@ -108,7 +109,7 @@ class _CommentTile extends StatelessWidget {
                   comment.comment,
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.gray700,
+                    color: context.textSecondary,
                   ),
                 ),
               ],

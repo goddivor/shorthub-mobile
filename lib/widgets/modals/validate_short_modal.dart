@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../providers/shorts_provider.dart';
 
@@ -66,9 +67,9 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
         top: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -189,7 +190,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.gray100,
+        color: context.chipBg,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -204,8 +205,8 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
               errorBuilder: (_, __, ___) => Container(
                 width: 50,
                 height: 50,
-                color: AppColors.gray200,
-                child: Icon(Iconsax.video, color: AppColors.gray400, size: 20),
+                color: context.borderColor,
+                child: Icon(Iconsax.video, color: context.iconSubtle, size: 20),
               ),
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/theme/theme_extensions.dart';
 import '../../../providers/shorts_provider.dart';
 import '../../../widgets/common/loading_indicator.dart';
 import '../../../widgets/common/error_widget.dart';
@@ -24,14 +25,14 @@ class AdminVideosPage extends ConsumerWidget {
                 Icon(
                   Iconsax.video_slash,
                   size: 64,
-                  color: AppColors.gray300,
+                  color: context.iconSubtle,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Aucune vidéo disponible',
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.gray600,
+                    color: context.textTertiary,
                   ),
                 ),
               ],
@@ -48,7 +49,7 @@ class AdminVideosPage extends ConsumerWidget {
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.cardBg,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -61,7 +62,7 @@ class AdminVideosPage extends ConsumerWidget {
                           short.videoId,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: AppColors.gray900,
+                            color: context.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -69,7 +70,7 @@ class AdminVideosPage extends ConsumerWidget {
                           short.sourceChannel.channelName,
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.gray600,
+                            color: context.textTertiary,
                           ),
                         ),
                       ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/user.dart';
 
 class UserCard extends StatelessWidget {
@@ -28,7 +29,7 @@ class UserCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -84,7 +85,7 @@ class UserCard extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: isBlocked ? AppColors.gray500 : AppColors.gray900,
+                                    color: isBlocked ? context.textHint : context.textPrimary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -127,7 +128,7 @@ class UserCard extends StatelessWidget {
                                 Icon(
                                   Iconsax.sms,
                                   size: 14,
-                                  color: AppColors.gray500,
+                                  color: context.textHint,
                                 ),
                                 const SizedBox(width: 4),
                                 Expanded(
@@ -135,7 +136,7 @@ class UserCard extends StatelessWidget {
                                     user.email!,
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: AppColors.gray600,
+                                      color: context.textTertiary,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -180,7 +181,7 @@ class UserCard extends StatelessWidget {
                                       Icon(
                                         PhosphorIcons.clock(PhosphorIconsStyle.regular),
                                         size: 12,
-                                        color: AppColors.gray500,
+                                        color: context.textHint,
                                       ),
                                       const SizedBox(width: 4),
                                       Expanded(
@@ -188,7 +189,7 @@ class UserCard extends StatelessWidget {
                                           _getLastLoginText(user.lastLogin!),
                                           style: TextStyle(
                                             fontSize: 11,
-                                            color: AppColors.gray500,
+                                            color: context.textHint,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -207,7 +208,7 @@ class UserCard extends StatelessWidget {
                     PopupMenuButton<String>(
                       icon: Icon(
                         PhosphorIcons.dotsThreeVertical(PhosphorIconsStyle.bold),
-                        color: AppColors.gray600,
+                        color: context.textTertiary,
                         size: 20,
                       ),
                       shape: RoundedRectangleBorder(

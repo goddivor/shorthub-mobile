@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
@@ -18,7 +19,6 @@ class ProfileScreen extends ConsumerWidget {
     final userAsync = ref.watch(currentUserProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: userAsync.when(
         data: (user) {
           if (user == null) {
@@ -93,17 +93,18 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       // Account info
                       _buildSection(
+                        context,
                         title: AppLocalizations.of(context)!.profileAccountInfo,
                         icon: Iconsax.user,
                         child: Column(
                           children: [
-                            _buildInfoRow(AppLocalizations.of(context)!.profileEmail, user.email ?? 'N/A'),
-                            _buildInfoRow(AppLocalizations.of(context)!.profilePhone, user.phone ?? 'N/A'),
-                            _buildInfoRow(AppLocalizations.of(context)!.profileStatus, user.isActive ? AppLocalizations.of(context)!.profileActive : AppLocalizations.of(context)!.profileBlocked),
+                            _buildInfoRow(context, AppLocalizations.of(context)!.profileEmail, user.email ?? 'N/A'),
+                            _buildInfoRow(context, AppLocalizations.of(context)!.profilePhone, user.phone ?? 'N/A'),
+                            _buildInfoRow(context, AppLocalizations.of(context)!.profileStatus, user.isActive ? AppLocalizations.of(context)!.profileActive : AppLocalizations.of(context)!.profileBlocked),
                             if (user.lastLogin != null)
-                              _buildInfoRow(AppLocalizations.of(context)!.profileLastLogin, dateFormat.format(user.lastLogin!)),
+                              _buildInfoRow(context, AppLocalizations.of(context)!.profileLastLogin, dateFormat.format(user.lastLogin!)),
                             if (user.createdAt != null)
-                              _buildInfoRow(AppLocalizations.of(context)!.profileMemberSince, dateFormat.format(user.createdAt!)),
+                              _buildInfoRow(context, AppLocalizations.of(context)!.profileMemberSince, dateFormat.format(user.createdAt!)),
                           ],
                         ),
                       ),
@@ -112,27 +113,28 @@ class ProfileScreen extends ConsumerWidget {
                       // Stats (for videaste)
                       if (user.stats != null) ...[
                         _buildSection(
+                          context,
                           title: AppLocalizations.of(context)!.profileStats,
                           icon: Iconsax.chart_1,
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsAssigned, '${user.stats!.totalVideosAssigned}', AppColors.primary),
+                                  _buildStatCard(context, AppLocalizations.of(context)!.profileStatsAssigned, '${user.stats!.totalVideosAssigned}', AppColors.primary),
                                   const SizedBox(width: 8),
-                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsCompleted, '${user.stats!.totalVideosCompleted}', AppColors.success),
+                                  _buildStatCard(context, AppLocalizations.of(context)!.profileStatsCompleted, '${user.stats!.totalVideosCompleted}', AppColors.success),
                                   const SizedBox(width: 8),
-                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsInProgress, '${user.stats!.totalVideosInProgress}', AppColors.warning),
+                                  _buildStatCard(context, AppLocalizations.of(context)!.profileStatsInProgress, '${user.stats!.totalVideosInProgress}', AppColors.warning),
                                 ],
                               ),
                               const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsRate, '${user.stats!.completionRate.toStringAsFixed(0)}%', AppColors.info),
+                                  _buildStatCard(context, AppLocalizations.of(context)!.profileStatsRate, '${user.stats!.completionRate.toStringAsFixed(0)}%', AppColors.info),
                                   const SizedBox(width: 8),
-                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsThisMonth, '${user.stats!.videosCompletedThisMonth}', AppColors.secondary),
+                                  _buildStatCard(context, AppLocalizations.of(context)!.profileStatsThisMonth, '${user.stats!.videosCompletedThisMonth}', AppColors.secondary),
                                   const SizedBox(width: 8),
-                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsLate, '${user.stats!.videosLate}', AppColors.error),
+                                  _buildStatCard(context, AppLocalizations.of(context)!.profileStatsLate, '${user.stats!.videosLate}', AppColors.error),
                                 ],
                               ),
                             ],
@@ -143,13 +145,14 @@ class ProfileScreen extends ConsumerWidget {
 
                       // Notifications preferences
                       _buildSection(
+                        context,
                         title: AppLocalizations.of(context)!.profileNotifications,
                         icon: Iconsax.notification,
                         child: Column(
                           children: [
-                            _buildToggleRow(AppLocalizations.of(context)!.profileEmailNotifications, user.emailNotifications ?? false),
-                            _buildToggleRow(AppLocalizations.of(context)!.profileWhatsappNotifications, user.whatsappNotifications ?? false),
-                            _buildInfoRow(AppLocalizations.of(context)!.profileWhatsappLinked, user.whatsappLinked == true ? AppLocalizations.of(context)!.commonYes : AppLocalizations.of(context)!.commonNo),
+                            _buildToggleRow(context, AppLocalizations.of(context)!.profileEmailNotifications, user.emailNotifications ?? false),
+                            _buildToggleRow(context, AppLocalizations.of(context)!.profileWhatsappNotifications, user.whatsappNotifications ?? false),
+                            _buildInfoRow(context, AppLocalizations.of(context)!.profileWhatsappLinked, user.whatsappLinked == true ? AppLocalizations.of(context)!.commonYes : AppLocalizations.of(context)!.commonNo),
                           ],
                         ),
                       ),
@@ -193,12 +196,12 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSection({required String title, required IconData icon, required Widget child}) {
+  Widget _buildSection(BuildContext context, {required String title, required IconData icon, required Widget child}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -225,7 +228,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -233,7 +236,7 @@ class ProfileScreen extends ConsumerWidget {
         children: [
           SizedBox(
             width: 140,
-            child: Text(label, style: TextStyle(fontSize: 13, color: AppColors.gray500)),
+            child: Text(label, style: TextStyle(fontSize: 13, color: context.textHint)),
           ),
           Expanded(
             child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
@@ -243,25 +246,25 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildToggleRow(String label, bool value) {
+  Widget _buildToggleRow(BuildContext context, String label, bool value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
           Expanded(
-            child: Text(label, style: TextStyle(fontSize: 13, color: AppColors.gray600)),
+            child: Text(label, style: TextStyle(fontSize: 13, color: context.textTertiary)),
           ),
           Icon(
             value ? Iconsax.tick_circle : Iconsax.close_circle,
             size: 18,
-            color: value ? AppColors.success : AppColors.gray400,
+            color: value ? AppColors.success : context.iconSubtle,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatCard(String label, String value, Color color) {
+  Widget _buildStatCard(BuildContext context, String label, String value, Color color) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -273,7 +276,7 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
             const SizedBox(height: 2),
-            Text(label, style: TextStyle(fontSize: 10, color: AppColors.gray600)),
+            Text(label, style: TextStyle(fontSize: 10, color: context.textTertiary)),
           ],
         ),
       ),

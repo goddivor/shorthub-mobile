@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../providers/auth_provider.dart';
 
 class ChangePasswordModal extends ConsumerStatefulWidget {
@@ -84,9 +85,9 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
         top: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -133,7 +134,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
                 labelText: 'Ancien mot de passe',
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscureOld ? Iconsax.eye_slash : Iconsax.eye, color: AppColors.gray400),
+                  icon: Icon(_obscureOld ? Iconsax.eye_slash : Iconsax.eye, color: context.iconSubtle),
                   onPressed: () => setState(() => _obscureOld = !_obscureOld),
                 ),
               ),
@@ -147,7 +148,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
                 labelText: 'Nouveau mot de passe',
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscureNew ? Iconsax.eye_slash : Iconsax.eye, color: AppColors.gray400),
+                  icon: Icon(_obscureNew ? Iconsax.eye_slash : Iconsax.eye, color: context.iconSubtle),
                   onPressed: () => setState(() => _obscureNew = !_obscureNew),
                 ),
               ),
@@ -161,7 +162,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
                 labelText: 'Confirmer le mot de passe',
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscureConfirm ? Iconsax.eye_slash : Iconsax.eye, color: AppColors.gray400),
+                  icon: Icon(_obscureConfirm ? Iconsax.eye_slash : Iconsax.eye, color: context.iconSubtle),
                   onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
                 ),
               ),

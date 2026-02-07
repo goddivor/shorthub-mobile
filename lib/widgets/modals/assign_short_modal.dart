@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../core/models/user.dart';
 import '../../core/models/admin_channel.dart';
@@ -102,9 +103,9 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
         top: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: context.cardBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -133,7 +134,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.gray100,
+                color: context.chipBg,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -148,8 +149,8 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
                       errorBuilder: (_, __, ___) => Container(
                         width: 50,
                         height: 50,
-                        color: AppColors.gray200,
-                        child: Icon(Iconsax.video, color: AppColors.gray400, size: 20),
+                        color: context.borderColor,
+                        child: Icon(Iconsax.video, color: context.iconSubtle, size: 20),
                       ),
                     ),
                   ),
@@ -229,19 +230,19 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.gray300),
+                  border: Border.all(color: context.borderColor),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
                   children: [
-                    Icon(Iconsax.calendar_1, color: AppColors.gray400, size: 20),
+                    Icon(Iconsax.calendar_1, color: context.iconSubtle, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       _deadline != null
                           ? DateFormat('dd/MM/yyyy HH:mm').format(_deadline!)
                           : 'Choisir une date limite',
                       style: TextStyle(
-                        color: _deadline != null ? AppColors.gray900 : AppColors.gray400,
+                        color: _deadline != null ? context.textPrimary : context.textHint,
                       ),
                     ),
                   ],

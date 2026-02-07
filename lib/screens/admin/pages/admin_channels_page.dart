@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/theme/theme_extensions.dart';
 import '../../../providers/channels_provider.dart';
 import '../../../widgets/common/loading_indicator.dart';
 import '../../../widgets/common/error_widget.dart';
@@ -55,7 +56,7 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
                   'Collez l\'URL d\'une chaîne YouTube, d\'une vidéo ou d\'un short',
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.gray600,
+                    color: context.textTertiary,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -195,7 +196,7 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
                   'Collez l\'URL de votre chaîne YouTube',
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.gray600,
+                    color: context.textTertiary,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -337,11 +338,11 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
       children: [
         // Tab Bar
         Container(
-          color: Colors.white,
+          color: context.cardBg,
           child: TabBar(
             controller: _tabController,
             labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.gray600,
+            unselectedLabelColor: context.textTertiary,
             indicatorColor: AppColors.primary,
             indicatorWeight: 2,
             labelStyle: const TextStyle(
@@ -399,17 +400,17 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Iconsax.video_circle, size: 64, color: AppColors.gray300),
+                          Icon(Iconsax.video_circle, size: 64, color: context.iconSubtle),
                           const SizedBox(height: 16),
                           Text(
                             _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal source',
-                            style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                            style: TextStyle(fontSize: 16, color: context.textTertiary),
                           ),
                           if (_searchQuery.isEmpty) ...[
                             const SizedBox(height: 8),
                             Text(
                               'Ajoutez un canal pour commencer',
-                              style: TextStyle(fontSize: 14, color: AppColors.gray500),
+                              style: TextStyle(fontSize: 14, color: context.textHint),
                             ),
                           ],
                         ],
@@ -477,17 +478,17 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Iconsax.video_circle, size: 64, color: AppColors.gray300),
+                          Icon(Iconsax.video_circle, size: 64, color: context.iconSubtle),
                           const SizedBox(height: 16),
                           Text(
                             _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal de publication',
-                            style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                            style: TextStyle(fontSize: 16, color: context.textTertiary),
                           ),
                           if (_searchQuery.isEmpty) ...[
                             const SizedBox(height: 8),
                             Text(
                               'Ajoutez un canal pour publier',
-                              style: TextStyle(fontSize: 14, color: AppColors.gray500),
+                              style: TextStyle(fontSize: 14, color: context.textHint),
                             ),
                           ],
                         ],
@@ -559,7 +560,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.gray900,
+                  color: context.textPrimary,
                 ),
               ),
               const SizedBox(height: 16),

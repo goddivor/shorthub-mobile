@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/theme/theme_extensions.dart';
 import '../../../core/models/short.dart';
 import '../../../providers/shorts_provider.dart';
 import '../../../widgets/common/stat_badge.dart';
@@ -167,7 +168,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                         _searchQuery.isNotEmpty || _statusFilter != 'ALL'
                             ? 'Aucun short correspond aux filtres'
                             : 'Aucun short dans le workflow',
-                        style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                        style: TextStyle(fontSize: 16, color: context.textTertiary),
                       ),
                     ],
                   ),
@@ -210,7 +211,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
     final stats = statsAsync.valueOrNull;
 
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -238,7 +239,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
 
   Widget _buildSearchAndFilter() {
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
       child: Row(
         children: [
@@ -248,19 +249,19 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Rechercher...',
-                hintStyle: TextStyle(fontSize: 13, color: AppColors.gray400),
-                prefixIcon: Icon(Iconsax.search_normal, size: 18, color: AppColors.gray400),
+                hintStyle: TextStyle(fontSize: 13, color: context.textHint),
+                prefixIcon: Icon(Iconsax.search_normal, size: 18, color: context.iconSubtle),
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: AppColors.gray200),
+                  borderSide: BorderSide(color: context.borderColor),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: AppColors.gray200),
+                  borderSide: BorderSide(color: context.borderColor),
                 ),
                 filled: true,
-                fillColor: AppColors.gray50,
+                fillColor: context.subtleBg,
                 isDense: true,
               ),
               style: const TextStyle(fontSize: 13),
@@ -274,17 +275,17 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.gray200),
+                border: Border.all(color: context.borderColor),
                 borderRadius: BorderRadius.circular(8),
-                color: AppColors.gray50,
+                color: context.subtleBg,
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: _statusFilter,
                   isExpanded: true,
                   isDense: true,
-                  style: TextStyle(fontSize: 12, color: AppColors.gray700),
-                  icon: Icon(Iconsax.arrow_down_1, size: 16, color: AppColors.gray400),
+                  style: TextStyle(fontSize: 12, color: context.textSecondary),
+                  icon: Icon(Iconsax.arrow_down_1, size: 16, color: context.iconSubtle),
                   items: _statusOptions.map((opt) => DropdownMenuItem(
                     value: opt['value'],
                     child: Text(opt['label']!, style: const TextStyle(fontSize: 12)),

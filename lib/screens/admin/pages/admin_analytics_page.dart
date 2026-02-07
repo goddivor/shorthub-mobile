@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/theme/theme_extensions.dart';
 import '../../../providers/shorts_provider.dart';
 import '../../../widgets/common/loading_indicator.dart';
 import '../../../widgets/common/error_widget.dart';
@@ -28,7 +29,7 @@ class AdminAnalyticsPage extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // Status Distribution Pie Chart
-            _buildChartCard(
+            _buildChartCard(context,
               title: l10n.analyticsStatusDistribution,
               icon: Iconsax.chart,
               child: SizedBox(
@@ -39,7 +40,7 @@ class AdminAnalyticsPage extends ConsumerWidget {
             const SizedBox(height: 16),
 
             // Bar chart of status counts
-            _buildChartCard(
+            _buildChartCard(context,
               title: l10n.analyticsWeeklyActivity,
               icon: Iconsax.chart_2,
               child: SizedBox(
@@ -50,7 +51,7 @@ class AdminAnalyticsPage extends ConsumerWidget {
             const SizedBox(height: 16),
 
             // Completion funnel
-            _buildChartCard(
+            _buildChartCard(context,
               title: l10n.analyticsCompletionTrend,
               icon: Iconsax.trend_up,
               child: SizedBox(
@@ -113,12 +114,12 @@ class AdminAnalyticsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildChartCard({required String title, required IconData icon, required Widget child}) {
+  Widget _buildChartCard(BuildContext context, {required String title, required IconData icon, required Widget child}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -182,7 +183,7 @@ class _MetricCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: TextStyle(fontSize: 10, color: AppColors.gray600),
+              style: TextStyle(fontSize: 10, color: context.textTertiary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -219,7 +220,7 @@ class _StatusPieChart extends StatelessWidget {
 
     if (sections.isEmpty) {
       return Center(
-        child: Text(l10n.analyticsNoData, style: TextStyle(color: AppColors.gray400)),
+        child: Text(l10n.analyticsNoData, style: TextStyle(color: context.textHint)),
       );
     }
 
@@ -344,7 +345,7 @@ class _StatusBarChart extends StatelessWidget {
                     : data[index].label;
                 return SideTitleWidget(
                   meta: meta,
-                  child: Text(label, style: TextStyle(fontSize: 9, color: AppColors.gray500)),
+                  child: Text(label, style: TextStyle(fontSize: 9, color: context.textHint)),
                 );
               },
               reservedSize: 30,
@@ -358,7 +359,7 @@ class _StatusBarChart extends StatelessWidget {
                 if (value == 0) return const SizedBox.shrink();
                 return Text(
                   value.toInt().toString(),
-                  style: TextStyle(fontSize: 10, color: AppColors.gray400),
+                  style: TextStyle(fontSize: 10, color: context.textHint),
                 );
               },
             ),
@@ -371,7 +372,7 @@ class _StatusBarChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: maxY > 0 ? (maxY / 4).ceilToDouble().clamp(1, double.infinity) : 2,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.gray200,
+            color: context.borderColor,
             strokeWidth: 0.8,
           ),
         ),
@@ -431,7 +432,7 @@ class _CompletionLineChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: maxY > 0 ? (maxY / 4).ceilToDouble().clamp(1, double.infinity) : 2,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.gray200,
+            color: context.borderColor,
             strokeWidth: 0.8,
           ),
         ),
@@ -456,7 +457,7 @@ class _CompletionLineChart extends StatelessWidget {
                     : labels[index];
                 return SideTitleWidget(
                   meta: meta,
-                  child: Text(label, style: TextStyle(fontSize: 9, color: AppColors.gray500)),
+                  child: Text(label, style: TextStyle(fontSize: 9, color: context.textHint)),
                 );
               },
             ),
@@ -469,7 +470,7 @@ class _CompletionLineChart extends StatelessWidget {
                 if (value == 0) return const SizedBox.shrink();
                 return Text(
                   value.toInt().toString(),
-                  style: TextStyle(fontSize: 10, color: AppColors.gray400),
+                  style: TextStyle(fontSize: 10, color: context.textHint),
                 );
               },
             ),

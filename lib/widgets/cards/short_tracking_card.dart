@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 
 class ShortTrackingCard extends StatelessWidget {
@@ -28,7 +29,7 @@ class ShortTrackingCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         border: short.isLate
             ? Border.all(color: AppColors.error.withValues(alpha: 0.4), width: 1.5)
@@ -61,8 +62,8 @@ class ShortTrackingCard extends StatelessWidget {
                     errorBuilder: (_, __, ___) => Container(
                       width: 80,
                       height: 60,
-                      color: AppColors.gray200,
-                      child: Icon(Iconsax.video, color: AppColors.gray400, size: 24),
+                      color: context.borderColor,
+                      child: Icon(Iconsax.video, color: context.iconSubtle, size: 24),
                     ),
                   ),
                 ),
@@ -83,12 +84,12 @@ class ShortTrackingCard extends StatelessWidget {
                       // Channels
                       Row(
                         children: [
-                          Icon(Iconsax.video_circle, size: 12, color: AppColors.gray400),
+                          Icon(Iconsax.video_circle, size: 12, color: context.iconSubtle),
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
                               short.sourceChannel.channelName,
-                              style: TextStyle(fontSize: 11, color: AppColors.gray500),
+                              style: TextStyle(fontSize: 11, color: context.textHint),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -96,7 +97,7 @@ class ShortTrackingCard extends StatelessWidget {
                           if (short.targetChannel != null) ...[
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: Icon(Iconsax.arrow_right_3, size: 10, color: AppColors.gray400),
+                              child: Icon(Iconsax.arrow_right_3, size: 10, color: context.iconSubtle),
                             ),
                             Flexible(
                               child: Text(
@@ -161,11 +162,11 @@ class ShortTrackingCard extends StatelessWidget {
               child: Row(
                 children: [
                   if (short.assignedTo != null) ...[
-                    Icon(Iconsax.user, size: 12, color: AppColors.gray400),
+                    Icon(Iconsax.user, size: 12, color: context.iconSubtle),
                     const SizedBox(width: 4),
                     Text(
                       short.assignedTo!.username,
-                      style: TextStyle(fontSize: 11, color: AppColors.gray600),
+                      style: TextStyle(fontSize: 11, color: context.textTertiary),
                     ),
                   ],
                   if (short.assignedTo != null && short.deadline != null)
@@ -174,14 +175,14 @@ class ShortTrackingCard extends StatelessWidget {
                     Icon(
                       Iconsax.calendar_1,
                       size: 12,
-                      color: short.isLate ? AppColors.error : AppColors.gray400,
+                      color: short.isLate ? AppColors.error : context.iconSubtle,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       DateFormat('dd/MM/yyyy').format(short.deadline!),
                       style: TextStyle(
                         fontSize: 11,
-                        color: short.isLate ? AppColors.error : AppColors.gray600,
+                        color: short.isLate ? AppColors.error : context.textTertiary,
                         fontWeight: short.isLate ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
@@ -207,18 +208,18 @@ class ShortTrackingCard extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.gray50,
+                  color: context.subtleBg,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Iconsax.note_1, size: 12, color: AppColors.gray400),
+                    Icon(Iconsax.note_1, size: 12, color: context.iconSubtle),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         short.notes!,
-                        style: TextStyle(fontSize: 11, color: AppColors.gray600),
+                        style: TextStyle(fontSize: 11, color: context.textTertiary),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -280,7 +281,7 @@ class ShortTrackingCard extends StatelessWidget {
                 _buildActionButton(
                   label: 'Voir',
                   icon: Iconsax.eye,
-                  color: AppColors.gray600,
+                  color: context.textTertiary,
                   onTap: onView,
                 ),
                 // Validate + Reject (COMPLETED only)

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/theme/theme_extensions.dart';
 import '../../../providers/shorts_provider.dart';
 import '../../../widgets/common/loading_indicator.dart';
 
@@ -17,7 +18,7 @@ class AdminOverviewPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Stats Grid
-          _buildStatsGrid(ref),
+          _buildStatsGrid(context, ref),
           const SizedBox(height: 24),
 
           // Recent Activity
@@ -26,17 +27,17 @@ class AdminOverviewPage extends ConsumerWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.gray900,
+              color: context.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
-          _buildRecentActivity(),
+          _buildRecentActivity(context),
         ],
       ),
     );
   }
 
-  Widget _buildStatsGrid(WidgetRef ref) {
+  Widget _buildStatsGrid(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(shortsStatsProvider);
 
     return statsAsync.when(
@@ -49,24 +50,28 @@ class AdminOverviewPage extends ConsumerWidget {
         childAspectRatio: 1.3,
         children: [
           _buildStatCard(
+            context,
             'Total vidéos',
             stats.total.toString(),
             Iconsax.video,
             AppColors.primary,
           ),
           _buildStatCard(
+            context,
             'Roulées',
             stats.rolled.toString(),
             Iconsax.refresh,
             AppColors.statusRolled,
           ),
           _buildStatCard(
+            context,
             'Assignées',
             stats.assigned.toString(),
             Iconsax.user_tag,
             AppColors.statusAssigned,
           ),
           _buildStatCard(
+            context,
             'Publiées',
             stats.published.toString(),
             Iconsax.tick_circle,
@@ -84,11 +89,11 @@ class AdminOverviewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(BuildContext context, String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -115,7 +120,7 @@ class AdminOverviewPage extends ConsumerWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: AppColors.gray900,
+              color: context.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
@@ -124,7 +129,7 @@ class AdminOverviewPage extends ConsumerWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
-              color: AppColors.gray600,
+              color: context.textTertiary,
             ),
           ),
         ],
@@ -132,11 +137,11 @@ class AdminOverviewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecentActivity() {
+  Widget _buildRecentActivity(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Center(
@@ -145,14 +150,14 @@ class AdminOverviewPage extends ConsumerWidget {
             Icon(
               Iconsax.activity,
               size: 48,
-              color: AppColors.gray300,
+              color: context.iconSubtle,
             ),
             const SizedBox(height: 12),
             Text(
               'Aucune activité récente',
               style: TextStyle(
                 fontSize: 14,
-                color: AppColors.gray600,
+                color: context.textTertiary,
               ),
             ),
           ],

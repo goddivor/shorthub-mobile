@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
@@ -124,10 +125,10 @@ class CustomDrawer extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               l10n.navSettings,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gray500,
+                color: context.textHint,
                 letterSpacing: 1.2,
               ),
             ),
@@ -187,7 +188,7 @@ class CustomDrawer extends ConsumerWidget {
         ? AppColors.error
         : isActive
             ? AppColors.primary
-            : AppColors.gray700;
+            : context.iconColor;
 
     final backgroundColor = isActive
         ? AppColors.primary.withValues(alpha:0.1)
@@ -240,14 +241,14 @@ class CustomDrawer extends ConsumerWidget {
       child: SwitchListTile(
         secondary: Icon(
           isDark ? Iconsax.moon : Iconsax.sun_1,
-          color: AppColors.gray700,
+          color: context.iconColor,
           size: 24,
         ),
         title: Text(
           AppLocalizations.of(context)!.drawerDarkMode,
           style: TextStyle(
             fontSize: 15,
-            color: AppColors.gray700,
+            color: context.iconColor,
           ),
         ),
         value: isDark,
@@ -274,19 +275,19 @@ class CustomDrawer extends ConsumerWidget {
       child: SwitchListTile(
         secondary: Icon(
           Iconsax.language_square,
-          color: AppColors.gray700,
+          color: context.iconColor,
           size: 24,
         ),
         title: Text(
           AppLocalizations.of(context)!.drawerLanguage,
           style: TextStyle(
             fontSize: 15,
-            color: AppColors.gray700,
+            color: context.iconColor,
           ),
         ),
         subtitle: Text(
           isFrench ? 'Français' : 'English',
-          style: TextStyle(fontSize: 12, color: AppColors.gray400),
+          style: TextStyle(fontSize: 12, color: context.textHint),
         ),
         value: !isFrench,
         activeTrackColor: AppColors.primary,

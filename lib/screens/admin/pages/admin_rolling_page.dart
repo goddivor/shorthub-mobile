@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../config/theme/theme_extensions.dart';
 import '../../../core/models/source_channel.dart';
 import '../../../core/models/short.dart';
 import '../../../providers/shorts_provider.dart';
@@ -89,7 +90,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
                     children: [
                       Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
                       const SizedBox(height: 16),
-                      Text('Aucune chaine source', style: TextStyle(fontSize: 16, color: AppColors.gray600)),
+                      Text('Aucune chaine source', style: TextStyle(fontSize: 16, color: context.textTertiary)),
                     ],
                   ),
                 );
@@ -136,7 +137,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
     final stats = statsAsync.valueOrNull;
 
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -166,7 +167,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
 
   Widget _buildFilters() {
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,11 +198,11 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
           label,
           style: TextStyle(
             fontSize: 12,
-            color: selected ? Colors.white : AppColors.gray600,
+            color: selected ? Colors.white : context.textTertiary,
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
-        backgroundColor: selected ? AppColors.primary : AppColors.gray100,
+        backgroundColor: selected ? AppColors.primary : context.chipBg,
         padding: const EdgeInsets.symmetric(horizontal: 4),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
@@ -214,7 +215,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.cardBg,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -232,9 +233,9 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
               backgroundImage: channel.profileImageUrl != null
                   ? NetworkImage(channel.profileImageUrl!)
                   : null,
-              backgroundColor: AppColors.gray200,
+              backgroundColor: context.borderColor,
               child: channel.profileImageUrl == null
-                  ? Icon(Iconsax.video_circle, color: AppColors.gray400, size: 28)
+                  ? Icon(Iconsax.video_circle, color: context.iconSubtle, size: 28)
                   : null,
             ),
             const SizedBox(height: 10),
@@ -261,7 +262,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
               const SizedBox(height: 4),
               Text(
                 '${channel.totalVideos} videos',
-                style: TextStyle(fontSize: 11, color: AppColors.gray500),
+                style: TextStyle(fontSize: 11, color: context.textHint),
               ),
             ],
             const SizedBox(height: 8),

@@ -1,7 +1,7 @@
 // lib/widgets/common/search_filter_bar.dart
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 
 class SearchFilterBar extends StatelessWidget {
   final String hintText;
@@ -22,7 +22,7 @@ class SearchFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: context.cardBg,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
@@ -31,19 +31,19 @@ class SearchFilterBar extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: TextStyle(fontSize: 13, color: AppColors.gray400),
-                prefixIcon: Icon(Iconsax.search_normal, size: 18, color: AppColors.gray400),
+                hintStyle: TextStyle(fontSize: 13, color: context.iconSubtle),
+                prefixIcon: Icon(Iconsax.search_normal, size: 18, color: context.iconSubtle),
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: AppColors.gray200),
+                  borderSide: BorderSide(color: context.borderColor),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: AppColors.gray200),
+                  borderSide: BorderSide(color: context.borderColor),
                 ),
                 filled: true,
-                fillColor: AppColors.gray50,
+                fillColor: context.subtleBg,
                 isDense: true,
               ),
               style: const TextStyle(fontSize: 13),
@@ -57,17 +57,17 @@ class SearchFilterBar extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.gray200),
+                  border: Border.all(color: context.borderColor),
                   borderRadius: BorderRadius.circular(8),
-                  color: AppColors.gray50,
+                  color: context.subtleBg,
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: filterValue,
                     isExpanded: true,
                     isDense: true,
-                    style: TextStyle(fontSize: 12, color: AppColors.gray700),
-                    icon: Icon(Iconsax.arrow_down_1, size: 16, color: AppColors.gray400),
+                    style: TextStyle(fontSize: 12, color: context.textSecondary),
+                    icon: Icon(Iconsax.arrow_down_1, size: 16, color: context.iconSubtle),
                     items: filterOptions!.map((opt) => DropdownMenuItem(
                       value: opt['value'],
                       child: Text(opt['label']!, style: const TextStyle(fontSize: 12)),

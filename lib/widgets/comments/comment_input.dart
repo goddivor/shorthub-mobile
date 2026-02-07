@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/theme_extensions.dart';
 import '../../l10n/app_localizations.dart';
 
 class CommentInput extends StatefulWidget {
@@ -48,22 +49,22 @@ class _CommentInputState extends State<CommentInput> {
             onSubmitted: (_) => _submit(),
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.commentAddPlaceholder,
-              hintStyle: TextStyle(fontSize: 13, color: AppColors.gray400),
+              hintStyle: TextStyle(fontSize: 13, color: context.textHint),
               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: AppColors.gray200),
+                borderSide: BorderSide(color: context.borderColor),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(color: AppColors.gray200),
+                borderSide: BorderSide(color: context.borderColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
                 borderSide: BorderSide(color: AppColors.primary),
               ),
               filled: true,
-              fillColor: AppColors.gray50,
+              fillColor: context.subtleBg,
             ),
           ),
         ),
