@@ -92,7 +92,7 @@ class CustomDrawer extends ConsumerWidget {
             user.email ?? AppLocalizations.of(context)!.drawerNoEmail,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha:0.8),
             ),
           ),
           const SizedBox(height: 8),
@@ -101,7 +101,7 @@ class CustomDrawer extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha:0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -390,7 +390,7 @@ class CustomDrawer extends ConsumerWidget {
             : AppColors.gray700;
 
     final backgroundColor = isActive
-        ? AppColors.primary.withOpacity(0.1)
+        ? AppColors.primary.withValues(alpha:0.1)
         : Colors.transparent;
 
     return Container(

@@ -201,7 +201,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
 
                 // Role
                 DropdownButtonFormField<String>(
-                  value: selectedRole,
+                  initialValue: selectedRole,
                   decoration: const InputDecoration(
                     labelText: 'Rôle',
                     border: OutlineInputBorder(),
@@ -428,7 +428,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(

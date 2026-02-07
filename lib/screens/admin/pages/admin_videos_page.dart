@@ -82,7 +82,7 @@ class AdminVideosPage extends ConsumerWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.getStatusColor(short.status)
-                          .withOpacity(0.1),
+                          .withValues(alpha:0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(

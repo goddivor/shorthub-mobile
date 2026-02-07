@@ -71,7 +71,7 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedContentType,
+                  initialValue: selectedContentType,
                   decoration: const InputDecoration(
                     labelText: 'Type de contenu',
                     border: OutlineInputBorder(),
@@ -211,7 +211,7 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedContentType,
+                  initialValue: selectedContentType,
                   decoration: const InputDecoration(
                     labelText: 'Type de contenu',
                     border: OutlineInputBorder(),
@@ -564,7 +564,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selectedContentType,
+                initialValue: selectedContentType,
                 decoration: const InputDecoration(
                   labelText: 'Type de contenu',
                   border: OutlineInputBorder(),
@@ -606,7 +606,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                           contentType: selectedContentType,
                         );
 
-                        if (mounted) {
+                        if (context.mounted) {
                           Navigator.pop(context);
                           ref.invalidate(sourceChannelsProvider);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -617,7 +617,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                           );
                         }
                       } catch (e) {
-                        if (mounted) {
+                        if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Erreur: ${e.toString()}'),
@@ -626,7 +626,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                           );
                         }
                       } finally {
-                        if (mounted) {
+                        if (context.mounted) {
                           setState(() => isLoading = false);
                         }
                       }
@@ -672,7 +672,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -704,7 +704,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                 final service = ref.read(channelsServiceProvider);
                 await service.deleteSourceChannel(channel.id);
 
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pop(context);
                   ref.invalidate(sourceChannelsProvider);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -715,7 +715,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                   );
                 }
               } catch (e) {
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Erreur: ${e.toString()}'),
@@ -756,7 +756,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -788,7 +788,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                 final service = ref.read(channelsServiceProvider);
                 await service.deleteAdminChannel(channel.id);
 
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pop(context);
                   ref.invalidate(adminChannelsProvider);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -799,7 +799,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                   );
                 }
               } catch (e) {
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Erreur: ${e.toString()}'),

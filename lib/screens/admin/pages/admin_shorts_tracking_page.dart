@@ -103,6 +103,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                 onPressed: isLoading
                     ? null
                     : () async {
+                        final messenger = ScaffoldMessenger.of(context);
                         setDialogState(() => isLoading = true);
                         try {
                           await ref.read(shortsServiceProvider).publishShort(short.id);
@@ -110,20 +111,18 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                           ref.invalidate(allShortsProvider);
                           if (ctx.mounted) {
                             Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Short publie avec succes !'),
-                                backgroundColor: AppColors.success,
-                              ),
-                            );
                           }
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: const Text('Short publie avec succes !'),
+                              backgroundColor: AppColors.success,
+                            ),
+                          );
                         } catch (e) {
                           setDialogState(() => isLoading = false);
-                          if (ctx.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
-                            );
-                          }
+                          messenger.showSnackBar(
+                            SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+                          );
                         }
                       },
                 style: ElevatedButton.styleFrom(

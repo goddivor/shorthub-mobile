@@ -1,6 +1,5 @@
 // lib/core/graphql/subscriptions.dart
-
-/// GraphQL Subscriptions
+// GraphQL Subscriptions
 
 // ==================== Notifications ====================
 
