@@ -185,6 +185,16 @@ class ShortsService {
     return updateShortStatus(shortId, 'REJECTED', adminFeedback: reason);
   }
 
+  /// Start working on a short (videaste action)
+  Future<Short> startWorkOnShort(String shortId) async {
+    return updateShortStatus(shortId, 'IN_PROGRESS');
+  }
+
+  /// Mark a short as completed (videaste action)
+  Future<Short> completeShort(String shortId) async {
+    return updateShortStatus(shortId, 'COMPLETED');
+  }
+
   /// Delete a short
   Future<bool> deleteShort(String shortId) async {
     AppLogger.graphqlMutation('deleteShort', {'shortId': shortId});
