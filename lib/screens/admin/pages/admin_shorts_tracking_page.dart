@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../core/models/short.dart';
 import '../../../providers/shorts_provider.dart';
@@ -151,7 +150,6 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
 
     return Column(
       children: [
-        _buildHeader(),
         _buildStatsRow(statsAsync),
         _buildSearchAndFilter(),
         Expanded(
@@ -205,41 +203,6 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.secondary, Colors.deepPurple],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(PhosphorIcons.listChecks(PhosphorIconsStyle.fill), color: Colors.white, size: 28),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Suivi des Shorts',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                Text(
-                  'Suivre et gerer le workflow des shorts',
-                  style: TextStyle(fontSize: 12, color: Colors.white70),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

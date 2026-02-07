@@ -76,7 +76,6 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
 
     return Column(
       children: [
-        _buildHeader(),
         _buildStatsRow(statsAsync),
         _buildFilters(),
         Expanded(
@@ -130,41 +129,6 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.primary, AppColors.secondary],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(PhosphorIcons.filmSlate(PhosphorIconsStyle.fill), color: Colors.white, size: 28),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Rolling & Assignation',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                Text(
-                  'Generer et assigner des shorts',
-                  style: TextStyle(fontSize: 12, color: Colors.white70),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
