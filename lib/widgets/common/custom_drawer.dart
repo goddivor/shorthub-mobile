@@ -2,13 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../providers/navigation_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -33,8 +31,6 @@ class CustomDrawer extends ConsumerWidget {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                _buildNavigationSection(context, ref),
-                const Divider(height: 1),
                 _buildSettingsSection(context, ref),
               ],
             ),
@@ -116,202 +112,6 @@ class CustomDrawer extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildNavigationSection(BuildContext context, WidgetRef ref) {
-    final currentRoute = ModalRoute.of(context)?.settings.name;
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              AppLocalizations.of(context)!.navNavigation,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: AppColors.gray500,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-        ),
-
-        // Dashboard items based on role
-        ..._buildRoleBasedNavigation(context, currentRoute, ref),
-      ],
-    );
-  }
-
-  List<Widget> _buildRoleBasedNavigation(BuildContext context, String? currentRoute, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (user.role?.toUpperCase() ?? '') {
-      case 'ADMIN':
-        final adminTab = ref.watch(adminTabIndexProvider);
-        final isOnAdmin = currentRoute == AppRoutes.adminDashboard;
-        return [
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: l10n.navTracking,
-            route: AppRoutes.adminDashboard,
-            isActive: isOnAdmin && adminTab == 0,
-            onTap: () {
-              ref.read(adminTabIndexProvider.notifier).state = 0;
-              Navigator.pop(context);
-              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
-            title: l10n.navRolling,
-            route: AppRoutes.adminDashboard,
-            isActive: isOnAdmin && adminTab == 1,
-            onTap: () {
-              ref.read(adminTabIndexProvider.notifier).state = 1;
-              Navigator.pop(context);
-              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
-            title: l10n.navChannels,
-            route: AppRoutes.adminDashboard,
-            isActive: isOnAdmin && adminTab == 2,
-            onTap: () {
-              ref.read(adminTabIndexProvider.notifier).state = 2;
-              Navigator.pop(context);
-              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.users(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.users(PhosphorIconsStyle.fill),
-            title: l10n.navTeam,
-            route: AppRoutes.adminDashboard,
-            isActive: isOnAdmin && adminTab == 3,
-            onTap: () {
-              ref.read(adminTabIndexProvider.notifier).state = 3;
-              Navigator.pop(context);
-              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.chartBar(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.chartBar(PhosphorIconsStyle.fill),
-            title: l10n.navAnalytics,
-            route: AppRoutes.adminDashboard,
-            isActive: isOnAdmin && adminTab == 4,
-            onTap: () {
-              ref.read(adminTabIndexProvider.notifier).state = 4;
-              Navigator.pop(context);
-              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
-            },
-          ),
-        ];
-
-      case 'VIDEASTE':
-        final videasteTab = ref.watch(videasteTabIndexProvider);
-        final isOnVideaste = currentRoute == AppRoutes.videasteDashboard;
-        return [
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: l10n.navAssigned,
-            route: AppRoutes.videasteDashboard,
-            isActive: isOnVideaste && videasteTab == 0,
-            onTap: () {
-              ref.read(videasteTabIndexProvider.notifier).state = 0;
-              Navigator.pop(context);
-              if (!isOnVideaste) Navigator.pushReplacementNamed(context, AppRoutes.videasteDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.clockCounterClockwise(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.clockCounterClockwise(PhosphorIconsStyle.fill),
-            title: l10n.navInProgress,
-            route: AppRoutes.videasteDashboard,
-            isActive: isOnVideaste && videasteTab == 1,
-            onTap: () {
-              ref.read(videasteTabIndexProvider.notifier).state = 1;
-              Navigator.pop(context);
-              if (!isOnVideaste) Navigator.pushReplacementNamed(context, AppRoutes.videasteDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.checkCircle(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-            title: l10n.navCompleted,
-            route: AppRoutes.videasteDashboard,
-            isActive: isOnVideaste && videasteTab == 2,
-            onTap: () {
-              ref.read(videasteTabIndexProvider.notifier).state = 2;
-              Navigator.pop(context);
-              if (!isOnVideaste) Navigator.pushReplacementNamed(context, AppRoutes.videasteDashboard);
-            },
-          ),
-        ];
-
-      case 'ASSISTANT':
-        final assistantTab = ref.watch(assistantTabIndexProvider);
-        final isOnAssistant = currentRoute == AppRoutes.assistantDashboard;
-        return [
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.clipboardText(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.clipboardText(PhosphorIconsStyle.fill),
-            title: l10n.navToValidate,
-            route: AppRoutes.assistantDashboard,
-            isActive: isOnAssistant && assistantTab == 0,
-            onTap: () {
-              ref.read(assistantTabIndexProvider.notifier).state = 0;
-              Navigator.pop(context);
-              if (!isOnAssistant) Navigator.pushReplacementNamed(context, AppRoutes.assistantDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.checkCircle(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-            title: l10n.navValidated,
-            route: AppRoutes.assistantDashboard,
-            isActive: isOnAssistant && assistantTab == 1,
-            onTap: () {
-              ref.read(assistantTabIndexProvider.notifier).state = 1;
-              Navigator.pop(context);
-              if (!isOnAssistant) Navigator.pushReplacementNamed(context, AppRoutes.assistantDashboard);
-            },
-          ),
-          _buildDrawerItem(
-            context: context,
-            icon: PhosphorIcons.xCircle(PhosphorIconsStyle.regular),
-            activeIcon: PhosphorIcons.xCircle(PhosphorIconsStyle.fill),
-            title: l10n.navRejected,
-            route: AppRoutes.assistantDashboard,
-            isActive: isOnAssistant && assistantTab == 2,
-            onTap: () {
-              ref.read(assistantTabIndexProvider.notifier).state = 2;
-              Navigator.pop(context);
-              if (!isOnAssistant) Navigator.pushReplacementNamed(context, AppRoutes.assistantDashboard);
-            },
-          ),
-        ];
-
-      default:
-        return [];
-    }
   }
 
   Widget _buildSettingsSection(BuildContext context, WidgetRef ref) {
