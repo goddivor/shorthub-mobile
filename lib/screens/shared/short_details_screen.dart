@@ -12,6 +12,8 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/modals/validate_short_modal.dart';
 import '../../widgets/modals/reject_short_modal.dart';
+import '../../widgets/comments/comment_list.dart';
+import '../../widgets/comments/comment_input.dart';
 
 class ShortDetailsScreen extends ConsumerWidget {
   final String shortId;
@@ -293,6 +295,25 @@ class _ShortDetailsBody extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                 ],
+
+                // Comments
+                _buildSection(
+                  title: 'Commentaires (${short.comments.length})',
+                  icon: Iconsax.message,
+                  child: Column(
+                    children: [
+                      CommentList(comments: short.comments),
+                      const SizedBox(height: 8),
+                      CommentInput(
+                        onSubmit: (comment) async {
+                          await ref.read(shortsServiceProvider).createComment(short.id, comment);
+                          ref.invalidate(shortByIdProvider(short.id));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
 
                 // Action buttons
                 _buildActions(context, ref),

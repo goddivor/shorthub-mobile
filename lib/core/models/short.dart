@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'source_channel.dart';
 import 'admin_channel.dart';
 import 'user.dart';
+import 'short_comment.dart';
 
 part 'short.g.dart';
 
@@ -42,6 +43,9 @@ class Short {
   final int? fileSize;
   final String? mimeType;
 
+  // Comments
+  final List<ShortComment> comments;
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -77,6 +81,7 @@ class Short {
     this.fileName,
     this.fileSize,
     this.mimeType,
+    this.comments = const [],
     required this.createdAt,
     required this.updatedAt,
   });

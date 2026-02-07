@@ -1,6 +1,7 @@
 // lib/core/services/shorts_service.dart
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../models/short.dart';
+import '../models/short_comment.dart';
 import '../graphql/graphql_client.dart';
 import '../graphql/queries.dart';
 import '../graphql/mutations.dart';
@@ -318,5 +319,30 @@ class ShortsService {
     AppLogger.graphqlSuccess('deleteShort', 'Short deleted successfully');
 
     return result.data!['deleteShort'] == true;
+  }
+
+  /// Create a comment on a short
+  Future<ShortComment> createComment(String shortId, String comment) async {
+    AppLogger.graphqlMutation('createShortComment', {'shortId': shortId});
+
+    final MutationOptions options = MutationOptions(
+      document: gql(createShortCommentMutation),
+      variables: {
+        'input': {
+          'shortId': shortId,
+          'comment': comment,
+        },
+      },
+    );
+
+    final result = await _client.mutate(options);
+
+    if (result.hasException) {
+      AppLogger.graphqlError('createShortComment', result.exception);
+      throw Exception(result.exception.toString());
+    }
+
+    AppLogger.graphqlSuccess('createShortComment', 'Comment created');
+    return ShortComment.fromJson(result.data!['createShortComment']);
   }
 }

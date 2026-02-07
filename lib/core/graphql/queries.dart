@@ -150,6 +150,16 @@ const String shortQuery = r'''
       fileName
       fileSize
       mimeType
+      comments {
+        id
+        comment
+        author {
+          id
+          username
+          profileImage
+        }
+        createdAt
+      }
       createdAt
       updatedAt
     }

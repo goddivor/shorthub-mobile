@@ -62,6 +62,10 @@ Short _$ShortFromJson(Map<String, dynamic> json) => Short(
       fileName: json['fileName'] as String?,
       fileSize: (json['fileSize'] as num?)?.toInt(),
       mimeType: json['mimeType'] as String?,
+      comments: (json['comments'] as List<dynamic>?)
+              ?.map((e) => ShortComment.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
@@ -98,6 +102,7 @@ Map<String, dynamic> _$ShortToJson(Short instance) => <String, dynamic>{
       'fileName': instance.fileName,
       'fileSize': instance.fileSize,
       'mimeType': instance.mimeType,
+      'comments': instance.comments,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
     };
