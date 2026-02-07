@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
 
 import 'app.dart';
 import 'core/graphql/graphql_client.dart';
 import 'core/services/storage_service.dart';
+import 'core/services/push_notification_service.dart';
 
 final logger = Logger();
 
@@ -35,6 +38,16 @@ void main() async {
     // Initialize GraphQL client
     await GraphQLClientService.initialize();
     logger.i('✅ GraphQL client initialized');
+
+    // Initialize Firebase & Push Notifications
+    try {
+      await Firebase.initializeApp();
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+      await PushNotificationService().initialize();
+      logger.i('✅ Firebase & push notifications initialized');
+    } catch (e) {
+      logger.w('⚠️ Firebase init skipped (configure google-services.json): $e');
+    }
 
     logger.i('🚀 ShortHub app starting...');
   } catch (e, stackTrace) {
