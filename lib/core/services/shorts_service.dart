@@ -146,24 +146,21 @@ class ShortsService {
   Future<Short> updateShortStatus(
     String shortId,
     String status, {
-    String? driveFileUrl,
-    String? fileName,
+    String? adminFeedback,
+    bool? deleteFile,
   }) async {
-    AppLogger.graphqlMutation('updateShortStatus', {
+    final input = <String, dynamic>{
       'shortId': shortId,
       'status': status,
-      if (driveFileUrl != null) 'driveFileUrl': driveFileUrl,
-      if (fileName != null) 'fileName': fileName,
-    });
+      if (adminFeedback != null) 'adminFeedback': adminFeedback,
+      if (deleteFile != null) 'deleteFile': deleteFile,
+    };
+
+    AppLogger.graphqlMutation('updateShortStatus', input);
 
     final MutationOptions options = MutationOptions(
       document: gql(updateShortStatusMutation),
-      variables: {
-        'shortId': shortId,
-        'status': status,
-        if (driveFileUrl != null) 'driveFileUrl': driveFileUrl,
-        if (fileName != null) 'fileName': fileName,
-      },
+      variables: {'input': input},
     );
 
     final result = await _client.mutate(options);
@@ -179,59 +176,13 @@ class ShortsService {
   }
 
   /// Validate a short (assistant action)
-  Future<Short> validateShort(String shortId) async {
-    AppLogger.graphqlMutation('validateShort', {
-      'shortId': shortId,
-      'status': 'VALIDATED',
-    });
-
-    final MutationOptions options = MutationOptions(
-      document: gql(updateShortStatusMutation),
-      variables: {
-        'shortId': shortId,
-        'status': 'VALIDATED',
-      },
-    );
-
-    final result = await _client.mutate(options);
-
-    if (result.hasException) {
-      AppLogger.graphqlError('validateShort', result.exception);
-      throw Exception(result.exception.toString());
-    }
-
-    AppLogger.graphqlSuccess('validateShort', 'Short validated successfully');
-
-    return Short.fromJson(result.data!['updateShortStatus']);
+  Future<Short> validateShort(String shortId, {String? feedback}) async {
+    return updateShortStatus(shortId, 'VALIDATED', adminFeedback: feedback);
   }
 
   /// Reject a short (assistant action)
   Future<Short> rejectShort(String shortId, String reason) async {
-    AppLogger.graphqlMutation('rejectShort', {
-      'shortId': shortId,
-      'status': 'REJECTED',
-      'rejectionReason': reason,
-    });
-
-    final MutationOptions options = MutationOptions(
-      document: gql(updateShortStatusMutation),
-      variables: {
-        'shortId': shortId,
-        'status': 'REJECTED',
-        'rejectionReason': reason,
-      },
-    );
-
-    final result = await _client.mutate(options);
-
-    if (result.hasException) {
-      AppLogger.graphqlError('rejectShort', result.exception);
-      throw Exception(result.exception.toString());
-    }
-
-    AppLogger.graphqlSuccess('rejectShort', 'Short rejected with reason: $reason');
-
-    return Short.fromJson(result.data!['updateShortStatus']);
+    return updateShortStatus(shortId, 'REJECTED', adminFeedback: reason);
   }
 
   /// Delete a short
