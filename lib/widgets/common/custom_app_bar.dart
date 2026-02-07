@@ -1,10 +1,13 @@
 // lib/widgets/common/custom_app_bar.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
+import '../../providers/notifications_provider.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final User user;
   final String? title;
   final VoidCallback? onNotificationTap;
@@ -22,7 +25,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(70);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unreadAsync = ref.watch(unreadNotificationsCountProvider);
+    final unreadCount = unreadAsync.valueOrNull ?? 0;
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -48,40 +54,34 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 size: 24,
               ),
               onPressed: onNotificationTap ?? () {
-                // TODO: Navigate to notifications
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Notifications à venir'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
+                Navigator.pushNamed(context, AppRoutes.notifications);
               },
             ),
-            // Badge pour les notifications non lues
-            Positioned(
-              right: 8,
-              top: 8,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: AppColors.error,
-                  shape: BoxShape.circle,
-                ),
-                constraints: const BoxConstraints(
-                  minWidth: 16,
-                  minHeight: 16,
-                ),
-                child: const Text(
-                  '3',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+            if (unreadCount > 0)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: AppColors.error,
+                    shape: BoxShape.circle,
                   ),
-                  textAlign: TextAlign.center,
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    unreadCount > 99 ? '99+' : '$unreadCount',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
         const SizedBox(width: 8),
@@ -91,12 +91,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 16),
           child: GestureDetector(
             onTap: onAvatarTap ?? () {
-              // Open end drawer (menu from right)
               Scaffold.of(context).openEndDrawer();
             },
             child: CircleAvatar(
               radius: 20,
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
               backgroundImage: user.profileImage != null && user.profileImage!.isNotEmpty
                   ? NetworkImage(user.profileImage!)
                   : null,
