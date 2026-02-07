@@ -317,16 +317,11 @@ class CustomDrawer extends ConsumerWidget {
           icon: Iconsax.user,
           activeIcon: Iconsax.user,
           title: 'Mon profil',
-          route: '/profile', // TODO: Add route
+          route: AppRoutes.profile,
           isActive: false,
           onTap: () {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Page profil à venir'),
-                duration: Duration(seconds: 2),
-              ),
-            );
+            Navigator.pushNamed(context, AppRoutes.profile);
           },
         ),
 
