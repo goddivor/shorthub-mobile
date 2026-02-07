@@ -14,6 +14,7 @@ import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
 import '../../widgets/common/search_filter_bar.dart';
 import '../../config/routes/app_routes.dart';
+import '../../providers/navigation_provider.dart';
 
 class VideasteDashboardScreen extends ConsumerStatefulWidget {
   const VideasteDashboardScreen({super.key});
@@ -23,7 +24,6 @@ class VideasteDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScreen> {
-  int _selectedTabIndex = 0;
   String _searchQuery = '';
 
   @override
@@ -160,11 +160,12 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
   }
 
   Widget _buildTab(String label, int index) {
-    final isSelected = _selectedTabIndex == index;
+    final selectedTabIndex = ref.watch(videasteTabIndexProvider);
+    final isSelected = selectedTabIndex == index;
 
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedTabIndex = index),
+        onTap: () => ref.read(videasteTabIndexProvider.notifier).state = index,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
@@ -190,7 +191,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
   }
 
   Widget _buildTabContent() {
-    switch (_selectedTabIndex) {
+    switch (ref.watch(videasteTabIndexProvider)) {
       case 0:
         return _buildAssignedVideos();
       case 1:
@@ -248,23 +249,34 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                 s.sourceChannel.channelName.toLowerCase().contains(query);
           }).toList();
 
-    if (videos.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
-            const SizedBox(height: 16),
-            Text(emptyMessage, style: TextStyle(fontSize: 16, color: AppColors.gray600)),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: videos.length,
-      itemBuilder: (context, index) => _buildVideoCard(videos[index]),
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(assignedShortsProvider);
+        ref.invalidate(inProgressShortsProvider);
+        ref.invalidate(completedShortsProvider);
+      },
+      child: videos.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                const SizedBox(height: 120),
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
+                      const SizedBox(height: 16),
+                      Text(emptyMessage, style: TextStyle(fontSize: 16, color: AppColors.gray600)),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: videos.length,
+              itemBuilder: (context, index) => _buildVideoCard(videos[index]),
+            ),
     );
   }
 
@@ -430,7 +442,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
   }
 
   Widget _buildActionButtons(Short short) {
-    switch (_selectedTabIndex) {
+    switch (ref.watch(videasteTabIndexProvider)) {
       case 0: // Assigned
         return Row(
           children: [

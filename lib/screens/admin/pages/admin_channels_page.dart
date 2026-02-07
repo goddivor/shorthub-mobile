@@ -388,69 +388,65 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
             ? allChannels
             : allChannels.where((c) => c.channelName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
 
-        if (channels.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Iconsax.video_circle,
-                  size: 64,
-                  color: AppColors.gray300,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal source',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.gray600,
-                  ),
-                ),
-                if (_searchQuery.isEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'Ajoutez un canal pour commencer',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.gray500,
+        return RefreshIndicator(
+          onRefresh: () async => ref.invalidate(sourceChannelsProvider),
+          child: channels.isEmpty
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    const SizedBox(height: 120),
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Iconsax.video_circle, size: 64, color: AppColors.gray300),
+                          const SizedBox(height: 16),
+                          Text(
+                            _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal source',
+                            style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                          ),
+                          if (_searchQuery.isEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Ajoutez un canal pour commencer',
+                              style: TextStyle(fontSize: 14, color: AppColors.gray500),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: channels.length,
-          itemBuilder: (context, index) {
-            final channel = channels[index];
-            return ChannelCard(
-              id: channel.id,
-              channelId: channel.channelId,
-              channelName: channel.channelName,
-              profileImageUrl: channel.profileImageUrl,
-              contentType: channel.contentType,
-              totalVideos: channel.totalVideos,
-              isSourceChannel: true,
-              onTap: () {
-                // TODO: Open channel details
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Canal: ${channel.channelName}'),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              onEdit: () {
-                _showEditSourceChannelDialog(channel);
-              },
-              onDelete: () {
-                _showDeleteSourceChannelDialog(channel);
-              },
-            );
-          },
+                  ],
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: channels.length,
+                  itemBuilder: (context, index) {
+                    final channel = channels[index];
+                    return ChannelCard(
+                      id: channel.id,
+                      channelId: channel.channelId,
+                      channelName: channel.channelName,
+                      profileImageUrl: channel.profileImageUrl,
+                      contentType: channel.contentType,
+                      totalVideos: channel.totalVideos,
+                      isSourceChannel: true,
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Canal: ${channel.channelName}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      onEdit: () {
+                        _showEditSourceChannelDialog(channel);
+                      },
+                      onDelete: () {
+                        _showDeleteSourceChannelDialog(channel);
+                      },
+                    );
+                  },
+                ),
         );
       },
       loading: () => const LoadingIndicator(message: 'Chargement des canaux...'),
@@ -470,67 +466,63 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
             ? allChannels
             : allChannels.where((c) => c.channelName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
 
-        if (channels.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Iconsax.video_circle,
-                  size: 64,
-                  color: AppColors.gray300,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal de publication',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.gray600,
-                  ),
-                ),
-                if (_searchQuery.isEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'Ajoutez un canal pour publier',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.gray500,
+        return RefreshIndicator(
+          onRefresh: () async => ref.invalidate(adminChannelsProvider),
+          child: channels.isEmpty
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    const SizedBox(height: 120),
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Iconsax.video_circle, size: 64, color: AppColors.gray300),
+                          const SizedBox(height: 16),
+                          Text(
+                            _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal de publication',
+                            style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                          ),
+                          if (_searchQuery.isEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Ajoutez un canal pour publier',
+                              style: TextStyle(fontSize: 14, color: AppColors.gray500),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: channels.length,
-          itemBuilder: (context, index) {
-            final channel = channels[index];
-            return ChannelCard(
-              id: channel.id,
-              channelId: channel.channelId,
-              channelName: channel.channelName,
-              profileImageUrl: channel.profileImageUrl,
-              contentType: channel.contentType,
-              totalVideos: channel.totalVideos,
-              subscriberCount: channel.subscriberCount,
-              isSourceChannel: false,
-              onTap: () {
-                // TODO: Open channel details
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Canal: ${channel.channelName}'),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              onDelete: () {
-                _showDeleteAdminChannelDialog(channel);
-              },
-            );
-          },
+                  ],
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: channels.length,
+                  itemBuilder: (context, index) {
+                    final channel = channels[index];
+                    return ChannelCard(
+                      id: channel.id,
+                      channelId: channel.channelId,
+                      channelName: channel.channelName,
+                      profileImageUrl: channel.profileImageUrl,
+                      contentType: channel.contentType,
+                      totalVideos: channel.totalVideos,
+                      subscriberCount: channel.subscriberCount,
+                      isSourceChannel: false,
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Canal: ${channel.channelName}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      onDelete: () {
+                        _showDeleteAdminChannelDialog(channel);
+                      },
+                    );
+                  },
+                ),
         );
       },
       loading: () => const LoadingIndicator(message: 'Chargement des canaux...'),

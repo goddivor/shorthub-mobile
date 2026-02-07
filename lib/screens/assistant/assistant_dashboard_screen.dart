@@ -12,6 +12,7 @@ import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
 import '../../widgets/common/search_filter_bar.dart';
 import '../../config/routes/app_routes.dart';
+import '../../providers/navigation_provider.dart';
 
 class AssistantDashboardScreen extends ConsumerStatefulWidget {
   const AssistantDashboardScreen({super.key});
@@ -21,7 +22,6 @@ class AssistantDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScreen> {
-  int _selectedTabIndex = 0;
   String _searchQuery = '';
 
   @override
@@ -162,14 +162,13 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
   }
 
   Widget _buildTab(String label, int index) {
-    final isSelected = _selectedTabIndex == index;
+    final selectedTabIndex = ref.watch(assistantTabIndexProvider);
+    final isSelected = selectedTabIndex == index;
 
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          setState(() {
-            _selectedTabIndex = index;
-          });
+          ref.read(assistantTabIndexProvider.notifier).state = index;
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -196,7 +195,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
   }
 
   Widget _buildTabContent() {
-    switch (_selectedTabIndex) {
+    switch (ref.watch(assistantTabIndexProvider)) {
       case 0:
         return _buildPendingVideos();
       case 1:
@@ -258,40 +257,44 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                 (s.assignedTo?.username ?? '').toLowerCase().contains(query);
           }).toList();
 
-    if (videos.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Iconsax.video_slash,
-              size: 64,
-              color: AppColors.gray300,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              emptyMessage,
-              style: TextStyle(
-                fontSize: 16,
-                color: AppColors.gray600,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: videos.length,
-      itemBuilder: (context, index) {
-        return _buildVideoCard(videos[index]);
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(pendingValidationShortsProvider);
+        ref.invalidate(validatedShortsProvider);
+        ref.invalidate(rejectedShortsProvider);
       },
+      child: videos.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                const SizedBox(height: 120),
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
+                      const SizedBox(height: 16),
+                      Text(
+                        emptyMessage,
+                        style: TextStyle(fontSize: 16, color: AppColors.gray600),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: videos.length,
+              itemBuilder: (context, index) {
+                return _buildVideoCard(videos[index]);
+              },
+            ),
     );
   }
 
   Widget _buildVideoCard(Short short) {
-    final bool isPending = _selectedTabIndex == 0;
+    final bool isPending = ref.watch(assistantTabIndexProvider) == 0;
     final thumbnailUrl = 'https://img.youtube.com/vi/${short.videoId}/mqdefault.jpg';
 
     return Container(
@@ -394,12 +397,12 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
               width: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: _selectedTabIndex == 2
+                color: ref.watch(assistantTabIndexProvider) == 2
                     ? AppColors.error.withValues(alpha: 0.05)
                     : AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: _selectedTabIndex == 2
+                  color: ref.watch(assistantTabIndexProvider) == 2
                       ? AppColors.error.withValues(alpha: 0.2)
                       : AppColors.primary.withValues(alpha: 0.2),
                 ),
@@ -408,7 +411,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                 short.adminFeedback!,
                 style: TextStyle(
                   fontSize: 13,
-                  color: _selectedTabIndex == 2 ? AppColors.error : AppColors.primary,
+                  color: ref.watch(assistantTabIndexProvider) == 2 ? AppColors.error : AppColors.primary,
                 ),
               ),
             ),
