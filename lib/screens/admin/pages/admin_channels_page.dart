@@ -11,6 +11,7 @@ import '../../../widgets/cards/channel_card.dart';
 import '../../../core/models/source_channel.dart';
 import '../../../core/models/admin_channel.dart';
 import '../../../widgets/common/search_filter_bar.dart';
+import '../../../l10n/app_localizations.dart';
 
 class AdminChannelsPage extends ConsumerStatefulWidget {
   final Function(int)? onTabChanged;
@@ -20,7 +21,7 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
   @override
   ConsumerState<AdminChannelsPage> createState() => _AdminChannelsPageState();
 
-  // Méthodes statiques pour afficher les dialogs
+  // Methodes statiques pour afficher les dialogs
   static void showAddSourceChannelDialog(BuildContext context, WidgetRef ref) {
     _showAddSourceChannelDialog(context, ref);
   }
@@ -38,136 +39,139 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Iconsax.add_circle, color: AppColors.primary),
-              const SizedBox(width: 12),
-              const Text('Ajouter un canal source'),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Row(
               children: [
-                Text(
-                  'Collez l\'URL d\'une chaîne YouTube, d\'une vidéo ou d\'un short',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: context.textTertiary,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: youtubeUrlController,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                    labelText: 'URL YouTube',
-                    hintText: 'https://youtube.com/@nomdelachaine\nou\nhttps://youtube.com/watch?v=...',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.link),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: selectedContentType,
-                  decoration: const InputDecoration(
-                    labelText: 'Type de contenu',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.category),
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 'VA_SANS_EDIT', child: Text('VA Sans Edit')),
-                    DropdownMenuItem(value: 'VA_AVEC_EDIT', child: Text('VA Avec Edit')),
-                    DropdownMenuItem(value: 'VF_SANS_EDIT', child: Text('VF Sans Edit')),
-                    DropdownMenuItem(value: 'VF_AVEC_EDIT', child: Text('VF Avec Edit')),
-                    DropdownMenuItem(value: 'VO_SANS_EDIT', child: Text('VO Sans Edit')),
-                    DropdownMenuItem(value: 'VO_AVEC_EDIT', child: Text('VO Avec Edit')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedContentType = value;
-                      });
-                    }
-                  },
-                ),
+                Icon(Iconsax.add_circle, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Text(l10n.channelAddSource),
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: isLoading ? null : () => Navigator.pop(context),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      if (youtubeUrlController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('L\'URL YouTube est requise'),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
-                        return;
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.channelUrlHelp,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: context.textTertiary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: youtubeUrlController,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: l10n.channelUrlLabel,
+                      hintText: '${l10n.channelUrlHint}\nou\nhttps://youtube.com/watch?v=...',
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.link),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedContentType,
+                    decoration: InputDecoration(
+                      labelText: l10n.channelContentType,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.category),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'VA_SANS_EDIT', child: Text(l10n.contentTypeVaSansEdit)),
+                      DropdownMenuItem(value: 'VA_AVEC_EDIT', child: Text(l10n.contentTypeVaAvecEdit)),
+                      DropdownMenuItem(value: 'VF_SANS_EDIT', child: Text(l10n.contentTypeVfSansEdit)),
+                      DropdownMenuItem(value: 'VF_AVEC_EDIT', child: Text(l10n.contentTypeVfAvecEdit)),
+                      DropdownMenuItem(value: 'VO_SANS_EDIT', child: Text(l10n.contentTypeVoSansEdit)),
+                      DropdownMenuItem(value: 'VO_AVEC_EDIT', child: Text(l10n.contentTypeVoAvecEdit)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedContentType = value;
+                        });
                       }
-
-                      setState(() => isLoading = true);
-
-                      try {
-                        final service = ref.read(channelsServiceProvider);
-                        final channel = await service.createSourceChannel(
-                          youtubeUrl: youtubeUrlController.text.trim(),
-                          contentType: selectedContentType,
-                        );
-
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          ref.invalidate(sourceChannelsProvider);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: Text(l10n.commonCancel),
+              ),
+              ElevatedButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        if (youtubeUrlController.text.trim().isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Canal ${channel.channelName} ajouté avec succès'),
-                              backgroundColor: AppColors.success,
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Erreur: ${e.toString()}'),
+                              content: Text(l10n.channelUrlRequired),
                               backgroundColor: AppColors.error,
                             ),
                           );
+                          return;
                         }
-                      } finally {
-                        if (context.mounted) {
-                          setState(() => isLoading = false);
+
+                        setState(() => isLoading = true);
+
+                        try {
+                          final service = ref.read(channelsServiceProvider);
+                          final channel = await service.createSourceChannel(
+                            youtubeUrl: youtubeUrlController.text.trim(),
+                            contentType: selectedContentType,
+                          );
+
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ref.invalidate(sourceChannelsProvider);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.channelAddedSuccess(channel.channelName)),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.commonErrorPrefix(e.toString())),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
                         }
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(l10n.commonAdd),
               ),
-              child: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Text('Ajouter'),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -178,134 +182,137 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Iconsax.add_circle, color: AppColors.success),
-              const SizedBox(width: 12),
-              const Text('Ajouter un canal de pub'),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Row(
               children: [
-                Text(
-                  'Collez l\'URL de votre chaîne YouTube',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: context.textTertiary,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: youtubeUrlController,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                    labelText: 'URL YouTube',
-                    hintText: 'https://youtube.com/@nomdelachaine',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.link),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: selectedContentType,
-                  decoration: const InputDecoration(
-                    labelText: 'Type de contenu',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.category),
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 'VA_SANS_EDIT', child: Text('VA Sans Edit')),
-                    DropdownMenuItem(value: 'VA_AVEC_EDIT', child: Text('VA Avec Edit')),
-                    DropdownMenuItem(value: 'VF_SANS_EDIT', child: Text('VF Sans Edit')),
-                    DropdownMenuItem(value: 'VF_AVEC_EDIT', child: Text('VF Avec Edit')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedContentType = value;
-                      });
-                    }
-                  },
-                ),
+                Icon(Iconsax.add_circle, color: AppColors.success),
+                const SizedBox(width: 12),
+                Text(l10n.channelAddPub),
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: isLoading ? null : () => Navigator.pop(context),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      if (youtubeUrlController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('L\'URL YouTube est requise'),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
-                        return;
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.channelUrlHelp,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: context.textTertiary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: youtubeUrlController,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: l10n.channelUrlLabel,
+                      hintText: l10n.channelUrlHint,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.link),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedContentType,
+                    decoration: InputDecoration(
+                      labelText: l10n.channelContentType,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.category),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'VA_SANS_EDIT', child: Text(l10n.contentTypeVaSansEdit)),
+                      DropdownMenuItem(value: 'VA_AVEC_EDIT', child: Text(l10n.contentTypeVaAvecEdit)),
+                      DropdownMenuItem(value: 'VF_SANS_EDIT', child: Text(l10n.contentTypeVfSansEdit)),
+                      DropdownMenuItem(value: 'VF_AVEC_EDIT', child: Text(l10n.contentTypeVfAvecEdit)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedContentType = value;
+                        });
                       }
-
-                      setState(() => isLoading = true);
-
-                      try {
-                        final service = ref.read(channelsServiceProvider);
-                        final channel = await service.createAdminChannel(
-                          youtubeUrl: youtubeUrlController.text.trim(),
-                          contentType: selectedContentType,
-                        );
-
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          ref.invalidate(adminChannelsProvider);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: Text(l10n.commonCancel),
+              ),
+              ElevatedButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        if (youtubeUrlController.text.trim().isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Canal ${channel.channelName} ajouté avec succès'),
-                              backgroundColor: AppColors.success,
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Erreur: ${e.toString()}'),
+                              content: Text(l10n.channelUrlRequired),
                               backgroundColor: AppColors.error,
                             ),
                           );
+                          return;
                         }
-                      } finally {
-                        if (context.mounted) {
-                          setState(() => isLoading = false);
+
+                        setState(() => isLoading = true);
+
+                        try {
+                          final service = ref.read(channelsServiceProvider);
+                          final channel = await service.createAdminChannel(
+                            youtubeUrl: youtubeUrlController.text.trim(),
+                            contentType: selectedContentType,
+                          );
+
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ref.invalidate(adminChannelsProvider);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.channelAddedSuccess(channel.channelName)),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.commonErrorPrefix(e.toString())),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
                         }
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.success,
-                foregroundColor: Colors.white,
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.success,
+                  foregroundColor: Colors.white,
+                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(l10n.commonAdd),
               ),
-              child: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Text('Ajouter'),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -334,6 +341,8 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         // Tab Bar
@@ -362,7 +371,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
 
         // Search bar
         SearchFilterBar(
-          hintText: 'Rechercher un canal...',
+          hintText: l10n.channelSearchHint,
           onSearchChanged: (v) => setState(() => _searchQuery = v),
         ),
 
@@ -434,7 +443,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Canal: ${channel.channelName}'),
+                            content: Text(AppLocalizations.of(context)!.channelSelected(channel.channelName)),
                             duration: const Duration(seconds: 2),
                           ),
                         );
@@ -513,7 +522,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Canal: ${channel.channelName}'),
+                            content: Text(AppLocalizations.of(context)!.channelSelected(channel.channelName)),
                             duration: const Duration(seconds: 2),
                           ),
                         );
@@ -542,282 +551,291 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Iconsax.edit, color: AppColors.info),
-              const SizedBox(width: 12),
-              const Text('Modifier le canal'),
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Iconsax.edit, color: AppColors.info),
+                const SizedBox(width: 12),
+                Text(l10n.channelEditTitle),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  channel.channelName,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: context.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedContentType,
+                  decoration: InputDecoration(
+                    labelText: l10n.channelContentType,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Iconsax.category),
+                  ),
+                  items: [
+                    DropdownMenuItem(value: 'VA_SANS_EDIT', child: Text(l10n.contentTypeVaSansEdit)),
+                    DropdownMenuItem(value: 'VA_AVEC_EDIT', child: Text(l10n.contentTypeVaAvecEdit)),
+                    DropdownMenuItem(value: 'VF_SANS_EDIT', child: Text(l10n.contentTypeVfSansEdit)),
+                    DropdownMenuItem(value: 'VF_AVEC_EDIT', child: Text(l10n.contentTypeVfAvecEdit)),
+                    DropdownMenuItem(value: 'VO_SANS_EDIT', child: Text(l10n.contentTypeVoSansEdit)),
+                    DropdownMenuItem(value: 'VO_AVEC_EDIT', child: Text(l10n.contentTypeVoAvecEdit)),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        selectedContentType = value;
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: Text(l10n.commonCancel),
+              ),
+              ElevatedButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        setState(() => isLoading = true);
+
+                        try {
+                          final service = ref.read(channelsServiceProvider);
+                          await service.updateSourceChannel(
+                            id: channel.id,
+                            contentType: selectedContentType,
+                          );
+
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ref.invalidate(sourceChannelsProvider);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.channelEditSuccess),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.commonErrorPrefix(e.toString())),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.info,
+                  foregroundColor: Colors.white,
+                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(l10n.commonEdit),
+              ),
             ],
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                channel.channelName,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: context.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                initialValue: selectedContentType,
-                decoration: const InputDecoration(
-                  labelText: 'Type de contenu',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Iconsax.category),
-                ),
-                items: const [
-                  DropdownMenuItem(value: 'VA_SANS_EDIT', child: Text('VA Sans Edit')),
-                  DropdownMenuItem(value: 'VA_AVEC_EDIT', child: Text('VA Avec Edit')),
-                  DropdownMenuItem(value: 'VF_SANS_EDIT', child: Text('VF Sans Edit')),
-                  DropdownMenuItem(value: 'VF_AVEC_EDIT', child: Text('VF Avec Edit')),
-                  DropdownMenuItem(value: 'VO_SANS_EDIT', child: Text('VO Sans Edit')),
-                  DropdownMenuItem(value: 'VO_AVEC_EDIT', child: Text('VO Avec Edit')),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      selectedContentType = value;
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: isLoading ? null : () => Navigator.pop(context),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      setState(() => isLoading = true);
-
-                      try {
-                        final service = ref.read(channelsServiceProvider);
-                        await service.updateSourceChannel(
-                          id: channel.id,
-                          contentType: selectedContentType,
-                        );
-
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          ref.invalidate(sourceChannelsProvider);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Canal modifié avec succès'),
-                              backgroundColor: AppColors.success,
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Erreur: ${e.toString()}'),
-                              backgroundColor: AppColors.error,
-                            ),
-                          );
-                        }
-                      } finally {
-                        if (context.mounted) {
-                          setState(() => isLoading = false);
-                        }
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.info,
-                foregroundColor: Colors.white,
-              ),
-              child: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Text('Modifier'),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
   void _showDeleteSourceChannelDialog(SourceChannel channel) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Iconsax.warning_2, color: AppColors.error),
-            const SizedBox(width: 12),
-            const Text('Supprimer le canal'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Êtes-vous sûr de vouloir supprimer ${channel.channelName} ?'),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      'Cette action est irréversible',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Iconsax.warning_2, color: AppColors.error),
+              const SizedBox(width: 12),
+              Text(l10n.channelDeleteTitle),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.channelDeleteConfirm(channel.channelName)),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Cette action est irr\u00e9versible',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final service = ref.read(channelsServiceProvider);
+                  await service.deleteSourceChannel(channel.id);
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ref.invalidate(sourceChannelsProvider);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.channelDeleted(channel.channelName)),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.commonErrorPrefix(e.toString())),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(l10n.commonDelete),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                final service = ref.read(channelsServiceProvider);
-                await service.deleteSourceChannel(channel.id);
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ref.invalidate(sourceChannelsProvider);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${channel.channelName} a été supprimé'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur: ${e.toString()}'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   void _showDeleteAdminChannelDialog(AdminChannel channel) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Iconsax.warning_2, color: AppColors.error),
-            const SizedBox(width: 12),
-            const Text('Supprimer le canal'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Êtes-vous sûr de vouloir supprimer ${channel.channelName} ?'),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      'Cette action est irréversible',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Iconsax.warning_2, color: AppColors.error),
+              const SizedBox(width: 12),
+              Text(l10n.channelDeleteTitle),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.channelDeleteConfirm(channel.channelName)),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Cette action est irr\u00e9versible',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final service = ref.read(channelsServiceProvider);
+                  await service.deleteAdminChannel(channel.id);
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ref.invalidate(adminChannelsProvider);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.channelDeleted(channel.channelName)),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.commonErrorPrefix(e.toString())),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(l10n.commonDelete),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                final service = ref.read(channelsServiceProvider);
-                await service.deleteAdminChannel(channel.id);
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ref.invalidate(adminChannelsProvider);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${channel.channelName} a été supprimé'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur: ${e.toString()}'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

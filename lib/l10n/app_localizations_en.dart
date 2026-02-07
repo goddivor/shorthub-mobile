@@ -689,4 +689,290 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsVersion => 'Version';
+
+  @override
+  String get modalValidateTitle => 'Validate short';
+
+  @override
+  String get modalValidateSuccess => 'Short validated successfully!';
+
+  @override
+  String get modalFeedbackOptional => 'Feedback (optional)';
+
+  @override
+  String get modalFeedbackHint => 'Comment for the videographer...';
+
+  @override
+  String get modalRejectTitle => 'Reject short';
+
+  @override
+  String get modalRejectSuccess => 'Short rejected';
+
+  @override
+  String get modalRejectReason => 'Rejection reason *';
+
+  @override
+  String get modalRejectReasonHint => 'Explain the rejection reason...';
+
+  @override
+  String get modalRejectDeleteFile => 'Delete video file';
+
+  @override
+  String get modalRejectDeleteFileDefault => 'File on Google Drive';
+
+  @override
+  String get changePasswordTitle => 'Change password';
+
+  @override
+  String get changePasswordOld => 'Old password';
+
+  @override
+  String get changePasswordNew => 'New password';
+
+  @override
+  String get changePasswordConfirmField => 'Confirm password';
+
+  @override
+  String get changePasswordSuccess => 'Password changed successfully';
+
+  @override
+  String get changePasswordAllRequired => 'All fields are required';
+
+  @override
+  String get changePasswordMinLength =>
+      'Password must be at least 6 characters';
+
+  @override
+  String get changePasswordMismatch => 'Passwords do not match';
+
+  @override
+  String get modalAssignTitle => 'Assign short';
+
+  @override
+  String get modalAssignSuccess => 'Short assigned successfully!';
+
+  @override
+  String get modalAssignVideaste => 'Videographer';
+
+  @override
+  String get modalAssignSelectVideaste => 'Select a videographer';
+
+  @override
+  String get modalAssignErrorVideastes => 'Error loading videographers';
+
+  @override
+  String get modalAssignChannel => 'Publication channel';
+
+  @override
+  String get modalAssignSelectChannel => 'Select a channel';
+
+  @override
+  String get modalAssignErrorChannels => 'Error loading channels';
+
+  @override
+  String get modalAssignDeadline => 'Deadline';
+
+  @override
+  String get modalAssignPickDate => 'Choose a deadline';
+
+  @override
+  String get modalAssignNotes => 'Notes (optional)';
+
+  @override
+  String get modalAssignNotesHint => 'Instructions for the videographer...';
+
+  @override
+  String get modalAssignButton => 'Assign';
+
+  @override
+  String get modalRollLoading => 'Generating short...';
+
+  @override
+  String get modalRollClose => 'Close';
+
+  @override
+  String get modalRollIgnore => 'Ignore';
+
+  @override
+  String get modalRollRetain => 'Retain';
+
+  @override
+  String get channelAddSource => 'Add source channel';
+
+  @override
+  String get channelAddPub => 'Add publication channel';
+
+  @override
+  String get channelUrlLabel => 'YouTube URL';
+
+  @override
+  String get channelUrlHint => 'https://youtube.com/@channelname';
+
+  @override
+  String get channelUrlHelp => 'Paste a YouTube channel, video or short URL';
+
+  @override
+  String get channelContentType => 'Content type';
+
+  @override
+  String get channelUrlRequired => 'YouTube URL is required';
+
+  @override
+  String get channelSearchHint => 'Search a channel...';
+
+  @override
+  String get channelDeleteTitle => 'Delete channel';
+
+  @override
+  String channelDeleteConfirm(String name) {
+    return 'Are you sure you want to delete $name?';
+  }
+
+  @override
+  String channelDeleted(String name) {
+    return '$name has been deleted';
+  }
+
+  @override
+  String get channelEditTitle => 'Edit channel';
+
+  @override
+  String get channelEditSuccess => 'Channel updated successfully';
+
+  @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get usersAllRoles => 'All roles';
+
+  @override
+  String get usersSearchHint => 'Search a member...';
+
+  @override
+  String get usersEmpty => 'No members found';
+
+  @override
+  String get usersNoUsers => 'No users';
+
+  @override
+  String get usersInviteHint => 'Start by inviting members';
+
+  @override
+  String get usersInviteTitle => 'Invite a user';
+
+  @override
+  String get usersUsername => 'Username';
+
+  @override
+  String get usersUsernameHint => 'Ex: johndoe';
+
+  @override
+  String get usersEmailOptional => 'Email (optional)';
+
+  @override
+  String get usersEmailHint => 'example@email.com';
+
+  @override
+  String get usersPassword => 'Password';
+
+  @override
+  String get usersPasswordHint => 'Minimum 6 characters';
+
+  @override
+  String get usersRole => 'Role';
+
+  @override
+  String get usersUsernameRequired => 'Username is required';
+
+  @override
+  String get usersPasswordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get usersInviteButton => 'Invite';
+
+  @override
+  String usersBlockConfirm(String name) {
+    return 'Are you sure you want to block $name? They will no longer be able to access the application.';
+  }
+
+  @override
+  String usersBlocked(String name) {
+    return '$name has been blocked';
+  }
+
+  @override
+  String get usersBlockButton => 'Block';
+
+  @override
+  String usersUnblockConfirm(String name) {
+    return 'Are you sure you want to unblock $name?';
+  }
+
+  @override
+  String usersUnblocked(String name) {
+    return '$name has been unblocked';
+  }
+
+  @override
+  String get usersUnblockButton => 'Unblock';
+
+  @override
+  String usersDeleted(String name) {
+    return '$name has been deleted';
+  }
+
+  @override
+  String get usersDeleteButton => 'Delete';
+
+  @override
+  String usersDeleteConfirm(String name) {
+    return 'Are you sure you want to delete $name? This action is irreversible.';
+  }
+
+  @override
+  String get publishSuccess => 'Short published successfully!';
+
+  @override
+  String get rollingGenerate => 'Generate';
+
+  @override
+  String get userViewProfile => 'View profile';
+
+  @override
+  String get channelViewChannel => 'View channel';
+
+  @override
+  String get commonSearchHint => 'Search...';
+
+  @override
+  String routeNotFound(String route) {
+    return 'Route not found: $route';
+  }
+
+  @override
+  String get channelNoSource => 'No source channels';
+
+  @override
+  String channelAddedSuccess(String name) {
+    return 'Channel $name added successfully';
+  }
+
+  @override
+  String usersCreatedSuccess(String name) {
+    return 'User $name created successfully';
+  }
+
+  @override
+  String channelSelected(String name) {
+    return 'Channel: $name';
+  }
 }

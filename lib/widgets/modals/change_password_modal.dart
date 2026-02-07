@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 
 class ChangePasswordModal extends ConsumerStatefulWidget {
@@ -32,22 +33,23 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
   }
 
   Future<void> _changePassword() async {
+    final l10n = AppLocalizations.of(context)!;
     final oldPassword = _oldPasswordController.text;
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
     if (oldPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
-      setState(() => _error = 'Tous les champs sont requis');
+      setState(() => _error = l10n.changePasswordAllRequired);
       return;
     }
 
     if (newPassword.length < 6) {
-      setState(() => _error = 'Le mot de passe doit contenir au moins 6 caracteres');
+      setState(() => _error = l10n.changePasswordMinLength);
       return;
     }
 
     if (newPassword != confirmPassword) {
-      setState(() => _error = 'Les mots de passe ne correspondent pas');
+      setState(() => _error = l10n.changePasswordMismatch);
       return;
     }
 
@@ -63,7 +65,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Mot de passe modifie avec succes'),
+            content: Text(l10n.changePasswordSuccess),
             backgroundColor: AppColors.success,
           ),
         );
@@ -78,6 +80,8 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: EdgeInsets.only(
         left: 20,
@@ -109,7 +113,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
               children: [
                 Icon(Iconsax.lock, color: AppColors.primary, size: 24),
                 const SizedBox(width: 8),
-                const Text('Changer le mot de passe', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(l10n.changePasswordTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 20),
@@ -131,7 +135,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
               controller: _oldPasswordController,
               obscureText: _obscureOld,
               decoration: InputDecoration(
-                labelText: 'Ancien mot de passe',
+                labelText: l10n.changePasswordOld,
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureOld ? Iconsax.eye_slash : Iconsax.eye, color: context.iconSubtle),
@@ -145,7 +149,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
               controller: _newPasswordController,
               obscureText: _obscureNew,
               decoration: InputDecoration(
-                labelText: 'Nouveau mot de passe',
+                labelText: l10n.changePasswordNew,
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureNew ? Iconsax.eye_slash : Iconsax.eye, color: context.iconSubtle),
@@ -159,7 +163,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
               controller: _confirmPasswordController,
               obscureText: _obscureConfirm,
               decoration: InputDecoration(
-                labelText: 'Confirmer le mot de passe',
+                labelText: l10n.changePasswordConfirmField,
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureConfirm ? Iconsax.eye_slash : Iconsax.eye, color: context.iconSubtle),
@@ -177,7 +181,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Annuler'),
+                    child: Text(l10n.commonCancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -187,7 +191,7 @@ class _ChangePasswordModalState extends ConsumerState<ChangePasswordModal> {
                     icon: _isLoading
                         ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                         : const Icon(Iconsax.tick_circle, size: 18),
-                    label: const Text('Confirmer'),
+                    label: Text(l10n.commonConfirm),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,

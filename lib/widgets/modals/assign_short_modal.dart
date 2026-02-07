@@ -8,6 +8,7 @@ import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../core/models/user.dart';
 import '../../core/models/admin_channel.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/shorts_provider.dart';
 import '../../providers/users_provider.dart';
 import '../../providers/channels_provider.dart';
@@ -59,6 +60,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
     if (_selectedVideaste == null || _selectedChannel == null || _deadline == null) return;
 
     setState(() => _isLoading = true);
+    final l10n = AppLocalizations.of(context)!;
 
     try {
       await ref.read(shortsServiceProvider).assignShort(
@@ -76,7 +78,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Short assigne avec succes !'),
+            content: Text(l10n.modalAssignSuccess),
             backgroundColor: AppColors.success,
           ),
         );
@@ -85,7 +87,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(l10n.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
         );
       }
     }
@@ -93,6 +95,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final videastesAsync = ref.watch(videastesProvider);
     final channelsAsync = ref.watch(adminChannelsProvider);
 
@@ -127,7 +130,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
               children: [
                 Icon(Iconsax.user_tick, color: AppColors.primary, size: 24),
                 const SizedBox(width: 8),
-                const Text('Assigner le short', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(l10n.modalAssignTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 8),
@@ -178,15 +181,15 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
             const SizedBox(height: 20),
 
             // Videaste selector
-            const Text('Videaste', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(l10n.modalAssignVideaste, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             videastesAsync.when(
               data: (videastes) => DropdownButtonFormField<User>(
                 initialValue: _selectedVideaste,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Selectionner un videaste',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: l10n.modalAssignSelectVideaste,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 ),
                 items: videastes.map((v) => DropdownMenuItem(
                   value: v,
@@ -195,20 +198,20 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
                 onChanged: (v) => setState(() => _selectedVideaste = v),
               ),
               loading: () => const LinearProgressIndicator(),
-              error: (_, __) => Text('Erreur chargement videastes', style: TextStyle(color: AppColors.error)),
+              error: (_, __) => Text(l10n.modalAssignErrorVideastes, style: TextStyle(color: AppColors.error)),
             ),
             const SizedBox(height: 16),
 
             // Channel selector
-            const Text('Chaine de publication', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(l10n.modalAssignChannel, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             channelsAsync.when(
               data: (channels) => DropdownButtonFormField<AdminChannel>(
                 initialValue: _selectedChannel,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Selectionner une chaine',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: l10n.modalAssignSelectChannel,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 ),
                 items: channels.map((c) => DropdownMenuItem(
                   value: c,
@@ -217,12 +220,12 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
                 onChanged: (c) => setState(() => _selectedChannel = c),
               ),
               loading: () => const LinearProgressIndicator(),
-              error: (_, __) => Text('Erreur chargement chaines', style: TextStyle(color: AppColors.error)),
+              error: (_, __) => Text(l10n.modalAssignErrorChannels, style: TextStyle(color: AppColors.error)),
             ),
             const SizedBox(height: 16),
 
             // Deadline picker
-            const Text('Deadline', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(l10n.modalAssignDeadline, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             InkWell(
               onTap: _pickDeadline,
@@ -240,7 +243,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
                     Text(
                       _deadline != null
                           ? DateFormat('dd/MM/yyyy HH:mm').format(_deadline!)
-                          : 'Choisir une date limite',
+                          : l10n.modalAssignPickDate,
                       style: TextStyle(
                         color: _deadline != null ? context.textPrimary : context.textHint,
                       ),
@@ -252,14 +255,14 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
             const SizedBox(height: 16),
 
             // Notes
-            const Text('Notes (optionnel)', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(l10n.modalAssignNotes, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextField(
               controller: _notesController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Instructions pour le videaste...',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: l10n.modalAssignNotesHint,
               ),
             ),
             const SizedBox(height: 24),
@@ -274,7 +277,7 @@ class _AssignShortModalState extends ConsumerState<AssignShortModal> {
                 icon: _isLoading
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                     : const Icon(Iconsax.send_1, size: 18),
-                label: const Text('Assigner'),
+                label: Text(l10n.modalAssignButton),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,

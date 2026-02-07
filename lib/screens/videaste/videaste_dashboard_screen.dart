@@ -560,7 +560,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                             if (mounted) {
                               ScaffoldMessenger.of(this.context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Erreur: ${e.toString()}'),
+                                  content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())),
                                   backgroundColor: AppColors.error,
                                 ),
                               );
@@ -626,7 +626,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                             if (mounted) {
                               ScaffoldMessenger.of(this.context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Erreur: ${e.toString()}'),
+                                  content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())),
                                   backgroundColor: AppColors.error,
                                 ),
                               );

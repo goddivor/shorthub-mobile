@@ -694,4 +694,292 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsVersion => 'Version';
+
+  @override
+  String get modalValidateTitle => 'Valider le short';
+
+  @override
+  String get modalValidateSuccess => 'Short validé avec succès !';
+
+  @override
+  String get modalFeedbackOptional => 'Feedback (optionnel)';
+
+  @override
+  String get modalFeedbackHint => 'Commentaire pour le vidéaste...';
+
+  @override
+  String get modalRejectTitle => 'Rejeter le short';
+
+  @override
+  String get modalRejectSuccess => 'Short rejeté';
+
+  @override
+  String get modalRejectReason => 'Raison du rejet *';
+
+  @override
+  String get modalRejectReasonHint => 'Expliquer la raison du rejet...';
+
+  @override
+  String get modalRejectDeleteFile => 'Supprimer le fichier vidéo';
+
+  @override
+  String get modalRejectDeleteFileDefault => 'Fichier sur Google Drive';
+
+  @override
+  String get changePasswordTitle => 'Changer le mot de passe';
+
+  @override
+  String get changePasswordOld => 'Ancien mot de passe';
+
+  @override
+  String get changePasswordNew => 'Nouveau mot de passe';
+
+  @override
+  String get changePasswordConfirmField => 'Confirmer le mot de passe';
+
+  @override
+  String get changePasswordSuccess => 'Mot de passe modifié avec succès';
+
+  @override
+  String get changePasswordAllRequired => 'Tous les champs sont requis';
+
+  @override
+  String get changePasswordMinLength =>
+      'Le mot de passe doit contenir au moins 6 caractères';
+
+  @override
+  String get changePasswordMismatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get modalAssignTitle => 'Assigner le short';
+
+  @override
+  String get modalAssignSuccess => 'Short assigné avec succès !';
+
+  @override
+  String get modalAssignVideaste => 'Vidéaste';
+
+  @override
+  String get modalAssignSelectVideaste => 'Sélectionner un vidéaste';
+
+  @override
+  String get modalAssignErrorVideastes => 'Erreur chargement vidéastes';
+
+  @override
+  String get modalAssignChannel => 'Chaîne de publication';
+
+  @override
+  String get modalAssignSelectChannel => 'Sélectionner une chaîne';
+
+  @override
+  String get modalAssignErrorChannels => 'Erreur chargement chaînes';
+
+  @override
+  String get modalAssignDeadline => 'Deadline';
+
+  @override
+  String get modalAssignPickDate => 'Choisir une date limite';
+
+  @override
+  String get modalAssignNotes => 'Notes (optionnel)';
+
+  @override
+  String get modalAssignNotesHint => 'Instructions pour le vidéaste...';
+
+  @override
+  String get modalAssignButton => 'Assigner';
+
+  @override
+  String get modalRollLoading => 'Génération du short...';
+
+  @override
+  String get modalRollClose => 'Fermer';
+
+  @override
+  String get modalRollIgnore => 'Ignorer';
+
+  @override
+  String get modalRollRetain => 'Retenir';
+
+  @override
+  String get channelAddSource => 'Ajouter un canal source';
+
+  @override
+  String get channelAddPub => 'Ajouter un canal de publication';
+
+  @override
+  String get channelUrlLabel => 'URL YouTube';
+
+  @override
+  String get channelUrlHint => 'https://youtube.com/@nomdelachaine';
+
+  @override
+  String get channelUrlHelp =>
+      'Collez l\'URL d\'une chaîne YouTube, d\'une vidéo ou d\'un short';
+
+  @override
+  String get channelContentType => 'Type de contenu';
+
+  @override
+  String get channelUrlRequired => 'L\'URL YouTube est requise';
+
+  @override
+  String get channelSearchHint => 'Rechercher un canal...';
+
+  @override
+  String get channelDeleteTitle => 'Supprimer le canal';
+
+  @override
+  String channelDeleteConfirm(String name) {
+    return 'Êtes-vous sûr de vouloir supprimer $name ?';
+  }
+
+  @override
+  String channelDeleted(String name) {
+    return '$name a été supprimé';
+  }
+
+  @override
+  String get channelEditTitle => 'Modifier le canal';
+
+  @override
+  String get channelEditSuccess => 'Canal modifié avec succès';
+
+  @override
+  String get commonEdit => 'Modifier';
+
+  @override
+  String get commonDelete => 'Supprimer';
+
+  @override
+  String get commonAdd => 'Ajouter';
+
+  @override
+  String get commonClose => 'Fermer';
+
+  @override
+  String get usersAllRoles => 'Tous les rôles';
+
+  @override
+  String get usersSearchHint => 'Rechercher un membre...';
+
+  @override
+  String get usersEmpty => 'Aucun membre trouvé';
+
+  @override
+  String get usersNoUsers => 'Aucun utilisateur';
+
+  @override
+  String get usersInviteHint => 'Commencez par inviter des membres';
+
+  @override
+  String get usersInviteTitle => 'Inviter un utilisateur';
+
+  @override
+  String get usersUsername => 'Nom d\'utilisateur';
+
+  @override
+  String get usersUsernameHint => 'Ex: johndoe';
+
+  @override
+  String get usersEmailOptional => 'Email (optionnel)';
+
+  @override
+  String get usersEmailHint => 'exemple@email.com';
+
+  @override
+  String get usersPassword => 'Mot de passe';
+
+  @override
+  String get usersPasswordHint => 'Minimum 6 caractères';
+
+  @override
+  String get usersRole => 'Rôle';
+
+  @override
+  String get usersUsernameRequired => 'Le nom d\'utilisateur est requis';
+
+  @override
+  String get usersPasswordMinLength =>
+      'Le mot de passe doit contenir au moins 6 caractères';
+
+  @override
+  String get usersInviteButton => 'Inviter';
+
+  @override
+  String usersBlockConfirm(String name) {
+    return 'Êtes-vous sûr de vouloir bloquer $name ? Il ne pourra plus accéder à l\'application.';
+  }
+
+  @override
+  String usersBlocked(String name) {
+    return '$name a été bloqué';
+  }
+
+  @override
+  String get usersBlockButton => 'Bloquer';
+
+  @override
+  String usersUnblockConfirm(String name) {
+    return 'Êtes-vous sûr de vouloir débloquer $name ?';
+  }
+
+  @override
+  String usersUnblocked(String name) {
+    return '$name a été débloqué';
+  }
+
+  @override
+  String get usersUnblockButton => 'Débloquer';
+
+  @override
+  String usersDeleted(String name) {
+    return '$name a été supprimé';
+  }
+
+  @override
+  String get usersDeleteButton => 'Supprimer';
+
+  @override
+  String usersDeleteConfirm(String name) {
+    return 'Êtes-vous sûr de vouloir supprimer $name ? Cette action est irréversible.';
+  }
+
+  @override
+  String get publishSuccess => 'Short publié avec succès !';
+
+  @override
+  String get rollingGenerate => 'Générer';
+
+  @override
+  String get userViewProfile => 'Voir le profil';
+
+  @override
+  String get channelViewChannel => 'Voir la chaîne';
+
+  @override
+  String get commonSearchHint => 'Rechercher...';
+
+  @override
+  String routeNotFound(String route) {
+    return 'Route non trouvée : $route';
+  }
+
+  @override
+  String get channelNoSource => 'Aucune chaîne source';
+
+  @override
+  String channelAddedSuccess(String name) {
+    return 'Canal $name ajouté avec succès';
+  }
+
+  @override
+  String usersCreatedSuccess(String name) {
+    return 'Utilisateur $name créé avec succès';
+  }
+
+  @override
+  String channelSelected(String name) {
+    return 'Canal : $name';
+  }
 }

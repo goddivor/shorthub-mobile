@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import '../../config/theme/theme_extensions.dart';
 
 class ChannelCard extends StatelessWidget {
@@ -228,7 +229,7 @@ class ChannelCard extends StatelessWidget {
                             color: AppColors.primary,
                           ),
                           const SizedBox(width: 8),
-                          const Text('Voir la chaîne'),
+                          Text(AppLocalizations.of(context)!.channelViewChannel),
                         ],
                       ),
                     ),
@@ -243,7 +244,7 @@ class ChannelCard extends StatelessWidget {
                               color: AppColors.info,
                             ),
                             const SizedBox(width: 8),
-                            const Text('Modifier'),
+                            Text(AppLocalizations.of(context)!.commonEdit),
                           ],
                         ),
                       ),
@@ -259,7 +260,7 @@ class ChannelCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Supprimer',
+                            AppLocalizations.of(context)!.commonDelete,
                             style: TextStyle(color: AppColors.error),
                           ),
                         ],

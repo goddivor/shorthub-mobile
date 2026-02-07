@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
+import '../../l10n/app_localizations.dart';
 
 class ShortTrackingCard extends StatelessWidget {
   final Short short;
@@ -279,7 +280,7 @@ class ShortTrackingCard extends StatelessWidget {
               children: [
                 // View button (always)
                 _buildActionButton(
-                  label: 'Voir',
+                  label: AppLocalizations.of(context)!.commonView,
                   icon: Iconsax.eye,
                   color: context.textTertiary,
                   onTap: onView,
@@ -288,14 +289,14 @@ class ShortTrackingCard extends StatelessWidget {
                 if (short.isCompleted) ...[
                   const SizedBox(width: 8),
                   _buildActionButton(
-                    label: 'Valider',
+                    label: AppLocalizations.of(context)!.actionValidate,
                     icon: Iconsax.tick_circle,
                     color: AppColors.success,
                     onTap: onValidate,
                   ),
                   const SizedBox(width: 8),
                   _buildActionButton(
-                    label: 'Rejeter',
+                    label: AppLocalizations.of(context)!.actionReject,
                     icon: Iconsax.close_circle,
                     color: AppColors.error,
                     onTap: onReject,
@@ -305,7 +306,7 @@ class ShortTrackingCard extends StatelessWidget {
                 if (short.isValidated) ...[
                   const SizedBox(width: 8),
                   _buildActionButton(
-                    label: 'Publier',
+                    label: AppLocalizations.of(context)!.actionPublish,
                     icon: Iconsax.global,
                     color: Colors.deepPurple,
                     onTap: onPublish,

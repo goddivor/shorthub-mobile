@@ -13,6 +13,7 @@ import '../../../widgets/cards/short_tracking_card.dart';
 import '../../../widgets/modals/validate_short_modal.dart';
 import '../../../widgets/modals/reject_short_modal.dart';
 import '../../../config/routes/app_routes.dart';
+import '../../../l10n/app_localizations.dart';
 
 class AdminShortsTrackingPage extends ConsumerStatefulWidget {
   const AdminShortsTrackingPage({super.key});
@@ -88,16 +89,17 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
     showDialog(
       context: context,
       builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
         var isLoading = false;
 
         return StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
-            title: const Text('Publier le short'),
-            content: Text('Confirmer la publication de "${short.title ?? short.videoId}" ?'),
+            title: Text(l10n.dialogPublishTitle),
+            content: Text(l10n.dialogPublishContent(short.title ?? short.videoId)),
             actions: [
               TextButton(
                 onPressed: isLoading ? null : () => Navigator.pop(ctx),
-                child: const Text('Annuler'),
+                child: Text(l10n.commonCancel),
               ),
               ElevatedButton(
                 onPressed: isLoading
@@ -114,14 +116,14 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                           }
                           messenger.showSnackBar(
                             SnackBar(
-                              content: const Text('Short publie avec succes !'),
+                              content: Text(l10n.publishSuccess),
                               backgroundColor: AppColors.success,
                             ),
                           );
                         } catch (e) {
                           setDialogState(() => isLoading = false);
                           messenger.showSnackBar(
-                            SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+                            SnackBar(content: Text(l10n.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
                           );
                         }
                       },
@@ -131,7 +133,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                 ),
                 child: isLoading
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Publier'),
+                    : Text(l10n.actionPublish),
               ),
             ],
           ),
@@ -238,6 +240,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
   }
 
   Widget _buildSearchAndFilter() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       color: context.cardBg,
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
@@ -248,7 +251,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
             flex: 3,
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Rechercher...',
+                hintText: l10n.commonSearchHint,
                 hintStyle: TextStyle(fontSize: 13, color: context.textHint),
                 prefixIcon: Icon(Iconsax.search_normal, size: 18, color: context.iconSubtle),
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),

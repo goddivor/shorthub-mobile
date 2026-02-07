@@ -1399,6 +1399,528 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Version'**
   String get settingsVersion;
+
+  /// No description provided for @modalValidateTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider le short'**
+  String get modalValidateTitle;
+
+  /// No description provided for @modalValidateSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Short validé avec succès !'**
+  String get modalValidateSuccess;
+
+  /// No description provided for @modalFeedbackOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Feedback (optionnel)'**
+  String get modalFeedbackOptional;
+
+  /// No description provided for @modalFeedbackHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commentaire pour le vidéaste...'**
+  String get modalFeedbackHint;
+
+  /// No description provided for @modalRejectTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejeter le short'**
+  String get modalRejectTitle;
+
+  /// No description provided for @modalRejectSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Short rejeté'**
+  String get modalRejectSuccess;
+
+  /// No description provided for @modalRejectReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raison du rejet *'**
+  String get modalRejectReason;
+
+  /// No description provided for @modalRejectReasonHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expliquer la raison du rejet...'**
+  String get modalRejectReasonHint;
+
+  /// No description provided for @modalRejectDeleteFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le fichier vidéo'**
+  String get modalRejectDeleteFile;
+
+  /// No description provided for @modalRejectDeleteFileDefault.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier sur Google Drive'**
+  String get modalRejectDeleteFileDefault;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changePasswordOld.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ancien mot de passe'**
+  String get changePasswordOld;
+
+  /// No description provided for @changePasswordNew.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe'**
+  String get changePasswordNew;
+
+  /// No description provided for @changePasswordConfirmField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer le mot de passe'**
+  String get changePasswordConfirmField;
+
+  /// No description provided for @changePasswordSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe modifié avec succès'**
+  String get changePasswordSuccess;
+
+  /// No description provided for @changePasswordAllRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les champs sont requis'**
+  String get changePasswordAllRequired;
+
+  /// No description provided for @changePasswordMinLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mot de passe doit contenir au moins 6 caractères'**
+  String get changePasswordMinLength;
+
+  /// No description provided for @changePasswordMismatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les mots de passe ne correspondent pas'**
+  String get changePasswordMismatch;
+
+  /// No description provided for @modalAssignTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assigner le short'**
+  String get modalAssignTitle;
+
+  /// No description provided for @modalAssignSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Short assigné avec succès !'**
+  String get modalAssignSuccess;
+
+  /// No description provided for @modalAssignVideaste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vidéaste'**
+  String get modalAssignVideaste;
+
+  /// No description provided for @modalAssignSelectVideaste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner un vidéaste'**
+  String get modalAssignSelectVideaste;
+
+  /// No description provided for @modalAssignErrorVideastes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur chargement vidéastes'**
+  String get modalAssignErrorVideastes;
+
+  /// No description provided for @modalAssignChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaîne de publication'**
+  String get modalAssignChannel;
+
+  /// No description provided for @modalAssignSelectChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner une chaîne'**
+  String get modalAssignSelectChannel;
+
+  /// No description provided for @modalAssignErrorChannels.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur chargement chaînes'**
+  String get modalAssignErrorChannels;
+
+  /// No description provided for @modalAssignDeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Deadline'**
+  String get modalAssignDeadline;
+
+  /// No description provided for @modalAssignPickDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une date limite'**
+  String get modalAssignPickDate;
+
+  /// No description provided for @modalAssignNotes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notes (optionnel)'**
+  String get modalAssignNotes;
+
+  /// No description provided for @modalAssignNotesHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Instructions pour le vidéaste...'**
+  String get modalAssignNotesHint;
+
+  /// No description provided for @modalAssignButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assigner'**
+  String get modalAssignButton;
+
+  /// No description provided for @modalRollLoading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Génération du short...'**
+  String get modalRollLoading;
+
+  /// No description provided for @modalRollClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get modalRollClose;
+
+  /// No description provided for @modalRollIgnore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ignorer'**
+  String get modalRollIgnore;
+
+  /// No description provided for @modalRollRetain.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retenir'**
+  String get modalRollRetain;
+
+  /// No description provided for @channelAddSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un canal source'**
+  String get channelAddSource;
+
+  /// No description provided for @channelAddPub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un canal de publication'**
+  String get channelAddPub;
+
+  /// No description provided for @channelUrlLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'URL YouTube'**
+  String get channelUrlLabel;
+
+  /// No description provided for @channelUrlHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'https://youtube.com/@nomdelachaine'**
+  String get channelUrlHint;
+
+  /// No description provided for @channelUrlHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Collez l\'URL d\'une chaîne YouTube, d\'une vidéo ou d\'un short'**
+  String get channelUrlHelp;
+
+  /// No description provided for @channelContentType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de contenu'**
+  String get channelContentType;
+
+  /// No description provided for @channelUrlRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'URL YouTube est requise'**
+  String get channelUrlRequired;
+
+  /// No description provided for @channelSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un canal...'**
+  String get channelSearchHint;
+
+  /// No description provided for @channelDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le canal'**
+  String get channelDeleteTitle;
+
+  /// No description provided for @channelDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir supprimer {name} ?'**
+  String channelDeleteConfirm(String name);
+
+  /// No description provided for @channelDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} a été supprimé'**
+  String channelDeleted(String name);
+
+  /// No description provided for @channelEditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le canal'**
+  String get channelEditTitle;
+
+  /// No description provided for @channelEditSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Canal modifié avec succès'**
+  String get channelEditSuccess;
+
+  /// No description provided for @commonEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get commonEdit;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get commonDelete;
+
+  /// No description provided for @commonAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get commonAdd;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get commonClose;
+
+  /// No description provided for @usersAllRoles.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les rôles'**
+  String get usersAllRoles;
+
+  /// No description provided for @usersSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un membre...'**
+  String get usersSearchHint;
+
+  /// No description provided for @usersEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun membre trouvé'**
+  String get usersEmpty;
+
+  /// No description provided for @usersNoUsers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun utilisateur'**
+  String get usersNoUsers;
+
+  /// No description provided for @usersInviteHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencez par inviter des membres'**
+  String get usersInviteHint;
+
+  /// No description provided for @usersInviteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inviter un utilisateur'**
+  String get usersInviteTitle;
+
+  /// No description provided for @usersUsername.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom d\'utilisateur'**
+  String get usersUsername;
+
+  /// No description provided for @usersUsernameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex: johndoe'**
+  String get usersUsernameHint;
+
+  /// No description provided for @usersEmailOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Email (optionnel)'**
+  String get usersEmailOptional;
+
+  /// No description provided for @usersEmailHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'exemple@email.com'**
+  String get usersEmailHint;
+
+  /// No description provided for @usersPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get usersPassword;
+
+  /// No description provided for @usersPasswordHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Minimum 6 caractères'**
+  String get usersPasswordHint;
+
+  /// No description provided for @usersRole.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rôle'**
+  String get usersRole;
+
+  /// No description provided for @usersUsernameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nom d\'utilisateur est requis'**
+  String get usersUsernameRequired;
+
+  /// No description provided for @usersPasswordMinLength.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mot de passe doit contenir au moins 6 caractères'**
+  String get usersPasswordMinLength;
+
+  /// No description provided for @usersInviteButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inviter'**
+  String get usersInviteButton;
+
+  /// No description provided for @usersBlockConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir bloquer {name} ? Il ne pourra plus accéder à l\'application.'**
+  String usersBlockConfirm(String name);
+
+  /// No description provided for @usersBlocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} a été bloqué'**
+  String usersBlocked(String name);
+
+  /// No description provided for @usersBlockButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bloquer'**
+  String get usersBlockButton;
+
+  /// No description provided for @usersUnblockConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir débloquer {name} ?'**
+  String usersUnblockConfirm(String name);
+
+  /// No description provided for @usersUnblocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} a été débloqué'**
+  String usersUnblocked(String name);
+
+  /// No description provided for @usersUnblockButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Débloquer'**
+  String get usersUnblockButton;
+
+  /// No description provided for @usersDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} a été supprimé'**
+  String usersDeleted(String name);
+
+  /// No description provided for @usersDeleteButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get usersDeleteButton;
+
+  /// No description provided for @usersDeleteConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.'**
+  String usersDeleteConfirm(String name);
+
+  /// No description provided for @publishSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Short publié avec succès !'**
+  String get publishSuccess;
+
+  /// No description provided for @rollingGenerate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Générer'**
+  String get rollingGenerate;
+
+  /// No description provided for @userViewProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le profil'**
+  String get userViewProfile;
+
+  /// No description provided for @channelViewChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir la chaîne'**
+  String get channelViewChannel;
+
+  /// No description provided for @commonSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher...'**
+  String get commonSearchHint;
+
+  /// No description provided for @routeNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Route non trouvée : {route}'**
+  String routeNotFound(String route);
+
+  /// No description provided for @channelNoSource.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune chaîne source'**
+  String get channelNoSource;
+
+  /// No description provided for @channelAddedSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Canal {name} ajouté avec succès'**
+  String channelAddedSuccess(String name);
+
+  /// No description provided for @usersCreatedSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisateur {name} créé avec succès'**
+  String usersCreatedSuccess(String name);
+
+  /// No description provided for @channelSelected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Canal : {name}'**
+  String channelSelected(String name);
 }
 
 class _AppLocalizationsDelegate

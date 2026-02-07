@@ -6,6 +6,7 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../core/models/source_channel.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/shorts_provider.dart';
 
 class RollShortModal extends ConsumerStatefulWidget {
@@ -70,7 +71,7 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
       if (mounted) {
         setState(() => _isActing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
         );
       }
     }
@@ -91,7 +92,7 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
       if (mounted) {
         setState(() => _isActing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
         );
       }
     }
@@ -99,6 +100,8 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -120,13 +123,13 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
           _buildHeader(),
           const SizedBox(height: 20),
           if (_isLoading)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 40),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40),
               child: Column(
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Generation du short...'),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(l10n.modalRollLoading),
                 ],
               ),
             )
@@ -144,12 +147,12 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
                     children: [
                       OutlinedButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Fermer'),
+                        child: Text(l10n.modalRollClose),
                       ),
                       const SizedBox(width: 12),
                       ElevatedButton(
                         onPressed: _rollShort,
-                        child: const Text('Reessayer'),
+                        child: Text(l10n.commonRetry),
                       ),
                     ],
                   ),
@@ -206,6 +209,7 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
   }
 
   Widget _buildShortPreview() {
+    final l10n = AppLocalizations.of(context)!;
     final short = _rolledShort!;
     final thumbnailUrl = 'https://img.youtube.com/vi/${short.videoId}/hqdefault.jpg';
 
@@ -247,7 +251,7 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
               child: OutlinedButton.icon(
                 onPressed: _isActing ? null : _ignoreShort,
                 icon: Icon(Iconsax.close_circle, size: 18, color: _isActing ? AppColors.gray400 : AppColors.error),
-                label: const Text('Ignorer'),
+                label: Text(l10n.modalRollIgnore),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.error,
                   side: BorderSide(color: _isActing ? AppColors.gray300 : AppColors.error),
@@ -262,7 +266,7 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
                 icon: _isActing
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                     : const Icon(Iconsax.tick_circle, size: 18),
-                label: const Text('Retenir'),
+                label: Text(l10n.modalRollRetain),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.success,
                   foregroundColor: Colors.white,

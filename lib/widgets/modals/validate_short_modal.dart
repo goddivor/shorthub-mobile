@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/shorts_provider.dart';
 
 class ValidateShortModal extends ConsumerStatefulWidget {
@@ -28,6 +29,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
 
   Future<void> _validate() async {
     setState(() => _isLoading = true);
+    final l10n = AppLocalizations.of(context)!;
 
     try {
       final feedback = _feedbackController.text.trim();
@@ -43,7 +45,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Short valide avec succes !'),
+            content: Text(l10n.modalValidateSuccess),
             backgroundColor: AppColors.success,
           ),
         );
@@ -52,7 +54,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(l10n.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
         );
       }
     }
@@ -60,6 +62,8 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: EdgeInsets.only(
         left: 20,
@@ -91,7 +95,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
               children: [
                 Icon(Iconsax.tick_circle, color: AppColors.success, size: 24),
                 const SizedBox(width: 8),
-                const Text('Valider le short', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(l10n.modalValidateTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 16),
@@ -139,14 +143,14 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
             ],
 
             // Feedback (optional)
-            const Text('Feedback (optionnel)', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(l10n.modalFeedbackOptional, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextField(
               controller: _feedbackController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Commentaire pour le videaste...',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: l10n.modalFeedbackHint,
               ),
             ),
             const SizedBox(height: 24),
@@ -160,7 +164,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Annuler'),
+                    child: Text(l10n.commonCancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -170,7 +174,7 @@ class _ValidateShortModalState extends ConsumerState<ValidateShortModal> {
                     icon: _isLoading
                         ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                         : const Icon(Iconsax.tick_circle, size: 18),
-                    label: const Text('Valider'),
+                    label: Text(l10n.actionValidate),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.success,
                       foregroundColor: Colors.white,

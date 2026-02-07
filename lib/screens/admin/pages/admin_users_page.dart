@@ -9,11 +9,12 @@ import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/cards/user_card.dart';
 import '../../../core/models/user.dart';
 import '../../../widgets/common/search_filter_bar.dart';
+import '../../../l10n/app_localizations.dart';
 
 class AdminUsersPage extends ConsumerStatefulWidget {
   const AdminUsersPage({super.key});
 
-  // Méthode statique pour afficher le dialog d'invitation
+  // Methode statique pour afficher le dialog d'invitation
   static void showInviteDialog(BuildContext context, WidgetRef ref) {
     _AdminUsersPageState._showInviteUserDialog(context, ref);
   }
@@ -25,13 +26,6 @@ class AdminUsersPage extends ConsumerStatefulWidget {
 class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
   String _searchQuery = '';
   String _roleFilter = 'ALL';
-
-  static const _roleOptions = [
-    {'value': 'ALL', 'label': 'Tous les roles'},
-    {'value': 'ADMIN', 'label': 'Admin'},
-    {'value': 'VIDEASTE', 'label': 'Videaste'},
-    {'value': 'ASSISTANT', 'label': 'Assistant'},
-  ];
 
   List<User> _filterUsers(List<User> users) {
     return users.where((u) {
@@ -50,14 +44,22 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
   @override
   Widget build(BuildContext context) {
     final usersAsync = ref.watch(allUsersProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    final roleOptions = [
+      {'value': 'ALL', 'label': l10n.usersAllRoles},
+      {'value': 'ADMIN', 'label': 'Admin'},
+      {'value': 'VIDEASTE', 'label': 'Videaste'},
+      {'value': 'ASSISTANT', 'label': 'Assistant'},
+    ];
 
     return Column(
       children: [
         SearchFilterBar(
-          hintText: 'Rechercher un membre...',
+          hintText: l10n.usersSearchHint,
           onSearchChanged: (v) => setState(() => _searchQuery = v),
           filterValue: _roleFilter,
-          filterOptions: _roleOptions,
+          filterOptions: roleOptions,
           onFilterChanged: (v) => setState(() => _roleFilter = v ?? 'ALL'),
         ),
         Expanded(
@@ -80,14 +82,14 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                                 const SizedBox(height: 16),
                                 Text(
                                   _searchQuery.isNotEmpty || _roleFilter != 'ALL'
-                                      ? 'Aucun membre trouve'
-                                      : 'Aucun utilisateur',
+                                      ? l10n.usersEmpty
+                                      : l10n.usersNoUsers,
                                   style: TextStyle(fontSize: 16, color: AppColors.gray600),
                                 ),
                                 if (_searchQuery.isEmpty && _roleFilter == 'ALL') ...[
                                   const SizedBox(height: 8),
                                   Text(
-                                    'Commencez par inviter des membres',
+                                    l10n.usersInviteHint,
                                     style: TextStyle(fontSize: 14, color: AppColors.gray500),
                                   ),
                                 ],
@@ -106,7 +108,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                             onTap: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Profil de ${user.username}'),
+                                  content: Text(l10n.userViewProfile),
                                   duration: const Duration(seconds: 2),
                                 ),
                               );
@@ -147,348 +149,360 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Iconsax.user_add, color: AppColors.primary),
-              const SizedBox(width: 12),
-              const Text('Inviter un utilisateur'),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Row(
               children: [
-                // Username
-                TextField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom d\'utilisateur',
-                    hintText: 'Ex: johndoe',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.user),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Email
-                TextField(
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email (optionnel)',
-                    hintText: 'exemple@email.com',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.sms),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Password
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Mot de passe',
-                    hintText: 'Minimum 6 caractères',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.lock),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Role
-                DropdownButtonFormField<String>(
-                  initialValue: selectedRole,
-                  decoration: const InputDecoration(
-                    labelText: 'Rôle',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Iconsax.shield_tick),
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 'VIDEASTE', child: Text('Vidéaste')),
-                    DropdownMenuItem(value: 'ASSISTANT', child: Text('Assistant')),
-                    DropdownMenuItem(value: 'ADMIN', child: Text('Administrateur')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedRole = value;
-                      });
-                    }
-                  },
-                ),
+                Icon(Iconsax.user_add, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Text(l10n.usersInviteTitle),
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: isLoading ? null : () => Navigator.pop(context),
-              child: const Text('Annuler'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Username
+                  TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: l10n.usersUsername,
+                      hintText: l10n.usersUsernameHint,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.user),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Email
+                  TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: l10n.usersEmailOptional,
+                      hintText: l10n.usersEmailHint,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.sms),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Password
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: l10n.usersPassword,
+                      hintText: l10n.usersPasswordHint,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.lock),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Role
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedRole,
+                    decoration: InputDecoration(
+                      labelText: l10n.usersRole,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Iconsax.shield_tick),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'VIDEASTE', child: Text(l10n.roleVideaste)),
+                      DropdownMenuItem(value: 'ASSISTANT', child: Text(l10n.roleAssistant)),
+                      DropdownMenuItem(value: 'ADMIN', child: Text(l10n.roleAdmin)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedRole = value;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      // Validation
-                      if (usernameController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Le nom d\'utilisateur est requis'),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
-                        return;
-                      }
-
-                      if (passwordController.text.trim().length < 6) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Le mot de passe doit contenir au moins 6 caractères'),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
-                        return;
-                      }
-
-                      setState(() => isLoading = true);
-
-                      try {
-                        final service = ref.read(usersServiceProvider);
-                        await service.createUser(
-                          username: usernameController.text.trim(),
-                          password: passwordController.text.trim(),
-                          email: emailController.text.trim().isEmpty ? null : emailController.text.trim(),
-                          role: selectedRole,
-                        );
-
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          ref.invalidate(allUsersProvider);
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: Text(l10n.commonCancel),
+              ),
+              ElevatedButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        // Validation
+                        if (usernameController.text.trim().isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Utilisateur ${usernameController.text} créé avec succès'),
-                              backgroundColor: AppColors.success,
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Erreur: ${e.toString()}'),
+                              content: Text(l10n.usersUsernameRequired),
                               backgroundColor: AppColors.error,
                             ),
                           );
+                          return;
                         }
-                      } finally {
-                        if (context.mounted) {
-                          setState(() => isLoading = false);
+
+                        if (passwordController.text.trim().length < 6) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.usersPasswordMinLength),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
+                          return;
                         }
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
+
+                        setState(() => isLoading = true);
+
+                        try {
+                          final service = ref.read(usersServiceProvider);
+                          await service.createUser(
+                            username: usernameController.text.trim(),
+                            password: passwordController.text.trim(),
+                            email: emailController.text.trim().isEmpty ? null : emailController.text.trim(),
+                            role: selectedRole,
+                          );
+
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ref.invalidate(allUsersProvider);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.usersCreatedSuccess(usernameController.text)),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.commonErrorPrefix(e.toString())),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(l10n.usersInviteButton),
               ),
-              child: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Text('Inviter'),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   static void _showBlockUserDialog(BuildContext context, WidgetRef ref, User user) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Bloquer l\'utilisateur'),
-        content: Text('Êtes-vous sûr de vouloir bloquer ${user.username} ? Il ne pourra plus accéder à l\'application.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                final service = ref.read(usersServiceProvider);
-                await service.updateUserStatus(user.id, 'BLOCKED');
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ref.invalidate(allUsersProvider);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${user.username} a été bloqué'),
-                      backgroundColor: AppColors.warning,
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur: ${e.toString()}'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.warning,
-              foregroundColor: Colors.white,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.usersBlockButton),
+          content: Text(l10n.usersBlockConfirm(user.username)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonCancel),
             ),
-            child: const Text('Bloquer'),
-          ),
-        ],
-      ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final service = ref.read(usersServiceProvider);
+                  await service.updateUserStatus(user.id, 'BLOCKED');
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ref.invalidate(allUsersProvider);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.usersBlocked(user.username)),
+                        backgroundColor: AppColors.warning,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.commonErrorPrefix(e.toString())),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.warning,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(l10n.usersBlockButton),
+            ),
+          ],
+        );
+      },
     );
   }
 
   static void _showUnblockUserDialog(BuildContext context, WidgetRef ref, User user) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Débloquer l\'utilisateur'),
-        content: Text('Êtes-vous sûr de vouloir débloquer ${user.username} ?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                final service = ref.read(usersServiceProvider);
-                await service.updateUserStatus(user.id, 'ACTIVE');
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ref.invalidate(allUsersProvider);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${user.username} a été débloqué'),
-                      backgroundColor: AppColors.success,
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur: ${e.toString()}'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.success,
-              foregroundColor: Colors.white,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(l10n.usersUnblockButton),
+          content: Text(l10n.usersUnblockConfirm(user.username)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonCancel),
             ),
-            child: const Text('Débloquer'),
-          ),
-        ],
-      ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final service = ref.read(usersServiceProvider);
+                  await service.updateUserStatus(user.id, 'ACTIVE');
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ref.invalidate(allUsersProvider);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.usersUnblocked(user.username)),
+                        backgroundColor: AppColors.success,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.commonErrorPrefix(e.toString())),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.success,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(l10n.usersUnblockButton),
+            ),
+          ],
+        );
+      },
     );
   }
 
   static void _showDeleteUserDialog(BuildContext context, WidgetRef ref, User user) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Iconsax.warning_2, color: AppColors.error),
-            const SizedBox(width: 12),
-            const Text('Supprimer l\'utilisateur'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Êtes-vous sûr de vouloir supprimer ${user.username} ?'),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha:0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      'Cette action est irréversible',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Iconsax.warning_2, color: AppColors.error),
+              const SizedBox(width: 12),
+              Text(l10n.usersDeleteButton),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.usersDeleteConfirm(user.username)),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha:0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Cette action est irr\u00e9versible',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonCancel),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final service = ref.read(usersServiceProvider);
+                  await service.deleteUser(user.id);
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ref.invalidate(allUsersProvider);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.usersDeleted(user.username)),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.commonErrorPrefix(e.toString())),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(l10n.usersDeleteButton),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                final service = ref.read(usersServiceProvider);
-                await service.deleteUser(user.id);
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ref.invalidate(allUsersProvider);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${user.username} a été supprimé'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur: ${e.toString()}'),
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

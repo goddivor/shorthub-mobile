@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/shorts_provider.dart';
 
 class RejectShortModal extends ConsumerStatefulWidget {
@@ -32,6 +33,7 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
     if (reason.isEmpty) return;
 
     setState(() => _isLoading = true);
+    final l10n = AppLocalizations.of(context)!;
 
     try {
       await ref.read(shortsServiceProvider).updateShortStatus(
@@ -48,7 +50,7 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Short rejete'),
+            content: Text(l10n.modalRejectSuccess),
             backgroundColor: AppColors.error,
           ),
         );
@@ -57,7 +59,7 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+          SnackBar(content: Text(l10n.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
         );
       }
     }
@@ -65,6 +67,8 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: EdgeInsets.only(
         left: 20,
@@ -96,7 +100,7 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
               children: [
                 Icon(Iconsax.close_circle, color: AppColors.error, size: 24),
                 const SizedBox(width: 8),
-                const Text('Rejeter le short', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(l10n.modalRejectTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 16),
@@ -149,14 +153,14 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
             const SizedBox(height: 16),
 
             // Reason (required)
-            const Text('Raison du rejet *', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(l10n.modalRejectReason, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextField(
               controller: _reasonController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Expliquer la raison du rejet...',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: l10n.modalRejectReasonHint,
               ),
               onChanged: (_) => setState(() {}),
             ),
@@ -167,9 +171,9 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
               CheckboxListTile(
                 value: _deleteFile,
                 onChanged: (v) => setState(() => _deleteFile = v ?? false),
-                title: const Text('Supprimer le fichier video', style: TextStyle(fontSize: 13)),
+                title: Text(l10n.modalRejectDeleteFile, style: const TextStyle(fontSize: 13)),
                 subtitle: Text(
-                  widget.short.fileName ?? 'Fichier sur Google Drive',
+                  widget.short.fileName ?? l10n.modalRejectDeleteFileDefault,
                   style: TextStyle(fontSize: 11, color: AppColors.gray500),
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
@@ -188,7 +192,7 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Annuler'),
+                    child: Text(l10n.commonCancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -198,7 +202,7 @@ class _RejectShortModalState extends ConsumerState<RejectShortModal> {
                     icon: _isLoading
                         ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                         : const Icon(Iconsax.close_circle, size: 18),
-                    label: const Text('Rejeter'),
+                    label: Text(l10n.actionReject),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error,
                       foregroundColor: Colors.white,

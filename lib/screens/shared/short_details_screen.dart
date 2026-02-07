@@ -608,7 +608,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                           setDialogState(() => isLoading = false);
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+                              SnackBar(content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
                             );
                           }
                         }
@@ -660,7 +660,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                           setDialogState(() => isLoading = false);
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+                              SnackBar(content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
                             );
                           }
                         }
@@ -712,7 +712,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                           setDialogState(() => isLoading = false);
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Erreur: $e'), backgroundColor: AppColors.error),
+                              SnackBar(content: Text(AppLocalizations.of(context)!.commonErrorPrefix(e.toString())), backgroundColor: AppColors.error),
                             );
                           }
                         }

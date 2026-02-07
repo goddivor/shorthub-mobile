@@ -15,6 +15,7 @@ import '../../../widgets/common/loading_indicator.dart';
 import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/modals/roll_short_modal.dart';
 import '../../../widgets/modals/assign_short_modal.dart';
+import '../../../l10n/app_localizations.dart';
 
 class AdminRollingPage extends ConsumerStatefulWidget {
   const AdminRollingPage({super.key});
@@ -90,7 +91,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
                     children: [
                       Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
                       const SizedBox(height: 16),
-                      Text('Aucune chaine source', style: TextStyle(fontSize: 16, color: context.textTertiary)),
+                      Text(AppLocalizations.of(context)!.channelNoSource, style: TextStyle(fontSize: 16, color: context.textTertiary)),
                     ],
                   ),
                 );
@@ -276,7 +277,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   textStyle: const TextStyle(fontSize: 12),
                 ),
-                child: const Text('Generer'),
+                child: Text(AppLocalizations.of(context)!.rollingGenerate),
               ),
             ),
           ],

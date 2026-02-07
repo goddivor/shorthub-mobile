@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/user.dart';
 
@@ -225,11 +226,11 @@ class UserCard extends StatelessWidget {
                                 color: isBlocked ? AppColors.success : AppColors.warning,
                               ),
                               const SizedBox(width: 8),
-                              Text(isBlocked ? 'Débloquer' : 'Bloquer'),
+                              Text(isBlocked ? AppLocalizations.of(context)!.usersUnblockButton : AppLocalizations.of(context)!.usersBlockButton),
                             ],
                           ),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'details',
                           child: Row(
                             children: [
@@ -238,8 +239,8 @@ class UserCard extends StatelessWidget {
                                 size: 18,
                                 color: AppColors.primary,
                               ),
-                              SizedBox(width: 8),
-                              Text('Voir le profil'),
+                              const SizedBox(width: 8),
+                              Text(AppLocalizations.of(context)!.userViewProfile),
                             ],
                           ),
                         ),
@@ -255,7 +256,7 @@ class UserCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Supprimer',
+                                AppLocalizations.of(context)!.usersDeleteButton,
                                 style: TextStyle(color: AppColors.error),
                               ),
                             ],
