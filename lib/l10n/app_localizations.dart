@@ -1333,6 +1333,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Connectez-vous a ShortHub pour ajouter des chaines sources'**
   String get shareOverlayLoginHint;
+
+  /// No description provided for @drawerSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get drawerSettings;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Apparence'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsLanguageLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue de l\'application'**
+  String get settingsLanguageLabel;
+
+  /// No description provided for @settingsLanguageFrench.
+  ///
+  /// In fr, this message translates to:
+  /// **'Français'**
+  String get settingsLanguageFrench;
+
+  /// No description provided for @settingsLanguageEnglish.
+  ///
+  /// In fr, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglish;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode sombre'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Basculer entre le thème clair et sombre'**
+  String get settingsDarkModeDesc;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Version'**
+  String get settingsVersion;
 }
 
 class _AppLocalizationsDelegate

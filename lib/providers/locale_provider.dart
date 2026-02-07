@@ -25,6 +25,11 @@ class LocaleNotifier extends StateNotifier<Locale> {
     await StorageService.setString('locale', newLocale.languageCode);
   }
 
+  Future<void> setLocale(String languageCode) async {
+    state = Locale(languageCode);
+    await StorageService.setString('locale', languageCode);
+  }
+
   bool get isFrench => state.languageCode == 'fr';
 }
 

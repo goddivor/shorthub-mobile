@@ -7,8 +7,6 @@ import '../../config/theme/theme_extensions.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/theme_provider.dart';
-import '../../providers/locale_provider.dart';
 import '../../l10n/app_localizations.dart';
 
 class CustomDrawer extends ConsumerWidget {
@@ -21,19 +19,60 @@ class CustomDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Drawer(
       child: Column(
         children: [
-          // Header avec profil utilisateur
+          // Header
           _buildDrawerHeader(context),
 
-          // Navigation items
+          // Menu items
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                _buildSettingsSection(context, ref),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              child: Column(
+                children: [
+                  // Profile
+                  _buildMenuItem(
+                    context: context,
+                    icon: Iconsax.user,
+                    title: l10n.drawerProfile,
+                    iconBgColor: AppColors.primary,
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, AppRoutes.profile);
+                    },
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Settings
+                  _buildMenuItem(
+                    context: context,
+                    icon: Iconsax.setting_2,
+                    title: l10n.drawerSettings,
+                    iconBgColor: AppColors.secondary,
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, AppRoutes.settings);
+                    },
+                  ),
+
+                  const Spacer(),
+
+                  // Logout
+                  Divider(height: 1, color: context.borderColor),
+                  const SizedBox(height: 8),
+                  _buildMenuItem(
+                    context: context,
+                    icon: Iconsax.logout,
+                    title: l10n.drawerLogout,
+                    iconBgColor: AppColors.error,
+                    isDestructive: true,
+                    onTap: () => _showLogoutDialog(context, ref),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -42,38 +81,54 @@ class CustomDrawer extends ConsumerWidget {
   }
 
   Widget _buildDrawerHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 60, 24, 28),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primary,
+            AppColors.primary.withValues(alpha: 0.85),
+            AppColors.secondary.withValues(alpha: 0.7),
+          ],
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Avatar
-          CircleAvatar(
-            radius: 36,
-            backgroundColor: Colors.white,
-            backgroundImage: user.profileImage != null && user.profileImage!.isNotEmpty
-                ? NetworkImage(user.profileImage!)
-                : null,
-            child: user.profileImage == null || user.profileImage!.isEmpty
-                ? Text(
-                    user.username.isNotEmpty
-                        ? user.username[0].toUpperCase()
-                        : '?',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  )
-                : null,
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
+            ),
+            child: CircleAvatar(
+              radius: 36,
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
+              backgroundImage: user.profileImage != null && user.profileImage!.isNotEmpty
+                  ? NetworkImage(user.profileImage!)
+                  : null,
+              child: user.profileImage == null || user.profileImage!.isEmpty
+                  ? Text(
+                      user.username.isNotEmpty
+                          ? user.username[0].toUpperCase()
+                          : '?',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+            ),
           ),
           const SizedBox(height: 16),
 
-          // Nom d'utilisateur
+          // Username
           Text(
             user.username,
             style: const TextStyle(
@@ -86,20 +141,21 @@ class CustomDrawer extends ConsumerWidget {
 
           // Email
           Text(
-            user.email ?? AppLocalizations.of(context)!.drawerNoEmail,
+            user.email ?? l10n.drawerNoEmail,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white.withValues(alpha:0.8),
+              color: Colors.white.withValues(alpha: 0.8),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
 
           // Role badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha:0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
             ),
             child: Text(
               _getRoleLabel(user.role ?? '', context),
@@ -115,188 +171,48 @@ class CustomDrawer extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingsSection(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              l10n.navSettings,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: context.textHint,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-        ),
-
-        // Profile
-        _buildDrawerItem(
-          context: context,
-          icon: Iconsax.user,
-          activeIcon: Iconsax.user,
-          title: l10n.drawerProfile,
-          route: AppRoutes.profile,
-          isActive: false,
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, AppRoutes.profile);
-          },
-        ),
-
-        // Dark mode toggle
-        _buildDarkModeToggle(context, ref),
-
-        // Language toggle
-        _buildLanguageToggle(context, ref),
-
-        const Divider(height: 1),
-
-        // Logout
-        _buildDrawerItem(
-          context: context,
-          icon: Iconsax.logout,
-          activeIcon: Iconsax.logout,
-          title: l10n.drawerLogout,
-          route: '',
-          isActive: false,
-          isDestructive: true,
-          onTap: () {
-            _showLogoutDialog(context, ref);
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDrawerItem({
+  Widget _buildMenuItem({
     required BuildContext context,
     required IconData icon,
-    required IconData activeIcon,
     required String title,
-    required String route,
-    required bool isActive,
+    required Color iconBgColor,
     bool isDestructive = false,
-    VoidCallback? onTap,
+    required VoidCallback onTap,
   }) {
-    final color = isDestructive
-        ? AppColors.error
-        : isActive
-            ? AppColors.primary
-            : context.iconColor;
+    final textColor = isDestructive ? AppColors.error : context.textPrimary;
 
-    final backgroundColor = isActive
-        ? AppColors.primary.withValues(alpha:0.1)
-        : Colors.transparent;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ListTile(
-        leading: Icon(
-          isActive ? activeIcon : icon,
-          color: color,
-          size: 24,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-            color: color,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconBgColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: iconBgColor, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              if (!isDestructive)
+                Icon(Iconsax.arrow_right_3, size: 18, color: context.iconSubtle),
+            ],
           ),
-        ),
-        onTap: onTap ??
-            () {
-              if (route.isNotEmpty && !isActive) {
-                Navigator.pushReplacementNamed(context, route);
-              } else {
-                Navigator.pop(context);
-              }
-            },
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDarkModeToggle(BuildContext context, WidgetRef ref) {
-    final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: SwitchListTile(
-        secondary: Icon(
-          isDark ? Iconsax.moon : Iconsax.sun_1,
-          color: context.iconColor,
-          size: 24,
-        ),
-        title: Text(
-          AppLocalizations.of(context)!.drawerDarkMode,
-          style: TextStyle(
-            fontSize: 15,
-            color: context.iconColor,
-          ),
-        ),
-        value: isDark,
-        activeTrackColor: AppColors.primary,
-        onChanged: (_) {
-          ref.read(themeModeProvider.notifier).toggle();
-        },
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageToggle(BuildContext context, WidgetRef ref) {
-    final isFrench = ref.watch(localeProvider).languageCode == 'fr';
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: SwitchListTile(
-        secondary: Icon(
-          Iconsax.language_square,
-          color: context.iconColor,
-          size: 24,
-        ),
-        title: Text(
-          AppLocalizations.of(context)!.drawerLanguage,
-          style: TextStyle(
-            fontSize: 15,
-            color: context.iconColor,
-          ),
-        ),
-        subtitle: Text(
-          isFrench ? 'Français' : 'English',
-          style: TextStyle(fontSize: 12, color: context.textHint),
-        ),
-        value: !isFrench,
-        activeTrackColor: AppColors.primary,
-        onChanged: (_) {
-          ref.read(localeProvider.notifier).toggle();
-        },
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );

@@ -227,5 +227,17 @@
   "shareOverlayAlreadyExists": "This channel already exists",
   "shareOverlayClose": "Close",
   "shareOverlayLoginRequired": "Login required",
-  "shareOverlayLoginHint": "Sign in to ShortHub to add source channels"
+  "shareOverlayLoginHint": "Sign in to ShortHub to add source channels",
+
+  "drawerSettings": "Settings",
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsLanguage": "Language",
+  "settingsLanguageLabel": "Application language",
+  "settingsLanguageFrench": "Français",
+  "settingsLanguageEnglish": "English",
+  "settingsDarkMode": "Dark mode",
+  "settingsDarkModeDesc": "Switch between light and dark theme",
+  "settingsAbout": "About",
+  "settingsVersion": "Version"
 }

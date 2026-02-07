@@ -7,7 +7,6 @@ import '../../config/theme/theme_extensions.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/notifications_provider.dart';
-import '../../providers/theme_provider.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final User user;
@@ -49,20 +48,6 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        // Theme Toggle
-        IconButton(
-          icon: Icon(
-            ref.watch(themeModeProvider) == ThemeMode.dark
-                ? Iconsax.sun_1
-                : Iconsax.moon,
-            color: context.iconColor,
-            size: 22,
-          ),
-          onPressed: () {
-            ref.read(themeModeProvider.notifier).toggle();
-          },
-        ),
-
         // Notification Button
         Stack(
           children: [

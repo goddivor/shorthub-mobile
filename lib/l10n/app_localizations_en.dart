@@ -656,4 +656,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get shareOverlayLoginHint =>
       'Sign in to ShortHub to add source channels';
+
+  @override
+  String get drawerSettings => 'Settings';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsLanguageLabel => 'Application language';
+
+  @override
+  String get settingsLanguageFrench => 'Français';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsDarkMode => 'Dark mode';
+
+  @override
+  String get settingsDarkModeDesc => 'Switch between light and dark theme';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get settingsVersion => 'Version';
 }

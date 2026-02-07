@@ -302,5 +302,17 @@
   "shareOverlayAlreadyExists": "Cette chaine existe deja",
   "shareOverlayClose": "Fermer",
   "shareOverlayLoginRequired": "Connexion requise",
-  "shareOverlayLoginHint": "Connectez-vous a ShortHub pour ajouter des chaines sources"
+  "shareOverlayLoginHint": "Connectez-vous a ShortHub pour ajouter des chaines sources",
+
+  "drawerSettings": "Paramètres",
+  "settingsTitle": "Paramètres",
+  "settingsAppearance": "Apparence",
+  "settingsLanguage": "Langue",
+  "settingsLanguageLabel": "Langue de l'application",
+  "settingsLanguageFrench": "Français",
+  "settingsLanguageEnglish": "English",
+  "settingsDarkMode": "Mode sombre",
+  "settingsDarkModeDesc": "Basculer entre le thème clair et sombre",
+  "settingsAbout": "À propos",
+  "settingsVersion": "Version"
 }

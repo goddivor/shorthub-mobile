@@ -8,6 +8,7 @@ import '../../screens/assistant/assistant_dashboard_screen.dart';
 import '../../screens/shared/short_details_screen.dart';
 import '../../screens/shared/notifications_screen.dart';
 import '../../screens/shared/profile_screen.dart';
+import '../../screens/shared/settings_screen.dart';
 
 /// App route names
 class AppRoutes {
@@ -19,6 +20,7 @@ class AppRoutes {
   static const String shortDetails = '/short/details';
   static const String notifications = '/notifications';
   static const String profile = '/profile';
+  static const String settings = '/settings';
 }
 
 /// Generate routes for the app
@@ -45,6 +47,9 @@ class AppRouter {
 
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
+
+      case AppRoutes.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
 
       case AppRoutes.shortDetails:
         final shortId = settings.arguments as String;

@@ -661,4 +661,37 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get shareOverlayLoginHint =>
       'Connectez-vous a ShortHub pour ajouter des chaines sources';
+
+  @override
+  String get drawerSettings => 'Paramètres';
+
+  @override
+  String get settingsTitle => 'Paramètres';
+
+  @override
+  String get settingsAppearance => 'Apparence';
+
+  @override
+  String get settingsLanguage => 'Langue';
+
+  @override
+  String get settingsLanguageLabel => 'Langue de l\'application';
+
+  @override
+  String get settingsLanguageFrench => 'Français';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsDarkMode => 'Mode sombre';
+
+  @override
+  String get settingsDarkModeDesc => 'Basculer entre le thème clair et sombre';
+
+  @override
+  String get settingsAbout => 'À propos';
+
+  @override
+  String get settingsVersion => 'Version';
 }
