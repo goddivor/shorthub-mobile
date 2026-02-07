@@ -41,9 +41,25 @@ class GraphQLClientService {
         },
       );
 
-      // For now, just use HTTP link without WebSocket to avoid blocking
-      // WebSocket can be added later when needed for subscriptions
-      final Link link = authLink.concat(httpLink);
+      // WebSocket link for subscriptions
+      final WebSocketLink wsLink = WebSocketLink(
+        wsEndpoint,
+        config: SocketClientConfig(
+          autoReconnect: true,
+          inactivityTimeout: const Duration(seconds: 30),
+          initialPayload: () async {
+            final token = await StorageService.getAuthToken();
+            return token != null ? {'Authorization': 'Bearer $token'} : {};
+          },
+        ),
+      );
+
+      // Split link: subscriptions via WebSocket, everything else via HTTP
+      final Link link = Link.split(
+        (request) => request.isSubscription,
+        wsLink,
+        authLink.concat(httpLink),
+      );
 
       _client = GraphQLClient(
         cache: GraphQLCache(store: HiveStore()),

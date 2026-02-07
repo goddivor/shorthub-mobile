@@ -29,6 +29,9 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final unreadAsync = ref.watch(unreadNotificationsCountProvider);
     final unreadCount = unreadAsync.valueOrNull ?? 0;
 
+    // Listen to real-time notification subscription (auto-refreshes unread count)
+    ref.listen(notificationSubscriptionProvider, (_, __) {});
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
