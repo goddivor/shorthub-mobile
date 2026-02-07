@@ -8,86 +8,134 @@ import '../../../widgets/common/loading_indicator.dart';
 import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/cards/user_card.dart';
 import '../../../core/models/user.dart';
+import '../../../widgets/common/search_filter_bar.dart';
 
-class AdminUsersPage extends ConsumerWidget {
+class AdminUsersPage extends ConsumerStatefulWidget {
   const AdminUsersPage({super.key});
 
   // Méthode statique pour afficher le dialog d'invitation
   static void showInviteDialog(BuildContext context, WidgetRef ref) {
-    _showInviteUserDialog(context, ref);
+    _AdminUsersPageState._showInviteUserDialog(context, ref);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AdminUsersPage> createState() => _AdminUsersPageState();
+}
+
+class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
+  String _searchQuery = '';
+  String _roleFilter = 'ALL';
+
+  static const _roleOptions = [
+    {'value': 'ALL', 'label': 'Tous les roles'},
+    {'value': 'ADMIN', 'label': 'Admin'},
+    {'value': 'VIDEASTE', 'label': 'Videaste'},
+    {'value': 'ASSISTANT', 'label': 'Assistant'},
+  ];
+
+  List<User> _filterUsers(List<User> users) {
+    return users.where((u) {
+      if (_roleFilter != 'ALL' && u.role != _roleFilter) return false;
+      if (_searchQuery.isNotEmpty) {
+        final query = _searchQuery.toLowerCase();
+        if (!u.username.toLowerCase().contains(query) &&
+            !(u.email ?? '').toLowerCase().contains(query)) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final usersAsync = ref.watch(allUsersProvider);
 
-    return usersAsync.when(
-      data: (users) {
-        if (users.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Iconsax.people,
-                  size: 64,
-                  color: AppColors.gray300,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Aucun utilisateur',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.gray600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Commencez par inviter des membres',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.gray500,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
+    return Column(
+      children: [
+        SearchFilterBar(
+          hintText: 'Rechercher un membre...',
+          onSearchChanged: (v) => setState(() => _searchQuery = v),
+          filterValue: _roleFilter,
+          filterOptions: _roleOptions,
+          onFilterChanged: (v) => setState(() => _roleFilter = v ?? 'ALL'),
+        ),
+        Expanded(
+          child: usersAsync.when(
+            data: (allUsers) {
+              final users = _filterUsers(allUsers);
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: users.length,
-          itemBuilder: (context, index) {
-            final user = users[index];
-            return UserCard(
-              user: user,
-              onTap: () {
-                // TODO: Navigate to user profile
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Profil de ${user.username}'),
-                    duration: const Duration(seconds: 2),
+              if (users.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Iconsax.people,
+                        size: 64,
+                        color: AppColors.gray300,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _searchQuery.isNotEmpty || _roleFilter != 'ALL'
+                            ? 'Aucun membre trouve'
+                            : 'Aucun utilisateur',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.gray600,
+                        ),
+                      ),
+                      if (_searchQuery.isEmpty && _roleFilter == 'ALL') ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Commencez par inviter des membres',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.gray500,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 );
-              },
-              onBlock: () {
-                _showBlockUserDialog(context, ref, user);
-              },
-              onUnblock: () {
-                _showUnblockUserDialog(context, ref, user);
-              },
-              onDelete: () {
-                _showDeleteUserDialog(context, ref, user);
-              },
-            );
-          },
-        );
-      },
-      loading: () => const LoadingIndicator(message: 'Chargement des utilisateurs...'),
-      error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement des utilisateurs',
-        onRetry: () => ref.invalidate(allUsersProvider),
-      ),
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return UserCard(
+                    user: user,
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Profil de ${user.username}'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                    onBlock: () {
+                      _showBlockUserDialog(context, ref, user);
+                    },
+                    onUnblock: () {
+                      _showUnblockUserDialog(context, ref, user);
+                    },
+                    onDelete: () {
+                      _showDeleteUserDialog(context, ref, user);
+                    },
+                  );
+                },
+              );
+            },
+            loading: () => const LoadingIndicator(message: 'Chargement des utilisateurs...'),
+            error: (error, _) => ErrorDisplay(
+              message: 'Erreur lors du chargement des utilisateurs',
+              onRetry: () => ref.invalidate(allUsersProvider),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

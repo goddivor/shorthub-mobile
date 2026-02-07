@@ -10,6 +10,7 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
+import '../../widgets/common/search_filter_bar.dart';
 import '../../config/routes/app_routes.dart';
 
 class AssistantDashboardScreen extends ConsumerStatefulWidget {
@@ -21,6 +22,7 @@ class AssistantDashboardScreen extends ConsumerStatefulWidget {
 
 class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScreen> {
   int _selectedTabIndex = 0;
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,10 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
             children: [
               _buildStatsHeader(),
               _buildTabBar(),
+              SearchFilterBar(
+                hintText: 'Rechercher un short...',
+                onSearchChanged: (v) => setState(() => _searchQuery = v),
+              ),
               Expanded(
                 child: _buildTabContent(),
               ),
@@ -241,7 +247,17 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
     );
   }
 
-  Widget _buildVideoList(List<Short> videos, String emptyMessage) {
+  Widget _buildVideoList(List<Short> allVideos, String emptyMessage) {
+    final videos = _searchQuery.isEmpty
+        ? allVideos
+        : allVideos.where((s) {
+            final query = _searchQuery.toLowerCase();
+            return (s.title ?? '').toLowerCase().contains(query) ||
+                s.videoId.toLowerCase().contains(query) ||
+                s.sourceChannel.channelName.toLowerCase().contains(query) ||
+                (s.assignedTo?.username ?? '').toLowerCase().contains(query);
+          }).toList();
+
     if (videos.isEmpty) {
       return Center(
         child: Column(

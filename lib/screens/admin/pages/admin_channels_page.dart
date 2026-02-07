@@ -9,6 +9,7 @@ import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/cards/channel_card.dart';
 import '../../../core/models/source_channel.dart';
 import '../../../core/models/admin_channel.dart';
+import '../../../widgets/common/search_filter_bar.dart';
 
 class AdminChannelsPage extends ConsumerStatefulWidget {
   final Function(int)? onTabChanged;
@@ -311,6 +312,7 @@ class AdminChannelsPage extends ConsumerStatefulWidget {
 class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -357,6 +359,12 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
           ),
         ),
 
+        // Search bar
+        SearchFilterBar(
+          hintText: 'Rechercher un canal...',
+          onSearchChanged: (v) => setState(() => _searchQuery = v),
+        ),
+
         // Tab Views
         Expanded(
           child: TabBarView(
@@ -375,7 +383,11 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
     final channelsAsync = ref.watch(sourceChannelsProvider);
 
     return channelsAsync.when(
-      data: (channels) {
+      data: (allChannels) {
+        final channels = _searchQuery.isEmpty
+            ? allChannels
+            : allChannels.where((c) => c.channelName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+
         if (channels.isEmpty) {
           return Center(
             child: Column(
@@ -388,20 +400,22 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Aucun canal source',
+                  _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal source',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.gray600,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Ajoutez un canal pour commencer',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.gray500,
+                if (_searchQuery.isEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ajoutez un canal pour commencer',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.gray500,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           );
@@ -451,7 +465,11 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
     final channelsAsync = ref.watch(adminChannelsProvider);
 
     return channelsAsync.when(
-      data: (channels) {
+      data: (allChannels) {
+        final channels = _searchQuery.isEmpty
+            ? allChannels
+            : allChannels.where((c) => c.channelName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+
         if (channels.isEmpty) {
           return Center(
             child: Column(
@@ -464,20 +482,22 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Aucun canal de publication',
+                  _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal de publication',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.gray600,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Ajoutez un canal pour publier',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.gray500,
+                if (_searchQuery.isEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ajoutez un canal pour publier',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.gray500,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           );
