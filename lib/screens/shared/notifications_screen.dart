@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/routes/app_routes.dart';
 import '../../core/models/notification.dart';
 import '../../providers/notifications_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
@@ -58,16 +59,26 @@ class NotificationsScreen extends ConsumerWidget {
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: notifications.length,
-              itemBuilder: (context, index) => _NotificationCard(
-                notification: notifications[index],
-                onTap: () async {
-                  if (!notifications[index].read) {
-                    await ref.read(notificationsServiceProvider).markAsRead(notifications[index].id);
-                    ref.invalidate(notificationsProvider);
-                    ref.invalidate(unreadNotificationsCountProvider);
-                  }
-                },
-              ),
+              itemBuilder: (context, index) {
+                final notif = notifications[index];
+                return _NotificationCard(
+                  notification: notif,
+                  onTap: () async {
+                    if (!notif.read) {
+                      await ref.read(notificationsServiceProvider).markAsRead(notif.id);
+                      ref.invalidate(notificationsProvider);
+                      ref.invalidate(unreadNotificationsCountProvider);
+                    }
+                    if (notif.shortId != null && context.mounted) {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.shortDetails,
+                        arguments: notif.shortId,
+                      );
+                    }
+                  },
+                );
+              },
             ),
           );
         },

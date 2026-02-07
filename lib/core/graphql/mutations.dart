@@ -263,3 +263,11 @@ const String markAllNotificationsAsReadMutation = r'''
     markAllNotificationsAsRead
   }
 ''';
+
+// ==================== Push Notifications ====================
+
+const String updateFcmTokenMutation = r'''
+  mutation UpdateFcmToken($fcmToken: String!) {
+    updateFcmToken(fcmToken: $fcmToken)
+  }
+''';

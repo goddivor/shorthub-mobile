@@ -11,6 +11,9 @@ import 'core/graphql/graphql_client.dart';
 import 'providers/theme_provider.dart';
 import 'providers/locale_provider.dart';
 
+/// Global navigator key for deep-linking from push notifications
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class ShortHubApp extends ConsumerWidget {
   const ShortHubApp({super.key});
 
@@ -29,6 +32,7 @@ class ShortHubApp extends ConsumerWidget {
           return MaterialApp(
             title: 'ShortHub',
             debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeMode,

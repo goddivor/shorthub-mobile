@@ -3,7 +3,12 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:logger/logger.dart';
+import '../../app.dart';
+import '../../config/routes/app_routes.dart';
+import '../graphql/graphql_client.dart';
+import '../graphql/mutations.dart';
 import 'storage_service.dart';
 
 final _logger = Logger();
@@ -119,15 +124,14 @@ class PushNotificationService {
         ?.createNotificationChannel(androidChannel);
   }
 
-  /// Retrieve FCM token and store locally
+  /// Retrieve FCM token and store locally, then send to backend
   Future<String?> _retrieveAndStoreToken() async {
     try {
       final token = await _messaging.getToken();
       if (token != null) {
         await StorageService.setString(_fcmTokenKey, token);
         _logger.i('FCM token stored: ${token.substring(0, 20)}...');
-        // TODO: Send token to backend when updateFcmToken mutation is available
-        // await _sendTokenToServer(token);
+        await _sendTokenToServer(token);
       }
       return token;
     } catch (e) {
@@ -140,8 +144,33 @@ class PushNotificationService {
   void _onTokenRefresh(String token) {
     StorageService.setString(_fcmTokenKey, token);
     _logger.i('FCM token refreshed');
-    // TODO: Send new token to backend
-    // _sendTokenToServer(token);
+    _sendTokenToServer(token);
+  }
+
+  /// Send FCM token to backend via GraphQL mutation
+  Future<void> _sendTokenToServer(String token) async {
+    try {
+      final isAuth = await StorageService.isAuthenticated();
+      if (!isAuth) {
+        _logger.d('Not authenticated, skipping FCM token sync');
+        return;
+      }
+
+      final result = await GraphQLClientService.client.mutate(
+        MutationOptions(
+          document: gql(updateFcmTokenMutation),
+          variables: {'fcmToken': token},
+        ),
+      );
+
+      if (result.hasException) {
+        _logger.w('Failed to send FCM token to server: ${result.exception}');
+      } else {
+        _logger.i('FCM token synced with server');
+      }
+    } catch (e) {
+      _logger.w('Failed to send FCM token to server: $e');
+    }
   }
 
   /// Handle foreground messages - show local notification
@@ -193,13 +222,25 @@ class PushNotificationService {
 
   /// Navigate based on notification data
   void _handleNotificationNavigation(Map<String, dynamic> data) {
-    // TODO: Implement navigation based on notification type
-    // Example: navigate to short details if shortId is present
-    // final shortId = data['shortId'];
-    // if (shortId != null) {
-    //   navigatorKey.currentState?.pushNamed('/short/$shortId');
-    // }
     _logger.d('Notification navigation data: $data');
+
+    final navigator = navigatorKey.currentState;
+    if (navigator == null) return;
+
+    final shortId = data['shortId'] as String?;
+    final type = data['type'] as String?;
+
+    // Navigate to short details for short-related notifications
+    if (shortId != null) {
+      navigator.pushNamed(AppRoutes.shortDetails, arguments: shortId);
+      return;
+    }
+
+    // For account-related notifications, go to notifications screen
+    if (type == 'ACCOUNT_BLOCKED' || type == 'ACCOUNT_UNBLOCKED') {
+      navigator.pushNamed(AppRoutes.notifications);
+      return;
+    }
   }
 
   /// Get the stored FCM token
