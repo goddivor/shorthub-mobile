@@ -292,5 +292,15 @@
   "contentTypeVfSansEdit": "VF Sans Edit",
   "contentTypeVfAvecEdit": "VF Avec Edit",
   "contentTypeVoSansEdit": "VO Sans Edit",
-  "contentTypeVoAvecEdit": "VO Avec Edit"
+  "contentTypeVoAvecEdit": "VO Avec Edit",
+
+  "shareOverlayTitle": "Ajouter une chaine source",
+  "shareOverlayContentType": "Type de contenu",
+  "shareOverlayAddChannel": "Ajouter la chaine",
+  "shareOverlayAdding": "Ajout en cours...",
+  "shareOverlaySuccess": "Chaine ajoutee avec succes !",
+  "shareOverlayAlreadyExists": "Cette chaine existe deja",
+  "shareOverlayClose": "Fermer",
+  "shareOverlayLoginRequired": "Connexion requise",
+  "shareOverlayLoginHint": "Connectez-vous a ShortHub pour ajouter des chaines sources"
 }

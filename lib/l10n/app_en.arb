@@ -217,5 +217,15 @@
   "contentTypeVfSansEdit": "VF No Edit",
   "contentTypeVfAvecEdit": "VF With Edit",
   "contentTypeVoSansEdit": "VO No Edit",
-  "contentTypeVoAvecEdit": "VO With Edit"
+  "contentTypeVoAvecEdit": "VO With Edit",
+
+  "shareOverlayTitle": "Add source channel",
+  "shareOverlayContentType": "Content type",
+  "shareOverlayAddChannel": "Add channel",
+  "shareOverlayAdding": "Adding...",
+  "shareOverlaySuccess": "Channel added successfully!",
+  "shareOverlayAlreadyExists": "This channel already exists",
+  "shareOverlayClose": "Close",
+  "shareOverlayLoginRequired": "Login required",
+  "shareOverlayLoginHint": "Sign in to ShortHub to add source channels"
 }

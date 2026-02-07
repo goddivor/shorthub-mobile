@@ -7,16 +7,25 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'app.dart';
 import 'core/graphql/graphql_client.dart';
 import 'core/services/storage_service.dart';
 import 'core/services/push_notification_service.dart';
+import 'features/share_overlay/share_overlay_app.dart';
 
 final logger = Logger();
 
+/// Regex to extract YouTube URLs (videos, shorts, channels)
+final _youtubeRegex = RegExp(
+  r'(https?://)?(www\.)?(youtube\.com|youtu\.be)(/shorts/|/watch\?v=|/channel/|/c/|/@)[\w\-]+',
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  String? sharedYoutubeUrl;
 
   try {
     // Set system UI overlay style
@@ -29,38 +38,56 @@ void main() async {
 
     // Load environment variables
     await dotenv.load(fileName: "assets/.env");
-    logger.i('✅ Environment variables loaded');
+    logger.i('Environment variables loaded');
 
     // Initialize storage
     await StorageService.initialize();
-    logger.i('✅ Storage service initialized');
+    logger.i('Storage service initialized');
 
     // Initialize GraphQL client
     await GraphQLClientService.initialize();
-    logger.i('✅ GraphQL client initialized');
+    logger.i('GraphQL client initialized');
 
-    // Initialize Firebase & Push Notifications
+    // Check for share intent before deciding which app to launch
     try {
-      await Firebase.initializeApp();
-      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-      await PushNotificationService().initialize();
-      logger.i('✅ Firebase & push notifications initialized');
+      final sharedMedia = await ReceiveSharingIntent.instance.getInitialMedia();
+      if (sharedMedia.isNotEmpty) {
+        final sharedText = sharedMedia.first.path;
+        final match = _youtubeRegex.firstMatch(sharedText);
+        if (match != null) {
+          sharedYoutubeUrl = match.group(0);
+          logger.i('YouTube share intent detected: $sharedYoutubeUrl');
+        }
+      }
     } catch (e) {
-      logger.w('⚠️ Firebase init skipped (configure google-services.json): $e');
+      logger.w('Share intent check failed: $e');
     }
 
-    logger.i('🚀 ShortHub app starting...');
+    // Only init Firebase for normal app launch (skip for overlay to stay fast)
+    if (sharedYoutubeUrl == null) {
+      try {
+        await Firebase.initializeApp();
+        FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+        await PushNotificationService().initialize();
+        logger.i('Firebase & push notifications initialized');
+      } catch (e) {
+        logger.w('Firebase init skipped (configure google-services.json): $e');
+      }
+    }
+
+    logger.i('ShortHub app starting...');
   } catch (e, stackTrace) {
-    logger.e('❌ Error during initialization', error: e, stackTrace: stackTrace);
+    logger.e('Error during initialization', error: e, stackTrace: stackTrace);
   }
 
-  runApp(
-    const ProviderScope(
-      child: ShortHubApp(),
-    ),
-  );
+  // Branch: share overlay vs normal app
+  if (sharedYoutubeUrl != null) {
+    runApp(ShareOverlayApp(youtubeUrl: sharedYoutubeUrl));
+  } else {
+    runApp(
+      const ProviderScope(
+        child: ShortHubApp(),
+      ),
+    );
+  }
 }
-
-// TODO: YouTube share intent handler will be re-implemented later
-// This was the old implementation with Supabase
-// It will be adapted to work with the new GraphQL backend

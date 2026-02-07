@@ -633,4 +633,32 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get contentTypeVoAvecEdit => 'VO Avec Edit';
+
+  @override
+  String get shareOverlayTitle => 'Ajouter une chaine source';
+
+  @override
+  String get shareOverlayContentType => 'Type de contenu';
+
+  @override
+  String get shareOverlayAddChannel => 'Ajouter la chaine';
+
+  @override
+  String get shareOverlayAdding => 'Ajout en cours...';
+
+  @override
+  String get shareOverlaySuccess => 'Chaine ajoutee avec succes !';
+
+  @override
+  String get shareOverlayAlreadyExists => 'Cette chaine existe deja';
+
+  @override
+  String get shareOverlayClose => 'Fermer';
+
+  @override
+  String get shareOverlayLoginRequired => 'Connexion requise';
+
+  @override
+  String get shareOverlayLoginHint =>
+      'Connectez-vous a ShortHub pour ajouter des chaines sources';
 }

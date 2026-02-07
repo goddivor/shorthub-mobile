@@ -628,4 +628,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contentTypeVoAvecEdit => 'VO With Edit';
+
+  @override
+  String get shareOverlayTitle => 'Add source channel';
+
+  @override
+  String get shareOverlayContentType => 'Content type';
+
+  @override
+  String get shareOverlayAddChannel => 'Add channel';
+
+  @override
+  String get shareOverlayAdding => 'Adding...';
+
+  @override
+  String get shareOverlaySuccess => 'Channel added successfully!';
+
+  @override
+  String get shareOverlayAlreadyExists => 'This channel already exists';
+
+  @override
+  String get shareOverlayClose => 'Close';
+
+  @override
+  String get shareOverlayLoginRequired => 'Login required';
+
+  @override
+  String get shareOverlayLoginHint =>
+      'Sign in to ShortHub to add source channels';
 }

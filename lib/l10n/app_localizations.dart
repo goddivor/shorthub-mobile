@@ -1279,6 +1279,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'VO Avec Edit'**
   String get contentTypeVoAvecEdit;
+
+  /// No description provided for @shareOverlayTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une chaine source'**
+  String get shareOverlayTitle;
+
+  /// No description provided for @shareOverlayContentType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de contenu'**
+  String get shareOverlayContentType;
+
+  /// No description provided for @shareOverlayAddChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter la chaine'**
+  String get shareOverlayAddChannel;
+
+  /// No description provided for @shareOverlayAdding.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajout en cours...'**
+  String get shareOverlayAdding;
+
+  /// No description provided for @shareOverlaySuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaine ajoutee avec succes !'**
+  String get shareOverlaySuccess;
+
+  /// No description provided for @shareOverlayAlreadyExists.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette chaine existe deja'**
+  String get shareOverlayAlreadyExists;
+
+  /// No description provided for @shareOverlayClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get shareOverlayClose;
+
+  /// No description provided for @shareOverlayLoginRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion requise'**
+  String get shareOverlayLoginRequired;
+
+  /// No description provided for @shareOverlayLoginHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous a ShortHub pour ajouter des chaines sources'**
+  String get shareOverlayLoginHint;
 }
 
 class _AppLocalizationsDelegate
