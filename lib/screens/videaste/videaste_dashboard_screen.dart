@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../config/theme/app_colors.dart';
 import '../../core/models/short.dart';
 import '../../core/models/user.dart';
@@ -13,6 +12,7 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
+import '../../config/routes/app_routes.dart';
 
 class VideasteDashboardScreen extends ConsumerStatefulWidget {
   const VideasteDashboardScreen({super.key});
@@ -421,7 +421,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => _openOnYouTube(short),
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id),
                 icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
                 label: const Text('Voir'),
                 style: OutlinedButton.styleFrom(
@@ -449,7 +449,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => _openOnYouTube(short),
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id),
                 icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
                 label: const Text('Voir'),
                 style: OutlinedButton.styleFrom(
@@ -476,7 +476,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
         return SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: () => _openOnYouTube(short),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id),
             icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
             label: const Text('Voir'),
             style: OutlinedButton.styleFrom(
@@ -487,17 +487,6 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
         );
       default:
         return const SizedBox();
-    }
-  }
-
-  Future<void> _openOnYouTube(Short short) async {
-    final url = Uri.parse(short.videoUrl);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible d\'ouvrir le lien YouTube')),
-      );
     }
   }
 

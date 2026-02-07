@@ -5,6 +5,7 @@ import '../../screens/auth/login_screen.dart';
 import '../../screens/admin/admin_dashboard_screen.dart';
 import '../../screens/videaste/videaste_dashboard_screen.dart';
 import '../../screens/assistant/assistant_dashboard_screen.dart';
+import '../../screens/shared/short_details_screen.dart';
 
 /// App route names
 class AppRoutes {
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String adminDashboard = '/admin/dashboard';
   static const String videasteDashboard = '/videaste/dashboard';
   static const String assistantDashboard = '/assistant/dashboard';
+  static const String shortDetails = '/short/details';
 }
 
 /// Generate routes for the app
@@ -33,6 +35,12 @@ class AppRouter {
 
       case AppRoutes.assistantDashboard:
         return MaterialPageRoute(builder: (_) => const AssistantDashboardScreen());
+
+      case AppRoutes.shortDetails:
+        final shortId = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => ShortDetailsScreen(shortId: shortId),
+        );
 
       default:
         return MaterialPageRoute(

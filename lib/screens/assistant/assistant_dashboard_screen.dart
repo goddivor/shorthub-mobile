@@ -10,6 +10,7 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
+import '../../config/routes/app_routes.dart';
 
 class AssistantDashboardScreen extends ConsumerStatefulWidget {
   const AssistantDashboardScreen({super.key});
@@ -431,7 +432,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // Will navigate to short details screen in Feature 6
+                  Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id);
                 },
                 icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
                 label: const Text('Voir les details'),

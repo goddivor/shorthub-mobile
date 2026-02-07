@@ -8,6 +8,14 @@ final shortsServiceProvider = Provider<ShortsService>((ref) {
   return ShortsService();
 });
 
+// Single Short Provider
+final shortByIdProvider = FutureProvider.family<Short, String>(
+  (ref, id) async {
+    final service = ref.read(shortsServiceProvider);
+    return await service.getShortById(id);
+  },
+);
+
 // All Shorts Provider
 final allShortsProvider = FutureProvider<List<Short>>((ref) async {
   final service = ref.read(shortsServiceProvider);

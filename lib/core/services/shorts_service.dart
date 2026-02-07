@@ -44,6 +44,27 @@ class ShortsService {
     }
   }
 
+  /// Fetch a single short by ID
+  Future<Short> getShortById(String id) async {
+    AppLogger.graphqlQuery('getShortById', {'id': id});
+
+    final QueryOptions options = QueryOptions(
+      document: gql(shortQuery),
+      variables: {'id': id},
+      fetchPolicy: FetchPolicy.networkOnly,
+    );
+
+    final result = await _client.query(options);
+
+    if (result.hasException) {
+      AppLogger.graphqlError('getShortById', result.exception);
+      throw Exception(result.exception.toString());
+    }
+
+    AppLogger.graphqlSuccess('getShortById', 'Short fetched');
+    return Short.fromJson(result.data!['short']);
+  }
+
   /// Fetch shorts by status
   Future<List<Short>> getShortsByStatus(String status) async {
     AppLogger.graphqlQuery('getShortsByStatus', {'status': status});

@@ -12,6 +12,7 @@ import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/cards/short_tracking_card.dart';
 import '../../../widgets/modals/validate_short_modal.dart';
 import '../../../widgets/modals/reject_short_modal.dart';
+import '../../../config/routes/app_routes.dart';
 
 class AdminShortsTrackingPage extends ConsumerStatefulWidget {
   const AdminShortsTrackingPage({super.key});
@@ -141,13 +142,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
   }
 
   void _viewShort(Short short) {
-    // TODO: Navigate to short details screen (Feature 6)
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _ShortQuickViewModal(short: short),
-    );
+    Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id);
   }
 
   @override
@@ -343,128 +338,3 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
   }
 }
 
-/// Quick view modal for short details (temporary until Feature 6)
-class _ShortQuickViewModal extends StatelessWidget {
-  final Short short;
-
-  const _ShortQuickViewModal({required this.short});
-
-  @override
-  Widget build(BuildContext context) {
-    final statusColor = AppColors.getStatusColor(short.status);
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.gray300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Thumbnail
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  'https://img.youtube.com/vi/${short.videoId}/hqdefault.jpg',
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: AppColors.gray200,
-                    child: Icon(Iconsax.video, color: AppColors.gray400, size: 48),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Title + status
-            Text(
-              short.title ?? short.videoId,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                short.statusLabel,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Info rows
-            _buildInfoRow(Iconsax.video_circle, 'Source', short.sourceChannel.channelName),
-            if (short.targetChannel != null)
-              _buildInfoRow(Iconsax.monitor, 'Publication', short.targetChannel!.channelName),
-            if (short.assignedTo != null)
-              _buildInfoRow(Iconsax.user, 'Videaste', short.assignedTo!.username),
-            if (short.deadline != null)
-              _buildInfoRow(
-                Iconsax.calendar_1,
-                'Deadline',
-                '${short.deadline!.day}/${short.deadline!.month}/${short.deadline!.year}',
-              ),
-            _buildInfoRow(Iconsax.link, 'URL', short.videoUrl),
-
-            if (short.notes != null && short.notes!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              const Text('Notes', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 4),
-              Text(short.notes!, style: TextStyle(fontSize: 13, color: AppColors.gray600)),
-            ],
-
-            if (short.adminFeedback != null && short.adminFeedback!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              const Text('Feedback admin', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 4),
-              Text(short.adminFeedback!, style: TextStyle(fontSize: 13, color: AppColors.gray600)),
-            ],
-
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: AppColors.gray400),
-          const SizedBox(width: 8),
-          Text('$label: ', style: TextStyle(fontSize: 13, color: AppColors.gray500)),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
