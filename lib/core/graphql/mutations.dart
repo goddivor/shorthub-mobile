@@ -74,14 +74,20 @@ const String rollShortMutation = r'''
       id
       videoId
       videoUrl
+      title
       sourceChannel {
         id
+        channelId
         channelName
         profileImageUrl
+        contentType
       }
       status
+      tags
+      isLate
       rolledAt
       createdAt
+      updatedAt
     }
   }
 ''';

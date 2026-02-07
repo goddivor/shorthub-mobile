@@ -139,7 +139,7 @@ class ShortsService {
   }
 
   /// Retain a rolled short (admin action)
-  Future<Short> retainShort(String shortId) async {
+  Future<void> retainShort(String shortId) async {
     AppLogger.graphqlMutation('retainShort', {'shortId': shortId});
 
     final MutationOptions options = MutationOptions(
@@ -155,11 +155,10 @@ class ShortsService {
     }
 
     AppLogger.graphqlSuccess('retainShort', 'Short retained successfully');
-    return Short.fromJson(result.data!['retainShort']);
   }
 
   /// Reject a rolled short (admin action - can re-appear in rolls)
-  Future<Short> rejectRolledShort(String shortId) async {
+  Future<void> rejectRolledShort(String shortId) async {
     AppLogger.graphqlMutation('rejectShort', {'shortId': shortId});
 
     final MutationOptions options = MutationOptions(
@@ -175,11 +174,10 @@ class ShortsService {
     }
 
     AppLogger.graphqlSuccess('rejectShort', 'Rolled short rejected');
-    return Short.fromJson(result.data!['rejectShort']);
   }
 
   /// Assign a short to a videaste (admin action)
-  Future<Short> assignShort({
+  Future<void> assignShort({
     required String shortId,
     required String videasteId,
     required String targetChannelId,
@@ -209,7 +207,6 @@ class ShortsService {
     }
 
     AppLogger.graphqlSuccess('assignShort', 'Short assigned successfully');
-    return Short.fromJson(result.data!['assignShort']);
   }
 
   /// Get shorts stats from API
@@ -243,7 +240,7 @@ class ShortsService {
   }
 
   /// Update short status
-  Future<Short> updateShortStatus(
+  Future<void> updateShortStatus(
     String shortId,
     String status, {
     String? adminFeedback,
@@ -271,32 +268,30 @@ class ShortsService {
     }
 
     AppLogger.graphqlSuccess('updateShortStatus', 'Short status updated to $status');
-
-    return Short.fromJson(result.data!['updateShortStatus']);
   }
 
   /// Validate a short (assistant action)
-  Future<Short> validateShort(String shortId, {String? feedback}) async {
+  Future<void> validateShort(String shortId, {String? feedback}) async {
     return updateShortStatus(shortId, 'VALIDATED', adminFeedback: feedback);
   }
 
   /// Reject a short (assistant action)
-  Future<Short> rejectShort(String shortId, String reason) async {
+  Future<void> rejectShort(String shortId, String reason) async {
     return updateShortStatus(shortId, 'REJECTED', adminFeedback: reason);
   }
 
   /// Start working on a short (videaste action)
-  Future<Short> startWorkOnShort(String shortId) async {
+  Future<void> startWorkOnShort(String shortId) async {
     return updateShortStatus(shortId, 'IN_PROGRESS');
   }
 
   /// Mark a short as completed (videaste action)
-  Future<Short> completeShort(String shortId) async {
+  Future<void> completeShort(String shortId) async {
     return updateShortStatus(shortId, 'COMPLETED');
   }
 
   /// Publish a validated short (admin action)
-  Future<Short> publishShort(String shortId) async {
+  Future<void> publishShort(String shortId) async {
     return updateShortStatus(shortId, 'PUBLISHED');
   }
 
