@@ -8,6 +8,7 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
+import '../../providers/navigation_provider.dart';
 import 'pages/admin_shorts_tracking_page.dart';
 import 'pages/admin_rolling_page.dart';
 import 'pages/admin_channels_page.dart';
@@ -21,11 +22,10 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
-  int _selectedIndex = 0;
   int _channelsTabIndex = 0; // 0 = Source, 1 = Admin
 
-  String _getCurrentPageTitle() {
-    switch (_selectedIndex) {
+  String _getCurrentPageTitle(int selectedIndex) {
+    switch (selectedIndex) {
       case 0:
         return 'Suivi';
       case 1:
@@ -39,8 +39,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     }
   }
 
-  Widget? _getCurrentFAB() {
-    switch (_selectedIndex) {
+  Widget? _getCurrentFAB(int selectedIndex) {
+    switch (selectedIndex) {
       case 2: // Page canaux
         if (_channelsTabIndex == 0) {
           // Onglet Source Channels
@@ -77,6 +77,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(currentUserProvider);
+    final selectedIndex = ref.watch(adminTabIndexProvider);
 
     return userState.when(
       data: (user) {
@@ -92,12 +93,12 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           backgroundColor: AppColors.background,
           appBar: CustomAppBar(
             user: user,
-            title: _getCurrentPageTitle(),
+            title: _getCurrentPageTitle(selectedIndex),
           ),
           endDrawer: CustomDrawer(user: user),
-          body: _buildBody(),
-          bottomNavigationBar: _buildBottomNavBar(),
-          floatingActionButton: _getCurrentFAB(),
+          body: _buildBody(selectedIndex),
+          bottomNavigationBar: _buildBottomNavBar(selectedIndex),
+          floatingActionButton: _getCurrentFAB(selectedIndex),
         );
       },
       loading: () => const Scaffold(
@@ -115,8 +116,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   }
 
 
-  Widget _buildBody() {
-    switch (_selectedIndex) {
+  Widget _buildBody(int selectedIndex) {
+    switch (selectedIndex) {
       case 0:
         return const AdminShortsTrackingPage();
       case 1:
@@ -136,17 +137,14 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     }
   }
 
-  Widget _buildBottomNavBar() {
+  Widget _buildBottomNavBar(int selectedIndex) {
     return BottomNavigationBar(
-      currentIndex: _selectedIndex,
+      currentIndex: selectedIndex,
       onTap: (index) {
-        setState(() {
-          _selectedIndex = index;
-          // Réinitialiser l'index de l'onglet quand on change de page
-          if (index != 2) {
-            _channelsTabIndex = 0;
-          }
-        });
+        ref.read(adminTabIndexProvider.notifier).state = index;
+        if (index != 2) {
+          setState(() => _channelsTabIndex = 0);
+        }
       },
       type: BottomNavigationBarType.fixed,
       selectedItemColor: AppColors.primary,
