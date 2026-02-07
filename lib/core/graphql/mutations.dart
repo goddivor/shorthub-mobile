@@ -36,6 +36,30 @@ const String logoutMutation = r'''
   }
 ''';
 
+const String refreshTokenMutation = r'''
+  mutation RefreshToken($token: String!) {
+    refreshToken(token: $token) {
+      token
+      refreshToken
+      user {
+        id
+        username
+        email
+        role
+        status
+        phone
+        whatsappLinked
+        emailNotifications
+        whatsappNotifications
+        profileImage
+        lastLogin
+        createdAt
+        updatedAt
+      }
+    }
+  }
+''';
+
 const String changePasswordMutation = r'''
   mutation ChangePassword($oldPassword: String!, $newPassword: String!) {
     changePassword(oldPassword: $oldPassword, newPassword: $newPassword)

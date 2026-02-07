@@ -186,20 +186,57 @@ class AuthService {
     }
   }
 
-  /// Refresh token (if needed)
+  /// Refresh token
   Future<String?> refreshToken() async {
     try {
-      final refreshToken = await StorageService.getRefreshToken();
-      if (refreshToken == null) {
+      final currentRefreshToken = await StorageService.getRefreshToken();
+      if (currentRefreshToken == null) {
+        AppLogger.warning('No refresh token available');
         return null;
       }
 
-      // TODO: Implement refresh token mutation when backend supports it
-      // For now, just return the existing token
-      return await StorageService.getAuthToken();
+      AppLogger.graphqlMutation('refreshToken', {'token': '***'});
+
+      final result = await _client.mutate(
+        MutationOptions(
+          document: gql(refreshTokenMutation),
+          variables: {'token': currentRefreshToken},
+        ),
+      );
+
+      if (result.hasException) {
+        AppLogger.graphqlError('refreshToken', result.exception);
+        return null;
+      }
+
+      final data = result.data?['refreshToken'];
+      if (data == null) {
+        AppLogger.warning('Refresh token returned no data');
+        return null;
+      }
+
+      final authPayload = AuthPayload.fromJson(data);
+
+      await StorageService.setAuthToken(authPayload.token);
+      await StorageService.setRefreshToken(authPayload.refreshToken);
+      await StorageService.setUser(authPayload.user);
+      await GraphQLClientService.updateAuthToken(authPayload.token);
+
+      AppLogger.graphqlSuccess('refreshToken', 'Token refreshed successfully');
+      return authPayload.token;
     } catch (e) {
-      throw Exception('Refresh token error: $e');
+      AppLogger.error('Refresh token error', e);
+      return null;
     }
+  }
+
+  /// Check if an exception is an authentication error
+  static bool isAuthError(OperationException exception) {
+    if (exception.graphqlErrors.isNotEmpty) {
+      final code = exception.graphqlErrors.first.extensions?['code'];
+      return code == 'UNAUTHENTICATED' || code == 'FORBIDDEN';
+    }
+    return false;
   }
 
   /// Handle GraphQL exceptions
@@ -208,20 +245,18 @@ class AuthService {
       final error = exception.graphqlErrors.first;
       final message = error.message;
 
-      // Check for authentication errors
-      if (error.extensions?['code'] == 'UNAUTHENTICATED' ||
-          error.extensions?['code'] == 'FORBIDDEN') {
+      if (isAuthError(exception)) {
         StorageService.clearAuthTokens();
-        return Exception('Session expired. Please login again.');
+        return Exception('Session expiree. Veuillez vous reconnecter.');
       }
 
       return Exception(message);
     }
 
     if (exception.linkException != null) {
-      return Exception('Network error. Please check your connection.');
+      return Exception('Erreur reseau. Verifiez votre connexion.');
     }
 
-    return Exception('An unknown error occurred');
+    return Exception('Une erreur inconnue est survenue');
   }
 }
