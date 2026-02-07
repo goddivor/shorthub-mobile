@@ -9,7 +9,7 @@ import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/custom_app_bar.dart';
 import '../../widgets/common/custom_drawer.dart';
 import 'pages/admin_overview_page.dart';
-import 'pages/admin_videos_page.dart';
+import 'pages/admin_rolling_page.dart';
 import 'pages/admin_channels_page.dart';
 import 'pages/admin_users_page.dart';
 
@@ -29,7 +29,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       case 0:
         return 'Aperçu';
       case 1:
-        return 'Vidéos';
+        return 'Rolling';
       case 2:
         return 'Canaux';
       case 3:
@@ -120,7 +120,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       case 0:
         return const AdminOverviewPage();
       case 1:
-        return const AdminVideosPage();
+        return const AdminRollingPage();
       case 2:
         return AdminChannelsPage(
           onTabChanged: (index) {
@@ -157,8 +157,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           label: 'Aperçu',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Iconsax.video),
-          label: 'Vidéos',
+          icon: Icon(Iconsax.video_play),
+          label: 'Rolling',
         ),
         BottomNavigationBarItem(
           icon: Icon(Iconsax.video_circle),

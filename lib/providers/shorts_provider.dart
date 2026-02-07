@@ -60,21 +60,21 @@ final rejectedShortsProvider = FutureProvider<List<Short>>((ref) async {
   return await service.getShortsByStatus('REJECTED');
 });
 
-// Shorts Statistics Provider
+// Shorts Statistics Provider (from API)
 final shortsStatsProvider = FutureProvider<ShortsStats>((ref) async {
   final service = ref.read(shortsServiceProvider);
-  final allShorts = await service.getAllShorts();
+  final stats = await service.getShortsStats();
 
   return ShortsStats(
-    total: allShorts.length,
-    rolled: allShorts.where((s) => s.status == 'ROLLED').length,
-    retained: allShorts.where((s) => s.status == 'RETAINED').length,
-    assigned: allShorts.where((s) => s.status == 'ASSIGNED').length,
-    inProgress: allShorts.where((s) => s.status == 'IN_PROGRESS').length,
-    completed: allShorts.where((s) => s.status == 'COMPLETED').length,
-    validated: allShorts.where((s) => s.status == 'VALIDATED').length,
-    published: allShorts.where((s) => s.status == 'PUBLISHED').length,
-    rejected: allShorts.where((s) => s.status == 'REJECTED').length,
+    total: stats.values.fold(0, (sum, v) => sum + v),
+    rolled: stats['totalRolled'] ?? 0,
+    retained: stats['totalRetained'] ?? 0,
+    assigned: stats['totalAssigned'] ?? 0,
+    inProgress: stats['totalInProgress'] ?? 0,
+    completed: stats['totalCompleted'] ?? 0,
+    validated: stats['totalValidated'] ?? 0,
+    published: stats['totalPublished'] ?? 0,
+    rejected: stats['totalRejected'] ?? 0,
   );
 });
 
