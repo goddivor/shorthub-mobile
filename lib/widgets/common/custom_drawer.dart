@@ -9,6 +9,8 @@ import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/navigation_provider.dart';
+import '../../providers/locale_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class CustomDrawer extends ConsumerWidget {
   final User user;
@@ -87,7 +89,7 @@ class CustomDrawer extends ConsumerWidget {
 
           // Email
           Text(
-            user.email ?? 'Aucun email',
+            user.email ?? AppLocalizations.of(context)!.drawerNoEmail,
             style: TextStyle(
               fontSize: 14,
               color: Colors.white.withOpacity(0.8),
@@ -103,7 +105,7 @@ class CustomDrawer extends ConsumerWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              _getRoleLabel(user.role ?? ''),
+              _getRoleLabel(user.role ?? '', context),
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -121,12 +123,12 @@ class CustomDrawer extends ConsumerWidget {
 
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'NAVIGATION',
+              AppLocalizations.of(context)!.navNavigation,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -144,6 +146,7 @@ class CustomDrawer extends ConsumerWidget {
   }
 
   List<Widget> _buildRoleBasedNavigation(BuildContext context, String? currentRoute, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     switch (user.role?.toUpperCase() ?? '') {
       case 'ADMIN':
         final adminTab = ref.watch(adminTabIndexProvider);
@@ -153,7 +156,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: 'Suivi',
+            title: l10n.navTracking,
             route: AppRoutes.adminDashboard,
             isActive: isOnAdmin && adminTab == 0,
             onTap: () {
@@ -166,7 +169,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
-            title: 'Rolling',
+            title: l10n.navRolling,
             route: AppRoutes.adminDashboard,
             isActive: isOnAdmin && adminTab == 1,
             onTap: () {
@@ -179,7 +182,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.videoCamera(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.videoCamera(PhosphorIconsStyle.fill),
-            title: 'Canaux',
+            title: l10n.navChannels,
             route: AppRoutes.adminDashboard,
             isActive: isOnAdmin && adminTab == 2,
             onTap: () {
@@ -192,7 +195,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.users(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.users(PhosphorIconsStyle.fill),
-            title: 'Équipe',
+            title: l10n.navTeam,
             route: AppRoutes.adminDashboard,
             isActive: isOnAdmin && adminTab == 3,
             onTap: () {
@@ -211,7 +214,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.house(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.house(PhosphorIconsStyle.fill),
-            title: 'Assignées',
+            title: l10n.navAssigned,
             route: AppRoutes.videasteDashboard,
             isActive: isOnVideaste && videasteTab == 0,
             onTap: () {
@@ -224,7 +227,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.clockCounterClockwise(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.clockCounterClockwise(PhosphorIconsStyle.fill),
-            title: 'En cours',
+            title: l10n.navInProgress,
             route: AppRoutes.videasteDashboard,
             isActive: isOnVideaste && videasteTab == 1,
             onTap: () {
@@ -237,7 +240,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.checkCircle(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-            title: 'Terminées',
+            title: l10n.navCompleted,
             route: AppRoutes.videasteDashboard,
             isActive: isOnVideaste && videasteTab == 2,
             onTap: () {
@@ -256,7 +259,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.clipboardText(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.clipboardText(PhosphorIconsStyle.fill),
-            title: 'À valider',
+            title: l10n.navToValidate,
             route: AppRoutes.assistantDashboard,
             isActive: isOnAssistant && assistantTab == 0,
             onTap: () {
@@ -269,7 +272,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.checkCircle(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-            title: 'Validées',
+            title: l10n.navValidated,
             route: AppRoutes.assistantDashboard,
             isActive: isOnAssistant && assistantTab == 1,
             onTap: () {
@@ -282,7 +285,7 @@ class CustomDrawer extends ConsumerWidget {
             context: context,
             icon: PhosphorIcons.xCircle(PhosphorIconsStyle.regular),
             activeIcon: PhosphorIcons.xCircle(PhosphorIconsStyle.fill),
-            title: 'Rejetées',
+            title: l10n.navRejected,
             route: AppRoutes.assistantDashboard,
             isActive: isOnAssistant && assistantTab == 2,
             onTap: () {
@@ -299,15 +302,16 @@ class CustomDrawer extends ConsumerWidget {
   }
 
   Widget _buildSettingsSection(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'PARAMÈTRES',
-              style: TextStyle(
+              l10n.navSettings,
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: AppColors.gray500,
@@ -322,7 +326,7 @@ class CustomDrawer extends ConsumerWidget {
           context: context,
           icon: Iconsax.user,
           activeIcon: Iconsax.user,
-          title: 'Mon profil',
+          title: l10n.drawerProfile,
           route: AppRoutes.profile,
           isActive: false,
           onTap: () {
@@ -334,6 +338,9 @@ class CustomDrawer extends ConsumerWidget {
         // Dark mode toggle
         _buildDarkModeToggle(context, ref),
 
+        // Language toggle
+        _buildLanguageToggle(context, ref),
+
         const Divider(height: 1),
 
         // Logout
@@ -341,7 +348,7 @@ class CustomDrawer extends ConsumerWidget {
           context: context,
           icon: Iconsax.logout,
           activeIcon: Iconsax.logout,
-          title: 'Déconnexion',
+          title: l10n.drawerLogout,
           route: '',
           isActive: false,
           isDestructive: true,
@@ -424,7 +431,7 @@ class CustomDrawer extends ConsumerWidget {
           size: 24,
         ),
         title: Text(
-          'Mode sombre',
+          AppLocalizations.of(context)!.drawerDarkMode,
           style: TextStyle(
             fontSize: 15,
             color: AppColors.gray700,
@@ -443,16 +450,55 @@ class CustomDrawer extends ConsumerWidget {
     );
   }
 
+  Widget _buildLanguageToggle(BuildContext context, WidgetRef ref) {
+    final isFrench = ref.watch(localeProvider).languageCode == 'fr';
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: SwitchListTile(
+        secondary: Icon(
+          Iconsax.language_square,
+          color: AppColors.gray700,
+          size: 24,
+        ),
+        title: Text(
+          AppLocalizations.of(context)!.drawerLanguage,
+          style: TextStyle(
+            fontSize: 15,
+            color: AppColors.gray700,
+          ),
+        ),
+        subtitle: Text(
+          isFrench ? 'Français' : 'English',
+          style: TextStyle(fontSize: 12, color: AppColors.gray400),
+        ),
+        value: !isFrench,
+        activeTrackColor: AppColors.primary,
+        onChanged: (_) {
+          ref.read(localeProvider.notifier).toggle();
+        },
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
   void _showLogoutDialog(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Déconnexion'),
-        content: const Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+        title: Text(l10n.drawerLogout),
+        content: Text(l10n.drawerLogoutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
+            child: Text(l10n.commonCancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -464,21 +510,23 @@ class CustomDrawer extends ConsumerWidget {
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Déconnexion'),
+            child: Text(l10n.drawerLogout),
           ),
         ],
       ),
     );
   }
 
-  String _getRoleLabel(String role) {
+  String _getRoleLabel(String role, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return role;
     switch (role.toUpperCase()) {
       case 'ADMIN':
-        return 'Administrateur';
+        return l10n.roleAdmin;
       case 'VIDEASTE':
-        return 'Vidéaste';
+        return l10n.roleVideaste;
       case 'ASSISTANT':
-        return 'Assistant';
+        return l10n.roleAssistant;
       default:
         return role;
     }

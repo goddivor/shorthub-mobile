@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 
 class CommentInput extends StatefulWidget {
   final Future<void> Function(String comment) onSubmit;
@@ -46,7 +47,7 @@ class _CommentInputState extends State<CommentInput> {
             textInputAction: TextInputAction.send,
             onSubmitted: (_) => _submit(),
             decoration: InputDecoration(
-              hintText: 'Ajouter un commentaire...',
+              hintText: AppLocalizations.of(context)!.commentAddPlaceholder,
               hintStyle: TextStyle(fontSize: 13, color: AppColors.gray400),
               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               border: OutlineInputBorder(

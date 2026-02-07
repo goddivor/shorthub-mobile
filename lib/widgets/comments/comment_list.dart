@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
 import '../../core/models/short_comment.dart';
+import '../../l10n/app_localizations.dart';
 
 class CommentList extends StatelessWidget {
   final List<ShortComment> comments;
@@ -20,7 +21,7 @@ class CommentList extends StatelessWidget {
               Icon(Iconsax.message, size: 32, color: AppColors.gray300),
               const SizedBox(height: 8),
               Text(
-                'Aucun commentaire',
+                AppLocalizations.of(context)!.commentEmpty,
                 style: TextStyle(fontSize: 13, color: AppColors.gray400),
               ),
             ],
@@ -40,13 +41,14 @@ class _CommentTile extends StatelessWidget {
 
   const _CommentTile({required this.comment});
 
-  String _timeAgo(DateTime date) {
+  String _timeAgo(DateTime date, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final diff = DateTime.now().difference(date);
-    if (diff.inDays > 30) return '${(diff.inDays / 30).floor()} mois';
-    if (diff.inDays > 0) return '${diff.inDays}j';
-    if (diff.inHours > 0) return '${diff.inHours}h';
-    if (diff.inMinutes > 0) return '${diff.inMinutes}min';
-    return 'maintenant';
+    if (diff.inDays > 30) return l10n.commentTimeMonths((diff.inDays / 30).floor());
+    if (diff.inDays > 0) return l10n.commentTimeDays(diff.inDays);
+    if (diff.inHours > 0) return l10n.commentTimeHours(diff.inHours);
+    if (diff.inMinutes > 0) return l10n.commentTimeMinutes(diff.inMinutes);
+    return l10n.commentTimeNow;
   }
 
   @override
@@ -93,7 +95,7 @@ class _CommentTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      _timeAgo(comment.createdAt),
+                      _timeAgo(comment.createdAt, context),
                       style: TextStyle(
                         fontSize: 11,
                         color: AppColors.gray400,

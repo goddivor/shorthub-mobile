@@ -1,0 +1,279 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "ShortHub",
+  "appTagline": "Gestion collaborative de YouTube Shorts",
+  "appTaglineSplash": "Gestion Collaborative de Shorts",
+  "loading": "Chargement...",
+  "loadingVideos": "Chargement des videos...",
+  "loadingNotifications": "Chargement des notifications...",
+  "loadingProfile": "Chargement du profil...",
+  "loadingShort": "Chargement du short...",
+
+  "loginUsername": "Nom d'utilisateur",
+  "loginUsernameHint": "Entrez votre nom d'utilisateur",
+  "loginPassword": "Mot de passe",
+  "loginPasswordHint": "Entrez votre mot de passe",
+  "loginButton": "Se connecter",
+  "loginError": "Erreur de connexion. Vérifiez vos identifiants.",
+  "loginUsernameRequired": "Le nom d'utilisateur est requis",
+  "loginUsernameMinLength": "Le nom d'utilisateur doit contenir au moins 3 caractères",
+  "loginPasswordRequired": "Le mot de passe est requis",
+  "loginPasswordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+
+  "noUserConnected": "Aucun utilisateur connecté",
+  "userNotConnected": "Utilisateur non connecte",
+
+  "navNavigation": "NAVIGATION",
+  "navSettings": "PARAMÈTRES",
+  "navTracking": "Suivi",
+  "navRolling": "Rolling",
+  "navChannels": "Canaux",
+  "navTeam": "Équipe",
+  "navAssigned": "Assignées",
+  "navInProgress": "En cours",
+  "navCompleted": "Terminées",
+  "navToValidate": "À valider",
+  "navValidated": "Validées",
+  "navRejected": "Rejetées",
+
+  "drawerProfile": "Mon profil",
+  "drawerDarkMode": "Mode sombre",
+  "drawerLanguage": "Langue",
+  "drawerLogout": "Déconnexion",
+  "drawerLogoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "drawerNoEmail": "Aucun email",
+
+  "roleAdmin": "Administrateur",
+  "roleVideaste": "Vidéaste",
+  "roleAssistant": "Assistant",
+
+  "statusRolled": "Rollé",
+  "statusRetained": "Retenu",
+  "statusRejected": "Rejeté",
+  "statusAssigned": "Assigné",
+  "statusInProgress": "En cours",
+  "statusCompleted": "Terminé",
+  "statusValidated": "Validé",
+  "statusPublished": "Publié",
+
+  "commonCancel": "Annuler",
+  "commonConfirm": "Confirmer",
+  "commonView": "Voir",
+  "commonViewDetails": "Voir les details",
+  "commonRetry": "Réessayer",
+  "commonOops": "Oups !",
+  "commonYes": "Oui",
+  "commonNo": "Non",
+  "commonSearch": "Rechercher un short...",
+  "commonError": "Erreur",
+  "commonErrorPrefix": "Erreur: {error}",
+  "@commonErrorPrefix": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "actionValidate": "Valider",
+  "actionReject": "Rejeter",
+  "actionPublish": "Publier",
+  "actionWork": "Travailler",
+  "actionComplete": "Terminer",
+  "actionStart": "Commencer",
+
+  "shortLate": "En retard",
+  "shortChannels": "Chaines",
+  "shortSource": "Source",
+  "shortPublication": "Publication",
+  "shortAssignment": "Assignation",
+  "shortVideaste": "Videaste",
+  "shortAssignedBy": "Assigne par",
+  "shortDate": "Date",
+  "shortDeadline": "Deadline",
+  "shortDaysRemaining": "Jours restants",
+  "shortTimeline": "Historique",
+  "shortTimelineRolled": "Rolle",
+  "shortTimelineRetained": "Retenu",
+  "shortTimelineAssigned": "Assigne",
+  "shortTimelineCompleted": "Termine",
+  "shortTimelineValidated": "Valide",
+  "shortTimelinePublished": "Publie",
+  "shortTimelineRejected": "Rejete",
+  "shortCompletionTime": "Temps de completion",
+  "shortCompletionTimeValue": "{hours} heures",
+  "@shortCompletionTimeValue": {
+    "placeholders": {
+      "hours": { "type": "String" }
+    }
+  },
+  "shortNotes": "Notes",
+  "shortAdminFeedback": "Feedback admin",
+  "shortVideoFile": "Fichier video",
+  "shortFileName": "Nom",
+  "shortFileSize": "Taille",
+  "shortFileType": "Type",
+  "shortFileUpload": "Upload",
+  "shortTags": "Tags",
+  "shortComments": "Commentaires ({count})",
+  "@shortComments": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "shortErrorLoading": "Erreur chargement du short",
+
+  "dialogPublishTitle": "Publier le short",
+  "dialogPublishContent": "Confirmer la publication de \"{title}\" ?",
+  "@dialogPublishContent": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "dialogStartWorkTitle": "Commencer le travail",
+  "dialogStartWorkContent": "Confirmer le debut du travail sur ce short ?",
+  "dialogStartWorkContentNamed": "Commencer a travailler sur \"{title}\" ?",
+  "@dialogStartWorkContentNamed": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "dialogCompleteTitle": "Terminer le travail",
+  "dialogCompleteContent": "Confirmer que le travail est termine ?",
+  "dialogCompleteContentNamed": "Marquer \"{title}\" comme termine ?",
+  "@dialogCompleteContentNamed": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "dialogValidateTitle": "Valider la video",
+  "dialogValidateContent": "Valider \"{title}\" ?",
+  "@dialogValidateContent": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "dialogRejectTitle": "Rejeter la video",
+  "dialogRejectReasonLabel": "Raison du rejet :",
+  "dialogRejectHint": "Expliquez pourquoi vous rejetez cette video...",
+  "dialogRejectReasonRequired": "La raison est obligatoire",
+  "dialogFeedbackHint": "Feedback optionnel...",
+
+  "snackWorkStarted": "Travail demarre !",
+  "snackVideoCompleted": "Video marquee comme terminee !",
+  "snackVideoValidated": "Video validee avec succes",
+  "snackVideoRejected": "Video rejetee",
+
+  "emptyNoVideosToValidate": "Aucune video a valider",
+  "emptyNoValidatedVideos": "Aucune video validee",
+  "emptyNoRejectedVideos": "Aucune video rejetee",
+  "emptyNoAssignedVideos": "Aucune video assignee",
+  "emptyNoInProgressVideos": "Aucune video en cours",
+  "emptyNoCompletedVideos": "Aucune video terminee",
+  "errorLoadingVideos": "Erreur lors du chargement des videos",
+  "errorLoadingStats": "Erreur lors du chargement des statistiques",
+  "errorLoadingShort": "Erreur chargement du short",
+  "errorLoadingProfile": "Erreur chargement du profil",
+  "errorLoadingNotifications": "Erreur chargement des notifications",
+  "errorLoading": "Erreur lors du chargement",
+
+  "statsAssigned": "Assignees",
+  "statsCompleted": "Completees",
+  "statsRate": "Taux",
+  "statsToValidate": "A valider",
+  "statsValidated": "Validees",
+  "statsRejected": "Rejetees",
+
+  "notificationsTitle": "Notifications",
+  "notificationsMarkAllRead": "Tout lire",
+  "notificationsEmpty": "Aucune notification",
+  "timeJustNow": "A l'instant",
+  "timeMinutesAgo": "Il y a {minutes}min",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "timeHoursAgo": "Il y a {hours}h",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "timeDaysAgo": "Il y a {days}j",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+
+  "notifVideoAssigned": "Short assigné",
+  "notifDeadlineReminder": "Rappel deadline",
+  "notifVideoCompleted": "Short terminé",
+  "notifVideoValidated": "Short validé",
+  "notifVideoRejected": "Short rejeté",
+  "notifAccountBlocked": "Compte bloqué",
+  "notifAccountUnblocked": "Compte débloqué",
+
+  "profileAccountInfo": "Informations du compte",
+  "profileEmail": "Email",
+  "profilePhone": "Telephone",
+  "profileStatus": "Status",
+  "profileActive": "Actif",
+  "profileBlocked": "Bloque",
+  "profileLastLogin": "Derniere connexion",
+  "profileMemberSince": "Membre depuis",
+  "profileStats": "Statistiques",
+  "profileStatsAssigned": "Assignees",
+  "profileStatsCompleted": "Terminees",
+  "profileStatsInProgress": "En cours",
+  "profileStatsRate": "Taux",
+  "profileStatsThisMonth": "Ce mois",
+  "profileStatsLate": "En retard",
+  "profileNotifications": "Notifications",
+  "profileEmailNotifications": "Notifications email",
+  "profileWhatsappNotifications": "Notifications WhatsApp",
+  "profileWhatsappLinked": "WhatsApp lie",
+  "profileChangePassword": "Changer le mot de passe",
+
+  "commentAddPlaceholder": "Ajouter un commentaire...",
+  "commentEmpty": "Aucun commentaire",
+  "commentTimeNow": "maintenant",
+  "commentTimeMinutes": "{minutes}min",
+  "@commentTimeMinutes": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "commentTimeHours": "{hours}h",
+  "@commentTimeHours": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "commentTimeDays": "{days}j",
+  "@commentTimeDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "commentTimeMonths": "{months} mois",
+  "@commentTimeMonths": {
+    "placeholders": {
+      "months": { "type": "int" }
+    }
+  },
+
+  "adminRecentActivity": "Activité récente",
+  "adminTotalVideos": "Total vidéos",
+  "adminRolled": "Roulées",
+  "adminAssigned": "Assignées",
+  "adminPublished": "Publiées",
+  "adminNoRecentActivity": "Aucune activité récente",
+
+  "contentTypeVaSansEdit": "VA Sans Edit",
+  "contentTypeVaAvecEdit": "VA Avec Edit",
+  "contentTypeVfSansEdit": "VF Sans Edit",
+  "contentTypeVfAvecEdit": "VF Avec Edit",
+  "contentTypeVoSansEdit": "VO Sans Edit",
+  "contentTypeVoAvecEdit": "VO Avec Edit"
+}

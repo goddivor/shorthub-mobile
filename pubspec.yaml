@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # State Management
   flutter_riverpod: ^2.6.1
@@ -53,7 +55,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0
 
   # Utils
-  intl: ^0.19.0
+  intl: ^0.20.2
   url_launcher: ^6.3.1
   package_info_plus: ^8.3.0
   dio: ^5.8.0+1
@@ -92,6 +94,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

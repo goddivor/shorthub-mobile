@@ -6,6 +6,7 @@ import '../../config/theme/app_colors.dart';
 import '../../config/routes/app_routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../core/utils/logger.dart';
+import '../../l10n/app_localizations.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -104,9 +105,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             const SizedBox(height: 8),
 
             // Tagline
-            const Text(
-              'Gestion Collaborative de Shorts',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.appTaglineSplash,
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.white70,
               ),

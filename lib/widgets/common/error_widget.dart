@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'custom_button.dart';
 
 class ErrorDisplay extends StatelessWidget {
@@ -38,7 +39,7 @@ class ErrorDisplay extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Oups !',
+              AppLocalizations.of(context)!.commonOops,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -57,7 +58,7 @@ class ErrorDisplay extends StatelessWidget {
             if (onRetry != null) ...[
               const SizedBox(height: 24),
               CustomButton(
-                text: 'Réessayer',
+                text: AppLocalizations.of(context)!.commonRetry,
                 onPressed: onRetry,
                 icon: Iconsax.refresh,
                 width: 160,

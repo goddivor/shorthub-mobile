@@ -7,6 +7,7 @@ import '../../config/routes/app_routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
+import '../../l10n/app_localizations.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -67,35 +68,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         },
       );
     } catch (e) {
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
-        _errorMessage = 'Erreur de connexion. Vérifiez vos identifiants.';
+        _errorMessage = l10n.loginError;
         _isLoading = false;
       });
     }
   }
 
-  String? _validateUsername(String? value) {
+  String? _validateUsername(String? value, AppLocalizations l10n) {
     if (value == null || value.isEmpty) {
-      return 'Le nom d\'utilisateur est requis';
+      return l10n.loginUsernameRequired;
     }
     if (value.length < 3) {
-      return 'Le nom d\'utilisateur doit contenir au moins 3 caractères';
+      return l10n.loginUsernameMinLength;
     }
     return null;
   }
 
-  String? _validatePassword(String? value) {
+  String? _validatePassword(String? value, AppLocalizations l10n) {
     if (value == null || value.isEmpty) {
-      return 'Le mot de passe est requis';
+      return l10n.loginPasswordRequired;
     }
     if (value.length < 6) {
-      return 'Le mot de passe doit contenir au moins 6 caractères';
+      return l10n.loginPasswordMinLength;
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -135,7 +138,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Gestion collaborative de YouTube Shorts',
+                    l10n.appTagline,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
@@ -180,10 +183,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   // Username Field
                   CustomTextField(
-                    label: 'Nom d\'utilisateur',
-                    hint: 'Entrez votre nom d\'utilisateur',
+                    label: l10n.loginUsername,
+                    hint: l10n.loginUsernameHint,
                     controller: _usernameController,
-                    validator: _validateUsername,
+                    validator: (v) => _validateUsername(v, l10n),
                     prefixIcon: Icon(
                       Iconsax.user,
                       color: AppColors.gray400,
@@ -194,11 +197,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   // Password Field
                   CustomTextField(
-                    label: 'Mot de passe',
-                    hint: 'Entrez votre mot de passe',
+                    label: l10n.loginPassword,
+                    hint: l10n.loginPasswordHint,
                     controller: _passwordController,
                     obscureText: true,
-                    validator: _validatePassword,
+                    validator: (v) => _validatePassword(v, l10n),
                     prefixIcon: Icon(
                       Iconsax.lock,
                       color: AppColors.gray400,
@@ -209,7 +212,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   // Login Button
                   CustomButton(
-                    text: 'Se connecter',
+                    text: l10n.loginButton,
                     onPressed: _isLoading ? null : _handleLogin,
                     isLoading: _isLoading,
                     icon: Iconsax.login,

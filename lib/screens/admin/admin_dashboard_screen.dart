@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../config/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
@@ -24,16 +25,17 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
 class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   int _channelsTabIndex = 0; // 0 = Source, 1 = Admin
 
-  String _getCurrentPageTitle(int selectedIndex) {
+  String _getCurrentPageTitle(int selectedIndex, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     switch (selectedIndex) {
       case 0:
-        return 'Suivi';
+        return l10n.navTracking;
       case 1:
-        return 'Rolling';
+        return l10n.navRolling;
       case 2:
-        return 'Canaux';
+        return l10n.navChannels;
       case 3:
-        return 'Équipe';
+        return l10n.navTeam;
       default:
         return 'ShortHub';
     }
@@ -82,9 +84,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     return userState.when(
       data: (user) {
         if (user == null) {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: Text('Aucun utilisateur connecté'),
+              child: Text(AppLocalizations.of(context)!.noUserConnected),
             ),
           );
         }
@@ -93,11 +95,11 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           backgroundColor: AppColors.background,
           appBar: CustomAppBar(
             user: user,
-            title: _getCurrentPageTitle(selectedIndex),
+            title: _getCurrentPageTitle(selectedIndex, context),
           ),
           endDrawer: CustomDrawer(user: user),
           body: _buildBody(selectedIndex),
-          bottomNavigationBar: _buildBottomNavBar(selectedIndex),
+          bottomNavigationBar: _buildBottomNavBar(selectedIndex, context),
           floatingActionButton: _getCurrentFAB(selectedIndex),
         );
       },
@@ -137,7 +139,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     }
   }
 
-  Widget _buildBottomNavBar(int selectedIndex) {
+  Widget _buildBottomNavBar(int selectedIndex, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BottomNavigationBar(
       currentIndex: selectedIndex,
       onTap: (index) {
@@ -149,22 +152,22 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       type: BottomNavigationBarType.fixed,
       selectedItemColor: AppColors.primary,
       unselectedItemColor: AppColors.gray400,
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Iconsax.document_text),
-          label: 'Suivi',
+          icon: const Icon(Iconsax.document_text),
+          label: l10n.navTracking,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Iconsax.video_play),
-          label: 'Rolling',
+          icon: const Icon(Iconsax.video_play),
+          label: l10n.navRolling,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Iconsax.video_circle),
-          label: 'Canaux',
+          icon: const Icon(Iconsax.video_circle),
+          label: l10n.navChannels,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Iconsax.people),
-          label: 'Équipe',
+          icon: const Icon(Iconsax.people),
+          label: l10n.navTeam,
         ),
       ],
     );

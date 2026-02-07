@@ -14,6 +14,7 @@ import '../../widgets/modals/validate_short_modal.dart';
 import '../../widgets/modals/reject_short_modal.dart';
 import '../../widgets/comments/comment_list.dart';
 import '../../widgets/comments/comment_input.dart';
+import '../../l10n/app_localizations.dart';
 
 class ShortDetailsScreen extends ConsumerWidget {
   final String shortId;
@@ -30,9 +31,9 @@ class ShortDetailsScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       body: shortAsync.when(
         data: (short) => _ShortDetailsBody(short: short, userRole: userRole),
-        loading: () => const LoadingIndicator(message: 'Chargement du short...'),
+        loading: () => LoadingIndicator(message: AppLocalizations.of(context)!.loadingShort),
         error: (error, _) => ErrorDisplay(
-          message: 'Erreur chargement du short',
+          message: AppLocalizations.of(context)!.shortErrorLoading,
           onRetry: () => ref.invalidate(shortByIdProvider(shortId)),
         ),
       ),
@@ -131,7 +132,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                             Icon(Iconsax.warning_2, size: 12, color: AppColors.error),
                             const SizedBox(width: 4),
                             Text(
-                              'En retard',
+                              AppLocalizations.of(context)!.shortLate,
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.error),
                             ),
                           ],
@@ -144,14 +145,14 @@ class _ShortDetailsBody extends ConsumerWidget {
 
                 // Channels section
                 _buildSection(
-                  title: 'Chaines',
+                  title: AppLocalizations.of(context)!.shortChannels,
                   icon: Iconsax.video_circle,
                   child: Column(
                     children: [
-                      _buildChannelRow('Source', short.sourceChannel.channelName, short.sourceChannel.profileImageUrl),
+                      _buildChannelRow(AppLocalizations.of(context)!.shortSource, short.sourceChannel.channelName, short.sourceChannel.profileImageUrl),
                       if (short.targetChannel != null) ...[
                         const SizedBox(height: 10),
-                        _buildChannelRow('Publication', short.targetChannel!.channelName, short.targetChannel!.profileImageUrl),
+                        _buildChannelRow(AppLocalizations.of(context)!.shortPublication, short.targetChannel!.channelName, short.targetChannel!.profileImageUrl),
                       ],
                     ],
                   ),
@@ -162,24 +163,24 @@ class _ShortDetailsBody extends ConsumerWidget {
                 if (short.assignedTo != null)
                   ...[
                     _buildSection(
-                      title: 'Assignation',
+                      title: AppLocalizations.of(context)!.shortAssignment,
                       icon: Iconsax.user_tick,
                       child: Column(
                         children: [
-                          _buildInfoRow('Videaste', short.assignedTo!.username),
+                          _buildInfoRow(AppLocalizations.of(context)!.shortVideaste, short.assignedTo!.username),
                           if (short.assignedBy != null)
-                            _buildInfoRow('Assigne par', short.assignedBy!.username),
+                            _buildInfoRow(AppLocalizations.of(context)!.shortAssignedBy, short.assignedBy!.username),
                           if (short.assignedAt != null)
-                            _buildInfoRow('Date', dateFormat.format(short.assignedAt!)),
+                            _buildInfoRow(AppLocalizations.of(context)!.shortDate, dateFormat.format(short.assignedAt!)),
                           if (short.deadline != null)
                             _buildInfoRow(
-                              'Deadline',
+                              AppLocalizations.of(context)!.shortDeadline,
                               dateFormat.format(short.deadline!),
                               valueColor: short.isLate ? AppColors.error : null,
                             ),
                           if (short.daysUntilDeadline != null)
                             _buildInfoRow(
-                              'Jours restants',
+                              AppLocalizations.of(context)!.shortDaysRemaining,
                               '${short.daysUntilDeadline}',
                               valueColor: short.daysUntilDeadline! < 0 ? AppColors.error : AppColors.success,
                             ),
@@ -191,25 +192,25 @@ class _ShortDetailsBody extends ConsumerWidget {
 
                 // Timeline section
                 _buildSection(
-                  title: 'Historique',
+                  title: AppLocalizations.of(context)!.shortTimeline,
                   icon: Iconsax.timer_1,
                   child: Column(
                     children: [
-                      _buildTimelineRow('Rolle', short.rolledAt, AppColors.statusRolled),
+                      _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineRolled, short.rolledAt, AppColors.statusRolled),
                       if (short.retainedAt != null)
-                        _buildTimelineRow('Retenu', short.retainedAt!, AppColors.statusRetained),
+                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineRetained, short.retainedAt!, AppColors.statusRetained),
                       if (short.assignedAt != null)
-                        _buildTimelineRow('Assigne', short.assignedAt!, AppColors.statusAssigned),
+                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineAssigned, short.assignedAt!, AppColors.statusAssigned),
                       if (short.completedAt != null)
-                        _buildTimelineRow('Termine', short.completedAt!, AppColors.statusCompleted),
+                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineCompleted, short.completedAt!, AppColors.statusCompleted),
                       if (short.validatedAt != null)
-                        _buildTimelineRow('Valide', short.validatedAt!, AppColors.statusValidated),
+                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineValidated, short.validatedAt!, AppColors.statusValidated),
                       if (short.publishedAt != null)
-                        _buildTimelineRow('Publie', short.publishedAt!, AppColors.statusPublished),
+                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelinePublished, short.publishedAt!, AppColors.statusPublished),
                       if (short.rejectedAt != null)
-                        _buildTimelineRow('Rejete', short.rejectedAt!, AppColors.statusRejected),
+                        _buildTimelineRow(AppLocalizations.of(context)!.shortTimelineRejected, short.rejectedAt!, AppColors.statusRejected),
                       if (short.timeToComplete != null)
-                        _buildInfoRow('Temps de completion', '${short.timeToComplete!.toStringAsFixed(1)} heures'),
+                        _buildInfoRow(AppLocalizations.of(context)!.shortCompletionTime, AppLocalizations.of(context)!.shortCompletionTimeValue(short.timeToComplete!.toStringAsFixed(1))),
                     ],
                   ),
                 ),
@@ -218,7 +219,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Notes
                 if (short.notes != null && short.notes!.isNotEmpty) ...[
                   _buildSection(
-                    title: 'Notes',
+                    title: AppLocalizations.of(context)!.shortNotes,
                     icon: Iconsax.note_1,
                     child: Text(short.notes!, style: TextStyle(fontSize: 14, color: AppColors.gray700, height: 1.5)),
                   ),
@@ -228,7 +229,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Admin feedback
                 if (short.adminFeedback != null && short.adminFeedback!.isNotEmpty) ...[
                   _buildSection(
-                    title: 'Feedback admin',
+                    title: AppLocalizations.of(context)!.shortAdminFeedback,
                     icon: Iconsax.message_text,
                     child: Container(
                       width: double.infinity,
@@ -260,17 +261,17 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Drive file info
                 if (short.hasFile) ...[
                   _buildSection(
-                    title: 'Fichier video',
+                    title: AppLocalizations.of(context)!.shortVideoFile,
                     icon: Iconsax.document_upload,
                     child: Column(
                       children: [
-                        _buildInfoRow('Nom', short.fileName ?? 'N/A'),
+                        _buildInfoRow(AppLocalizations.of(context)!.shortFileName, short.fileName ?? 'N/A'),
                         if (short.fileSize != null)
-                          _buildInfoRow('Taille', _formatFileSize(short.fileSize!)),
+                          _buildInfoRow(AppLocalizations.of(context)!.shortFileSize, _formatFileSize(short.fileSize!)),
                         if (short.mimeType != null)
-                          _buildInfoRow('Type', short.mimeType!),
+                          _buildInfoRow(AppLocalizations.of(context)!.shortFileType, short.mimeType!),
                         if (short.uploadedAt != null)
-                          _buildInfoRow('Upload', dateFormat.format(short.uploadedAt!)),
+                          _buildInfoRow(AppLocalizations.of(context)!.shortFileUpload, dateFormat.format(short.uploadedAt!)),
                       ],
                     ),
                   ),
@@ -280,7 +281,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 // Tags
                 if (short.tags.isNotEmpty) ...[
                   _buildSection(
-                    title: 'Tags',
+                    title: AppLocalizations.of(context)!.shortTags,
                     icon: Iconsax.tag,
                     child: Wrap(
                       spacing: 6,
@@ -298,7 +299,7 @@ class _ShortDetailsBody extends ConsumerWidget {
 
                 // Comments
                 _buildSection(
-                  title: 'Commentaires (${short.comments.length})',
+                  title: AppLocalizations.of(context)!.shortComments(short.comments.length),
                   icon: Iconsax.message,
                   child: Column(
                     children: [
@@ -454,7 +455,7 @@ class _ShortDetailsBody extends ConsumerWidget {
           child: ElevatedButton.icon(
             onPressed: () => _openValidateModal(context),
             icon: const Icon(Iconsax.tick_circle, size: 16),
-            label: const Text('Valider'),
+            label: Text(AppLocalizations.of(context)!.actionValidate),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
               foregroundColor: Colors.white,
@@ -469,7 +470,7 @@ class _ShortDetailsBody extends ConsumerWidget {
           child: ElevatedButton.icon(
             onPressed: () => _openRejectModal(context),
             icon: const Icon(Iconsax.close_circle, size: 16),
-            label: const Text('Rejeter'),
+            label: Text(AppLocalizations.of(context)!.actionReject),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
@@ -488,7 +489,7 @@ class _ShortDetailsBody extends ConsumerWidget {
           child: ElevatedButton.icon(
             onPressed: () => _publishShort(context, ref),
             icon: const Icon(Iconsax.global, size: 16),
-            label: const Text('Publier'),
+            label: Text(AppLocalizations.of(context)!.actionPublish),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
@@ -507,7 +508,7 @@ class _ShortDetailsBody extends ConsumerWidget {
           child: ElevatedButton.icon(
             onPressed: () => _startWork(context, ref),
             icon: const Icon(Iconsax.play, size: 16),
-            label: const Text('Travailler'),
+            label: Text(AppLocalizations.of(context)!.actionWork),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
@@ -526,7 +527,7 @@ class _ShortDetailsBody extends ConsumerWidget {
           child: ElevatedButton.icon(
             onPressed: () => _completeWork(context, ref),
             icon: const Icon(Iconsax.tick_circle, size: 16),
-            label: const Text('Terminer'),
+            label: Text(AppLocalizations.of(context)!.actionComplete),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
               foregroundColor: Colors.white,
@@ -568,18 +569,19 @@ class _ShortDetailsBody extends ConsumerWidget {
   }
 
   void _publishShort(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) {
         var isLoading = false;
         return StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
-            title: const Text('Publier le short'),
-            content: Text('Confirmer la publication de "${short.title ?? short.videoId}" ?'),
+            title: Text(l10n.dialogPublishTitle),
+            content: Text(l10n.dialogPublishContent(short.title ?? short.videoId)),
             actions: [
               TextButton(
                 onPressed: isLoading ? null : () => Navigator.pop(ctx),
-                child: const Text('Annuler'),
+                child: Text(l10n.commonCancel),
               ),
               ElevatedButton(
                 onPressed: isLoading
@@ -607,7 +609,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 ),
                 child: isLoading
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Publier'),
+                    : Text(l10n.actionPublish),
               ),
             ],
           ),
@@ -617,18 +619,19 @@ class _ShortDetailsBody extends ConsumerWidget {
   }
 
   void _startWork(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) {
         var isLoading = false;
         return StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
-            title: const Text('Commencer le travail'),
-            content: const Text('Confirmer le debut du travail sur ce short ?'),
+            title: Text(l10n.dialogStartWorkTitle),
+            content: Text(l10n.dialogStartWorkContent),
             actions: [
               TextButton(
                 onPressed: isLoading ? null : () => Navigator.pop(ctx),
-                child: const Text('Annuler'),
+                child: Text(l10n.commonCancel),
               ),
               ElevatedButton(
                 onPressed: isLoading
@@ -658,7 +661,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 ),
                 child: isLoading
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Commencer'),
+                    : Text(l10n.actionStart),
               ),
             ],
           ),
@@ -668,18 +671,19 @@ class _ShortDetailsBody extends ConsumerWidget {
   }
 
   void _completeWork(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) {
         var isLoading = false;
         return StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
-            title: const Text('Terminer le travail'),
-            content: const Text('Confirmer que le travail est termine ?'),
+            title: Text(l10n.dialogCompleteTitle),
+            content: Text(l10n.dialogCompleteContent),
             actions: [
               TextButton(
                 onPressed: isLoading ? null : () => Navigator.pop(ctx),
-                child: const Text('Annuler'),
+                child: Text(l10n.commonCancel),
               ),
               ElevatedButton(
                 onPressed: isLoading
@@ -709,7 +713,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                 ),
                 child: isLoading
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Terminer'),
+                    : Text(l10n.actionComplete),
               ),
             ],
           ),

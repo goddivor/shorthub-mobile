@@ -8,6 +8,7 @@ import '../../core/models/notification.dart';
 import '../../providers/notifications_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
+import '../../l10n/app_localizations.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
@@ -21,7 +22,7 @@ class NotificationsScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Notifications', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.notificationsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
         foregroundColor: AppColors.gray900,
         actions: [
           TextButton(
@@ -30,7 +31,7 @@ class NotificationsScreen extends ConsumerWidget {
               ref.invalidate(notificationsProvider);
               ref.invalidate(unreadNotificationsCountProvider);
             },
-            child: Text('Tout lire', style: TextStyle(color: AppColors.primary, fontSize: 13)),
+            child: Text(AppLocalizations.of(context)!.notificationsMarkAllRead, style: TextStyle(color: AppColors.primary, fontSize: 13)),
           ),
         ],
       ),
@@ -43,7 +44,7 @@ class NotificationsScreen extends ConsumerWidget {
                 children: [
                   Icon(Iconsax.notification, size: 64, color: AppColors.gray300),
                   const SizedBox(height: 16),
-                  Text('Aucune notification', style: TextStyle(fontSize: 16, color: AppColors.gray600)),
+                  Text(AppLocalizations.of(context)!.notificationsEmpty, style: TextStyle(fontSize: 16, color: AppColors.gray600)),
                 ],
               ),
             );
@@ -70,9 +71,9 @@ class NotificationsScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const LoadingIndicator(message: 'Chargement des notifications...'),
+        loading: () => LoadingIndicator(message: AppLocalizations.of(context)!.loadingNotifications),
         error: (error, _) => ErrorDisplay(
-          message: 'Erreur chargement des notifications',
+          message: AppLocalizations.of(context)!.errorLoadingNotifications,
           onRetry: () => ref.invalidate(notificationsProvider),
         ),
       ),
@@ -128,14 +129,15 @@ class _NotificationCard extends StatelessWidget {
     }
   }
 
-  String _formatTimeAgo(DateTime date) {
+  String _formatTimeAgo(DateTime date, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final diff = now.difference(date);
 
-    if (diff.inMinutes < 1) return 'A l\'instant';
-    if (diff.inMinutes < 60) return 'Il y a ${diff.inMinutes}min';
-    if (diff.inHours < 24) return 'Il y a ${diff.inHours}h';
-    if (diff.inDays < 7) return 'Il y a ${diff.inDays}j';
+    if (diff.inMinutes < 1) return l10n.timeJustNow;
+    if (diff.inMinutes < 60) return l10n.timeMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.timeHoursAgo(diff.inHours);
+    if (diff.inDays < 7) return l10n.timeDaysAgo(diff.inDays);
     return DateFormat('dd/MM/yyyy').format(date);
   }
 
@@ -190,7 +192,7 @@ class _NotificationCard extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        _formatTimeAgo(notification.createdAt),
+                        _formatTimeAgo(notification.createdAt, context),
                         style: TextStyle(fontSize: 11, color: AppColors.gray400),
                       ),
                     ],

@@ -8,6 +8,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/modals/change_password_modal.dart';
+import '../../l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -21,7 +22,7 @@ class ProfileScreen extends ConsumerWidget {
       body: userAsync.when(
         data: (user) {
           if (user == null) {
-            return const Center(child: Text('Utilisateur non connecte'));
+            return Center(child: Text(AppLocalizations.of(context)!.userNotConnected));
           }
 
           final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
@@ -92,17 +93,17 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       // Account info
                       _buildSection(
-                        title: 'Informations du compte',
+                        title: AppLocalizations.of(context)!.profileAccountInfo,
                         icon: Iconsax.user,
                         child: Column(
                           children: [
-                            _buildInfoRow('Email', user.email ?? 'N/A'),
-                            _buildInfoRow('Telephone', user.phone ?? 'N/A'),
-                            _buildInfoRow('Status', user.isActive ? 'Actif' : 'Bloque'),
+                            _buildInfoRow(AppLocalizations.of(context)!.profileEmail, user.email ?? 'N/A'),
+                            _buildInfoRow(AppLocalizations.of(context)!.profilePhone, user.phone ?? 'N/A'),
+                            _buildInfoRow(AppLocalizations.of(context)!.profileStatus, user.isActive ? AppLocalizations.of(context)!.profileActive : AppLocalizations.of(context)!.profileBlocked),
                             if (user.lastLogin != null)
-                              _buildInfoRow('Derniere connexion', dateFormat.format(user.lastLogin!)),
+                              _buildInfoRow(AppLocalizations.of(context)!.profileLastLogin, dateFormat.format(user.lastLogin!)),
                             if (user.createdAt != null)
-                              _buildInfoRow('Membre depuis', dateFormat.format(user.createdAt!)),
+                              _buildInfoRow(AppLocalizations.of(context)!.profileMemberSince, dateFormat.format(user.createdAt!)),
                           ],
                         ),
                       ),
@@ -111,27 +112,27 @@ class ProfileScreen extends ConsumerWidget {
                       // Stats (for videaste)
                       if (user.stats != null) ...[
                         _buildSection(
-                          title: 'Statistiques',
+                          title: AppLocalizations.of(context)!.profileStats,
                           icon: Iconsax.chart_1,
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  _buildStatCard('Assignees', '${user.stats!.totalVideosAssigned}', AppColors.primary),
+                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsAssigned, '${user.stats!.totalVideosAssigned}', AppColors.primary),
                                   const SizedBox(width: 8),
-                                  _buildStatCard('Terminees', '${user.stats!.totalVideosCompleted}', AppColors.success),
+                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsCompleted, '${user.stats!.totalVideosCompleted}', AppColors.success),
                                   const SizedBox(width: 8),
-                                  _buildStatCard('En cours', '${user.stats!.totalVideosInProgress}', AppColors.warning),
+                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsInProgress, '${user.stats!.totalVideosInProgress}', AppColors.warning),
                                 ],
                               ),
                               const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  _buildStatCard('Taux', '${user.stats!.completionRate.toStringAsFixed(0)}%', AppColors.info),
+                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsRate, '${user.stats!.completionRate.toStringAsFixed(0)}%', AppColors.info),
                                   const SizedBox(width: 8),
-                                  _buildStatCard('Ce mois', '${user.stats!.videosCompletedThisMonth}', AppColors.secondary),
+                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsThisMonth, '${user.stats!.videosCompletedThisMonth}', AppColors.secondary),
                                   const SizedBox(width: 8),
-                                  _buildStatCard('En retard', '${user.stats!.videosLate}', AppColors.error),
+                                  _buildStatCard(AppLocalizations.of(context)!.profileStatsLate, '${user.stats!.videosLate}', AppColors.error),
                                 ],
                               ),
                             ],
@@ -142,13 +143,13 @@ class ProfileScreen extends ConsumerWidget {
 
                       // Notifications preferences
                       _buildSection(
-                        title: 'Notifications',
+                        title: AppLocalizations.of(context)!.profileNotifications,
                         icon: Iconsax.notification,
                         child: Column(
                           children: [
-                            _buildToggleRow('Notifications email', user.emailNotifications ?? false),
-                            _buildToggleRow('Notifications WhatsApp', user.whatsappNotifications ?? false),
-                            _buildInfoRow('WhatsApp lie', user.whatsappLinked == true ? 'Oui' : 'Non'),
+                            _buildToggleRow(AppLocalizations.of(context)!.profileEmailNotifications, user.emailNotifications ?? false),
+                            _buildToggleRow(AppLocalizations.of(context)!.profileWhatsappNotifications, user.whatsappNotifications ?? false),
+                            _buildInfoRow(AppLocalizations.of(context)!.profileWhatsappLinked, user.whatsappLinked == true ? AppLocalizations.of(context)!.commonYes : AppLocalizations.of(context)!.commonNo),
                           ],
                         ),
                       ),
@@ -167,7 +168,7 @@ class ProfileScreen extends ConsumerWidget {
                             );
                           },
                           icon: Icon(Iconsax.lock, size: 18, color: AppColors.primary),
-                          label: const Text('Changer le mot de passe'),
+                          label: Text(AppLocalizations.of(context)!.profileChangePassword),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.primary,
                             side: BorderSide(color: AppColors.primary),
@@ -183,9 +184,9 @@ class ProfileScreen extends ConsumerWidget {
             ],
           );
         },
-        loading: () => const LoadingIndicator(message: 'Chargement du profil...'),
+        loading: () => LoadingIndicator(message: AppLocalizations.of(context)!.loadingProfile),
         error: (error, _) => ErrorDisplay(
-          message: 'Erreur chargement du profil',
+          message: AppLocalizations.of(context)!.errorLoadingProfile,
           onRetry: () => ref.invalidate(currentUserProvider),
         ),
       ),

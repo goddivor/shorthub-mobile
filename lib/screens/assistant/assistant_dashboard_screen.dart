@@ -13,6 +13,7 @@ import '../../widgets/common/custom_drawer.dart';
 import '../../widgets/common/search_filter_bar.dart';
 import '../../config/routes/app_routes.dart';
 import '../../providers/navigation_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class AssistantDashboardScreen extends ConsumerStatefulWidget {
   const AssistantDashboardScreen({super.key});
@@ -31,9 +32,9 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
     return userState.when(
       data: (user) {
         if (user == null) {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: Text('Aucun utilisateur connecté'),
+              child: Text(AppLocalizations.of(context)!.noUserConnected),
             ),
           );
         }
@@ -47,7 +48,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
               _buildStatsHeader(),
               _buildTabBar(),
               SearchFilterBar(
-                hintText: 'Rechercher un short...',
+                hintText: AppLocalizations.of(context)!.commonSearch,
                 onSearchChanged: (v) => setState(() => _searchQuery = v),
               ),
               Expanded(
@@ -87,7 +88,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
         children: [
           Expanded(
             child: _buildStatCard(
-              'A valider',
+              AppLocalizations.of(context)!.statsToValidate,
               pendingCount.toString(),
               Iconsax.clipboard_tick,
               AppColors.warning,
@@ -96,7 +97,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
           const SizedBox(width: 12),
           Expanded(
             child: _buildStatCard(
-              'Validees',
+              AppLocalizations.of(context)!.statsValidated,
               validatedCount.toString(),
               Iconsax.tick_circle,
               AppColors.success,
@@ -105,7 +106,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
           const SizedBox(width: 12),
           Expanded(
             child: _buildStatCard(
-              'Rejetees',
+              AppLocalizations.of(context)!.statsRejected,
               rejectedCount.toString(),
               Iconsax.close_circle,
               AppColors.error,
@@ -153,9 +154,9 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
       color: Colors.white,
       child: Row(
         children: [
-          _buildTab('A valider', 0),
-          _buildTab('Validees', 1),
-          _buildTab('Rejetees', 2),
+          _buildTab(AppLocalizations.of(context)!.navToValidate, 0),
+          _buildTab(AppLocalizations.of(context)!.navValidated, 1),
+          _buildTab(AppLocalizations.of(context)!.navRejected, 2),
         ],
       ),
     );
@@ -210,11 +211,12 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
   Widget _buildPendingVideos() {
     final shortsAsync = ref.watch(pendingValidationShortsProvider);
 
+    final l10n = AppLocalizations.of(context)!;
     return shortsAsync.when(
-      data: (shorts) => _buildVideoList(shorts, 'Aucune video a valider'),
-      loading: () => const LoadingIndicator(message: 'Chargement des videos...'),
+      data: (shorts) => _buildVideoList(shorts, l10n.emptyNoVideosToValidate),
+      loading: () => LoadingIndicator(message: l10n.loadingVideos),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement des videos',
+        message: l10n.errorLoadingVideos,
         onRetry: () => ref.invalidate(pendingValidationShortsProvider),
       ),
     );
@@ -222,12 +224,13 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
   Widget _buildValidatedVideos() {
     final shortsAsync = ref.watch(validatedShortsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return shortsAsync.when(
-      data: (shorts) => _buildVideoList(shorts, 'Aucune video validee'),
-      loading: () => const LoadingIndicator(message: 'Chargement des videos...'),
+      data: (shorts) => _buildVideoList(shorts, l10n.emptyNoValidatedVideos),
+      loading: () => LoadingIndicator(message: l10n.loadingVideos),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement des videos',
+        message: l10n.errorLoadingVideos,
         onRetry: () => ref.invalidate(validatedShortsProvider),
       ),
     );
@@ -235,12 +238,13 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
   Widget _buildRejectedVideos() {
     final shortsAsync = ref.watch(rejectedShortsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return shortsAsync.when(
-      data: (shorts) => _buildVideoList(shorts, 'Aucune video rejetee'),
-      loading: () => const LoadingIndicator(message: 'Chargement des videos...'),
+      data: (shorts) => _buildVideoList(shorts, l10n.emptyNoRejectedVideos),
+      loading: () => LoadingIndicator(message: l10n.loadingVideos),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement des videos',
+        message: l10n.errorLoadingVideos,
         onRetry: () => ref.invalidate(rejectedShortsProvider),
       ),
     );
@@ -424,7 +428,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                   child: OutlinedButton.icon(
                     onPressed: () => _showRejectDialog(short),
                     icon: Icon(Iconsax.close_circle, size: 16, color: AppColors.error),
-                    label: const Text('Rejeter'),
+                    label: Text(AppLocalizations.of(context)!.actionReject),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.error,
                       side: BorderSide(color: AppColors.error),
@@ -436,7 +440,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                   child: ElevatedButton.icon(
                     onPressed: () => _showValidateDialog(short),
                     icon: const Icon(Iconsax.tick_circle, size: 16),
-                    label: const Text('Valider'),
+                    label: Text(AppLocalizations.of(context)!.actionValidate),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.success,
                       foregroundColor: Colors.white,
@@ -454,7 +458,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                   Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id);
                 },
                 icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
-                label: const Text('Voir les details'),
+                label: Text(AppLocalizations.of(context)!.commonViewDetails),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
                   side: BorderSide(color: AppColors.primary),
@@ -469,6 +473,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
   void _showValidateDialog(Short short) {
     final feedbackController = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -477,18 +482,18 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
         return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text('Valider la video'),
+            title: Text(l10n.dialogValidateTitle),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Valider "${short.title ?? short.videoId}" ?'),
+                Text(l10n.dialogValidateContent(short.title ?? short.videoId)),
                 const SizedBox(height: 12),
                 TextField(
                   controller: feedbackController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                    hintText: 'Feedback optionnel...',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    hintText: l10n.dialogFeedbackHint,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ],
@@ -496,7 +501,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
             actions: [
               TextButton(
                 onPressed: isLoading ? null : () => Navigator.pop(dialogContext),
-                child: const Text('Annuler'),
+                child: Text(l10n.commonCancel),
               ),
               ElevatedButton(
                 onPressed: isLoading
@@ -515,7 +520,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                           if (mounted) {
                             ScaffoldMessenger.of(this.context).showSnackBar(
                               SnackBar(
-                                content: const Text('Video validee avec succes'),
+                                content: Text(l10n.snackVideoValidated),
                                 backgroundColor: AppColors.success,
                               ),
                             );
@@ -545,7 +550,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Valider'),
+                    : Text(l10n.actionValidate),
               ),
             ],
           );
@@ -557,6 +562,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
 
   void _showRejectDialog(Short short) {
     final reasonController = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -566,17 +572,17 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
         return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text('Rejeter la video'),
+            title: Text(l10n.dialogRejectTitle),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Raison du rejet :'),
+                Text(l10n.dialogRejectReasonLabel),
                 const SizedBox(height: 12),
                 TextField(
                   controller: reasonController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Expliquez pourquoi vous rejetez cette video...',
+                    hintText: l10n.dialogRejectHint,
                     border: const OutlineInputBorder(),
                     errorText: errorText,
                   ),
@@ -586,7 +592,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
             actions: [
               TextButton(
                 onPressed: isLoading ? null : () => Navigator.pop(dialogContext),
-                child: const Text('Annuler'),
+                child: Text(l10n.commonCancel),
               ),
               ElevatedButton(
                 onPressed: isLoading
@@ -594,7 +600,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                     : () async {
                         final reason = reasonController.text.trim();
                         if (reason.isEmpty) {
-                          setState(() => errorText = 'La raison est obligatoire');
+                          setState(() => errorText = l10n.dialogRejectReasonRequired);
                           return;
                         }
                         setState(() {
@@ -609,7 +615,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                           if (mounted) {
                             ScaffoldMessenger.of(this.context).showSnackBar(
                               SnackBar(
-                                content: const Text('Video rejetee'),
+                                content: Text(l10n.snackVideoRejected),
                                 backgroundColor: AppColors.error,
                               ),
                             );
@@ -639,7 +645,7 @@ class _AssistantDashboardScreenState extends ConsumerState<AssistantDashboardScr
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Rejeter'),
+                    : Text(l10n.actionReject),
               ),
             ],
           );

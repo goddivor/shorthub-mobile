@@ -15,6 +15,7 @@ import '../../widgets/common/custom_drawer.dart';
 import '../../widgets/common/search_filter_bar.dart';
 import '../../config/routes/app_routes.dart';
 import '../../providers/navigation_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class VideasteDashboardScreen extends ConsumerStatefulWidget {
   const VideasteDashboardScreen({super.key});
@@ -33,8 +34,8 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
     return userState.when(
       data: (user) {
         if (user == null) {
-          return const Scaffold(
-            body: Center(child: Text('Aucun utilisateur connecte')),
+          return Scaffold(
+            body: Center(child: Text(AppLocalizations.of(context)!.noUserConnected)),
           );
         }
 
@@ -47,7 +48,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
               _buildStatsHeader(user),
               _buildTabBar(),
               SearchFilterBar(
-                hintText: 'Rechercher un short...',
+                hintText: AppLocalizations.of(context)!.commonSearch,
                 onSearchChanged: (v) => setState(() => _searchQuery = v),
               ),
               Expanded(child: _buildTabContent()),
@@ -85,7 +86,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
         children: [
           Expanded(
             child: _buildStatCard(
-              'Assignees',
+              AppLocalizations.of(context)!.statsAssigned,
               assignedCount.toString(),
               Iconsax.video_play,
               AppColors.primary,
@@ -94,7 +95,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
           const SizedBox(width: 12),
           Expanded(
             child: _buildStatCard(
-              'Completees',
+              AppLocalizations.of(context)!.statsCompleted,
               completedCount.toString(),
               Iconsax.tick_circle,
               AppColors.success,
@@ -103,7 +104,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
           const SizedBox(width: 12),
           Expanded(
             child: _buildStatCard(
-              'Taux',
+              AppLocalizations.of(context)!.statsRate,
               '$rate%',
               Iconsax.chart_1,
               AppColors.info,
@@ -151,9 +152,9 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
       color: Colors.white,
       child: Row(
         children: [
-          _buildTab('Assignees', 0),
-          _buildTab('En cours', 1),
-          _buildTab('Terminees', 2),
+          _buildTab(AppLocalizations.of(context)!.navAssigned, 0),
+          _buildTab(AppLocalizations.of(context)!.navInProgress, 1),
+          _buildTab(AppLocalizations.of(context)!.navCompleted, 2),
         ],
       ),
     );
@@ -205,11 +206,12 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
 
   Widget _buildAssignedVideos() {
     final shortsAsync = ref.watch(assignedShortsProvider);
+    final l10n = AppLocalizations.of(context)!;
     return shortsAsync.when(
-      data: (shorts) => _buildVideoList(shorts, 'Aucune video assignee'),
-      loading: () => const LoadingIndicator(message: 'Chargement...'),
+      data: (shorts) => _buildVideoList(shorts, l10n.emptyNoAssignedVideos),
+      loading: () => LoadingIndicator(message: l10n.loading),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement',
+        message: l10n.errorLoading,
         onRetry: () => ref.invalidate(assignedShortsProvider),
       ),
     );
@@ -217,11 +219,12 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
 
   Widget _buildInProgressVideos() {
     final shortsAsync = ref.watch(inProgressShortsProvider);
+    final l10n = AppLocalizations.of(context)!;
     return shortsAsync.when(
-      data: (shorts) => _buildVideoList(shorts, 'Aucune video en cours'),
-      loading: () => const LoadingIndicator(message: 'Chargement...'),
+      data: (shorts) => _buildVideoList(shorts, l10n.emptyNoInProgressVideos),
+      loading: () => LoadingIndicator(message: l10n.loading),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement',
+        message: l10n.errorLoading,
         onRetry: () => ref.invalidate(inProgressShortsProvider),
       ),
     );
@@ -229,11 +232,12 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
 
   Widget _buildCompletedVideos() {
     final shortsAsync = ref.watch(completedShortsProvider);
+    final l10n = AppLocalizations.of(context)!;
     return shortsAsync.when(
-      data: (shorts) => _buildVideoList(shorts, 'Aucune video terminee'),
-      loading: () => const LoadingIndicator(message: 'Chargement...'),
+      data: (shorts) => _buildVideoList(shorts, l10n.emptyNoCompletedVideos),
+      loading: () => LoadingIndicator(message: l10n.loading),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement',
+        message: l10n.errorLoading,
         onRetry: () => ref.invalidate(completedShortsProvider),
       ),
     );
@@ -389,7 +393,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                                 Icon(Iconsax.clock, size: 12, color: AppColors.error),
                                 const SizedBox(width: 4),
                                 Text(
-                                  'En retard',
+                                  AppLocalizations.of(context)!.shortLate,
                                   style: TextStyle(fontSize: 10, color: AppColors.error, fontWeight: FontWeight.w600),
                                 ),
                               ],
@@ -450,7 +454,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
               child: OutlinedButton.icon(
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id),
                 icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
-                label: const Text('Voir'),
+                label: Text(AppLocalizations.of(context)!.commonView),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
                   side: BorderSide(color: AppColors.primary),
@@ -462,7 +466,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
               child: ElevatedButton.icon(
                 onPressed: () => _showStartWorkDialog(short),
                 icon: const Icon(Iconsax.play, size: 16),
-                label: const Text('Travailler'),
+                label: Text(AppLocalizations.of(context)!.actionWork),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
@@ -478,7 +482,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
               child: OutlinedButton.icon(
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id),
                 icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
-                label: const Text('Voir'),
+                label: Text(AppLocalizations.of(context)!.commonView),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
                   side: BorderSide(color: AppColors.primary),
@@ -490,7 +494,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
               child: ElevatedButton.icon(
                 onPressed: () => _showCompleteDialog(short),
                 icon: const Icon(Iconsax.tick_circle, size: 16),
-                label: const Text('Terminer'),
+                label: Text(AppLocalizations.of(context)!.actionComplete),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.success,
                   foregroundColor: Colors.white,
@@ -505,7 +509,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
           child: OutlinedButton.icon(
             onPressed: () => Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id),
             icon: Icon(Iconsax.eye, size: 16, color: AppColors.primary),
-            label: const Text('Voir'),
+            label: Text(AppLocalizations.of(context)!.commonView),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
               side: BorderSide(color: AppColors.primary),
@@ -518,6 +522,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
   }
 
   void _showStartWorkDialog(Short short) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -525,12 +530,12 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Demarrer le travail'),
-              content: Text('Commencer a travailler sur "${short.title ?? short.videoId}" ?'),
+              title: Text(l10n.dialogStartWorkTitle),
+              content: Text(l10n.dialogStartWorkContentNamed(short.title ?? short.videoId)),
               actions: [
                 TextButton(
                   onPressed: isLoading ? null : () => Navigator.pop(dialogContext),
-                  child: const Text('Annuler'),
+                  child: Text(l10n.commonCancel),
                 ),
                 ElevatedButton(
                   onPressed: isLoading
@@ -545,7 +550,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                             if (mounted) {
                               ScaffoldMessenger.of(this.context).showSnackBar(
                                 SnackBar(
-                                  content: const Text('Travail demarre !'),
+                                  content: Text(l10n.snackWorkStarted),
                                   backgroundColor: AppColors.success,
                                 ),
                               );
@@ -572,7 +577,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                           height: 20,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text('Demarrer'),
+                      : Text(l10n.actionStart),
                 ),
               ],
             );
@@ -583,6 +588,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
   }
 
   void _showCompleteDialog(Short short) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -590,12 +596,12 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Marquer comme termine'),
-              content: Text('Marquer "${short.title ?? short.videoId}" comme termine ?'),
+              title: Text(l10n.dialogCompleteTitle),
+              content: Text(l10n.dialogCompleteContentNamed(short.title ?? short.videoId)),
               actions: [
                 TextButton(
                   onPressed: isLoading ? null : () => Navigator.pop(dialogContext),
-                  child: const Text('Annuler'),
+                  child: Text(l10n.commonCancel),
                 ),
                 ElevatedButton(
                   onPressed: isLoading
@@ -610,7 +616,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                             if (mounted) {
                               ScaffoldMessenger.of(this.context).showSnackBar(
                                 SnackBar(
-                                  content: const Text('Video marquee comme terminee !'),
+                                  content: Text(l10n.snackVideoCompleted),
                                   backgroundColor: AppColors.success,
                                 ),
                               );
@@ -637,7 +643,7 @@ class _VideasteDashboardScreenState extends ConsumerState<VideasteDashboardScree
                           height: 20,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text('Terminer'),
+                      : Text(l10n.actionComplete),
                 ),
               ],
             );
