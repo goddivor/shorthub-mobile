@@ -577,6 +577,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminNoRecentActivity => 'No recent activity';
 
   @override
+  String get analyticsTitle => 'Analytics';
+
+  @override
+  String get analyticsStatusDistribution => 'Status distribution';
+
+  @override
+  String get analyticsWeeklyActivity => 'Weekly activity';
+
+  @override
+  String get analyticsCompletionTrend => 'Completion trend (30d)';
+
+  @override
+  String get analyticsKeyMetrics => 'Key metrics';
+
+  @override
+  String get analyticsCompletionRate => 'Completion rate';
+
+  @override
+  String get analyticsAvgPerWeek => 'Avg/week';
+
+  @override
+  String get analyticsLateRate => 'Late rate';
+
+  @override
+  String get analyticsNoData => 'No data available';
+
+  @override
+  String get navAnalytics => 'Analytics';
+
+  @override
+  String analyticsWeekLabel(int week) {
+    return 'W$week';
+  }
+
+  @override
   String get contentTypeVaSansEdit => 'VA No Edit';
 
   @override

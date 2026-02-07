@@ -200,6 +200,18 @@
   "adminPublished": "Published",
   "adminNoRecentActivity": "No recent activity",
 
+  "analyticsTitle": "Analytics",
+  "analyticsStatusDistribution": "Status distribution",
+  "analyticsWeeklyActivity": "Weekly activity",
+  "analyticsCompletionTrend": "Completion trend (30d)",
+  "analyticsKeyMetrics": "Key metrics",
+  "analyticsCompletionRate": "Completion rate",
+  "analyticsAvgPerWeek": "Avg/week",
+  "analyticsLateRate": "Late rate",
+  "analyticsNoData": "No data available",
+  "navAnalytics": "Analytics",
+  "analyticsWeekLabel": "W{week}",
+
   "contentTypeVaSansEdit": "VA No Edit",
   "contentTypeVaAvecEdit": "VA With Edit",
   "contentTypeVfSansEdit": "VF No Edit",

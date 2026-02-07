@@ -582,6 +582,41 @@ class AppLocalizationsFr extends AppLocalizations {
   String get adminNoRecentActivity => 'Aucune activité récente';
 
   @override
+  String get analyticsTitle => 'Analytiques';
+
+  @override
+  String get analyticsStatusDistribution => 'Répartition par statut';
+
+  @override
+  String get analyticsWeeklyActivity => 'Activité hebdomadaire';
+
+  @override
+  String get analyticsCompletionTrend => 'Tendance de complétion (30j)';
+
+  @override
+  String get analyticsKeyMetrics => 'Métriques clés';
+
+  @override
+  String get analyticsCompletionRate => 'Taux de complétion';
+
+  @override
+  String get analyticsAvgPerWeek => 'Moyenne/semaine';
+
+  @override
+  String get analyticsLateRate => 'Taux de retard';
+
+  @override
+  String get analyticsNoData => 'Aucune donnée disponible';
+
+  @override
+  String get navAnalytics => 'Analytiques';
+
+  @override
+  String analyticsWeekLabel(int week) {
+    return 'S$week';
+  }
+
+  @override
   String get contentTypeVaSansEdit => 'VA Sans Edit';
 
   @override

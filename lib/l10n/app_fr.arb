@@ -270,6 +270,23 @@
   "adminPublished": "Publiées",
   "adminNoRecentActivity": "Aucune activité récente",
 
+  "analyticsTitle": "Analytiques",
+  "analyticsStatusDistribution": "Répartition par statut",
+  "analyticsWeeklyActivity": "Activité hebdomadaire",
+  "analyticsCompletionTrend": "Tendance de complétion (30j)",
+  "analyticsKeyMetrics": "Métriques clés",
+  "analyticsCompletionRate": "Taux de complétion",
+  "analyticsAvgPerWeek": "Moyenne/semaine",
+  "analyticsLateRate": "Taux de retard",
+  "analyticsNoData": "Aucune donnée disponible",
+  "navAnalytics": "Analytiques",
+  "analyticsWeekLabel": "S{week}",
+  "@analyticsWeekLabel": {
+    "placeholders": {
+      "week": { "type": "int" }
+    }
+  },
+
   "contentTypeVaSansEdit": "VA Sans Edit",
   "contentTypeVaAvecEdit": "VA Avec Edit",
   "contentTypeVfSansEdit": "VF Sans Edit",

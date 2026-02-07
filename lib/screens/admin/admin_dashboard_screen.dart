@@ -14,6 +14,7 @@ import 'pages/admin_shorts_tracking_page.dart';
 import 'pages/admin_rolling_page.dart';
 import 'pages/admin_channels_page.dart';
 import 'pages/admin_users_page.dart';
+import 'pages/admin_analytics_page.dart';
 
 class AdminDashboardScreen extends ConsumerStatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -36,6 +37,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         return l10n.navChannels;
       case 3:
         return l10n.navTeam;
+      case 4:
+        return l10n.navAnalytics;
       default:
         return 'ShortHub';
     }
@@ -134,6 +137,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         );
       case 3:
         return const AdminUsersPage();
+      case 4:
+        return const AdminAnalyticsPage();
       default:
         return const SizedBox();
     }
@@ -168,6 +173,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         BottomNavigationBarItem(
           icon: const Icon(Iconsax.people),
           label: l10n.navTeam,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Iconsax.chart_1),
+          label: l10n.navAnalytics,
         ),
       ],
     );

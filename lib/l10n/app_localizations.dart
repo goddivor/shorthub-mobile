@@ -1178,6 +1178,72 @@ abstract class AppLocalizations {
   /// **'Aucune activité récente'**
   String get adminNoRecentActivity;
 
+  /// No description provided for @analyticsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analytiques'**
+  String get analyticsTitle;
+
+  /// No description provided for @analyticsStatusDistribution.
+  ///
+  /// In fr, this message translates to:
+  /// **'Répartition par statut'**
+  String get analyticsStatusDistribution;
+
+  /// No description provided for @analyticsWeeklyActivity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité hebdomadaire'**
+  String get analyticsWeeklyActivity;
+
+  /// No description provided for @analyticsCompletionTrend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendance de complétion (30j)'**
+  String get analyticsCompletionTrend;
+
+  /// No description provided for @analyticsKeyMetrics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Métriques clés'**
+  String get analyticsKeyMetrics;
+
+  /// No description provided for @analyticsCompletionRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux de complétion'**
+  String get analyticsCompletionRate;
+
+  /// No description provided for @analyticsAvgPerWeek.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyenne/semaine'**
+  String get analyticsAvgPerWeek;
+
+  /// No description provided for @analyticsLateRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux de retard'**
+  String get analyticsLateRate;
+
+  /// No description provided for @analyticsNoData.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée disponible'**
+  String get analyticsNoData;
+
+  /// No description provided for @navAnalytics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analytiques'**
+  String get navAnalytics;
+
+  /// No description provided for @analyticsWeekLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'S{week}'**
+  String analyticsWeekLabel(int week);
+
   /// No description provided for @contentTypeVaSansEdit.
   ///
   /// In fr, this message translates to:

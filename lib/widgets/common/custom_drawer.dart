@@ -204,6 +204,19 @@ class CustomDrawer extends ConsumerWidget {
               if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
             },
           ),
+          _buildDrawerItem(
+            context: context,
+            icon: PhosphorIcons.chartBar(PhosphorIconsStyle.regular),
+            activeIcon: PhosphorIcons.chartBar(PhosphorIconsStyle.fill),
+            title: l10n.navAnalytics,
+            route: AppRoutes.adminDashboard,
+            isActive: isOnAdmin && adminTab == 4,
+            onTap: () {
+              ref.read(adminTabIndexProvider.notifier).state = 4;
+              Navigator.pop(context);
+              if (!isOnAdmin) Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
+            },
+          ),
         ];
 
       case 'VIDEASTE':

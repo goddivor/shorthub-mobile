@@ -65,6 +65,9 @@ dependencies:
   # YouTube Share (conservé)
   receive_sharing_intent: ^1.4.5
 
+  # Charts
+  fl_chart: ^0.70.2
+
   # Env
   flutter_dotenv: ^5.2.1
 
