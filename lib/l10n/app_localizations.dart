@@ -1901,7 +1901,7 @@ abstract class AppLocalizations {
   /// No description provided for @channelNoSource.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune chaîne source'**
+  /// **'Aucun canal source'**
   String get channelNoSource;
 
   /// No description provided for @channelAddedSuccess.
@@ -1921,6 +1921,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Canal : {name}'**
   String channelSelected(String name);
+
+  /// No description provided for @sortTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trier par'**
+  String get sortTitle;
+
+  /// No description provided for @sortLastAdded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier ajouté'**
+  String get sortLastAdded;
+
+  /// No description provided for @sortNameAZ.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom (A-Z)'**
+  String get sortNameAZ;
+
+  /// No description provided for @sortNameZA.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom (Z-A)'**
+  String get sortNameZA;
+
+  /// No description provided for @sortMostVideos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus de vidéos'**
+  String get sortMostVideos;
+
+  /// No description provided for @sortLeastVideos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moins de vidéos'**
+  String get sortLeastVideos;
+
+  /// No description provided for @filterByType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer par type'**
+  String get filterByType;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get filterAll;
+
+  /// No description provided for @channelSourcesTab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Canaux Sources'**
+  String get channelSourcesTab;
+
+  /// No description provided for @channelPubTab.
+  ///
+  /// In fr, this message translates to:
+  /// **'Canaux de Publication'**
+  String get channelPubTab;
+
+  /// No description provided for @channelNoResults.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun canal trouvé'**
+  String get channelNoResults;
+
+  /// No description provided for @channelNoPub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun canal de publication'**
+  String get channelNoPub;
+
+  /// No description provided for @channelAddToStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez un canal pour commencer'**
+  String get channelAddToStart;
+
+  /// No description provided for @channelAddToPublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez un canal pour publier'**
+  String get channelAddToPublish;
+
+  /// No description provided for @channelLoadingError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors du chargement des canaux'**
+  String get channelLoadingError;
 }
 
 class _AppLocalizationsDelegate

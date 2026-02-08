@@ -422,5 +422,22 @@
   "usersCreatedSuccess": "Utilisateur {name} créé avec succès",
   "@usersCreatedSuccess": { "placeholders": { "name": { "type": "String" } } },
   "channelSelected": "Canal : {name}",
-  "@channelSelected": { "placeholders": { "name": { "type": "String" } } }
+  "@channelSelected": { "placeholders": { "name": { "type": "String" } } },
+
+  "sortTitle": "Trier par",
+  "sortLastAdded": "Dernier ajouté",
+  "sortNameAZ": "Nom (A-Z)",
+  "sortNameZA": "Nom (Z-A)",
+  "sortMostVideos": "Plus de vidéos",
+  "sortLeastVideos": "Moins de vidéos",
+  "filterByType": "Filtrer par type",
+  "filterAll": "Tous",
+  "channelSourcesTab": "Canaux Sources",
+  "channelPubTab": "Canaux de Publication",
+  "channelNoResults": "Aucun canal trouvé",
+  "channelNoSource": "Aucun canal source",
+  "channelNoPub": "Aucun canal de publication",
+  "channelAddToStart": "Ajoutez un canal pour commencer",
+  "channelAddToPublish": "Ajoutez un canal pour publier",
+  "channelLoadingError": "Erreur lors du chargement des canaux"
 }

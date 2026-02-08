@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/theme/theme_extensions.dart';
 import '../../../providers/channels_provider.dart';
@@ -10,8 +11,9 @@ import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/cards/channel_card.dart';
 import '../../../core/models/source_channel.dart';
 import '../../../core/models/admin_channel.dart';
-import '../../../widgets/common/search_filter_bar.dart';
 import '../../../l10n/app_localizations.dart';
+
+enum SortOption { lastAdded, nameAZ, nameZA, mostVideos, leastVideos }
 
 class AdminChannelsPage extends ConsumerStatefulWidget {
   final Function(int)? onTabChanged;
@@ -321,6 +323,11 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String _searchQuery = '';
+  bool _searchExpanded = false;
+  SortOption _sortOption = SortOption.lastAdded;
+  String? _filterContentType;
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -336,12 +343,252 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
+
+  // ==================== Sort & Filter Logic ====================
+
+  List<T> _applySortAndFilter<T>(
+    List<T> items, {
+    required String Function(T) getName,
+    required int? Function(T) getVideos,
+    required String Function(T) getContentType,
+  }) {
+    var result = List<T>.from(items);
+
+    // Filter by search
+    if (_searchQuery.isNotEmpty) {
+      result = result
+          .where((c) => getName(c).toLowerCase().contains(_searchQuery.toLowerCase()))
+          .toList();
+    }
+
+    // Filter by content type
+    if (_filterContentType != null) {
+      result = result.where((c) => getContentType(c) == _filterContentType).toList();
+    }
+
+    // Sort
+    switch (_sortOption) {
+      case SortOption.lastAdded:
+        // Keep original order (most recent first from API)
+        break;
+      case SortOption.nameAZ:
+        result.sort((a, b) => getName(a).toLowerCase().compareTo(getName(b).toLowerCase()));
+        break;
+      case SortOption.nameZA:
+        result.sort((a, b) => getName(b).toLowerCase().compareTo(getName(a).toLowerCase()));
+        break;
+      case SortOption.mostVideos:
+        result.sort((a, b) => (getVideos(b) ?? 0).compareTo(getVideos(a) ?? 0));
+        break;
+      case SortOption.leastVideos:
+        result.sort((a, b) => (getVideos(a) ?? 0).compareTo(getVideos(b) ?? 0));
+        break;
+    }
+
+    return result;
+  }
+
+  void _showSortBottomSheet() {
+    final l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.cardBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.borderColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l10n.sortTitle,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: context.textPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildSortOption(l10n.sortLastAdded, Iconsax.calendar, SortOption.lastAdded),
+                _buildSortOption(l10n.sortNameAZ, Iconsax.sort, SortOption.nameAZ),
+                _buildSortOption(l10n.sortNameZA, Iconsax.sort, SortOption.nameZA),
+                _buildSortOption(l10n.sortMostVideos, Iconsax.video_play, SortOption.mostVideos),
+                _buildSortOption(l10n.sortLeastVideos, Iconsax.video_slash, SortOption.leastVideos),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSortOption(String label, IconData icon, SortOption option) {
+    final isSelected = _sortOption == option;
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isSelected ? AppColors.primary : context.iconSubtle,
+        size: 22,
+      ),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? AppColors.primary : context.textPrimary,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          fontSize: 15,
+        ),
+      ),
+      trailing: isSelected
+          ? Icon(Iconsax.tick_circle, color: AppColors.primary, size: 20)
+          : null,
+      onTap: () {
+        setState(() => _sortOption = option);
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  void _showFilterBottomSheet() {
+    final l10n = AppLocalizations.of(context)!;
+    final isSourceTab = _tabController.index == 0;
+
+    final types = isSourceTab
+        ? [
+            ('VA_SANS_EDIT', l10n.contentTypeVaSansEdit),
+            ('VA_AVEC_EDIT', l10n.contentTypeVaAvecEdit),
+            ('VF_SANS_EDIT', l10n.contentTypeVfSansEdit),
+            ('VF_AVEC_EDIT', l10n.contentTypeVfAvecEdit),
+            ('VO_SANS_EDIT', l10n.contentTypeVoSansEdit),
+            ('VO_AVEC_EDIT', l10n.contentTypeVoAvecEdit),
+          ]
+        : [
+            ('VA_SANS_EDIT', l10n.contentTypeVaSansEdit),
+            ('VA_AVEC_EDIT', l10n.contentTypeVaAvecEdit),
+            ('VF_SANS_EDIT', l10n.contentTypeVfSansEdit),
+            ('VF_AVEC_EDIT', l10n.contentTypeVfAvecEdit),
+          ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.cardBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.borderColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l10n.filterByType,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: context.textPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // "All" option
+                _buildFilterOption(l10n.filterAll, null),
+                ...types.map((t) => _buildFilterOption(t.$2, t.$1)),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterOption(String label, String? value) {
+    final isSelected = _filterContentType == value;
+    Color badgeColor;
+    if (value == null) {
+      badgeColor = AppColors.gray500;
+    } else if (value.startsWith('VA')) {
+      badgeColor = AppColors.primary;
+    } else if (value.startsWith('VF')) {
+      badgeColor = AppColors.success;
+    } else {
+      badgeColor = AppColors.secondary;
+    }
+
+    return ListTile(
+      leading: Container(
+        width: 10,
+        height: 10,
+        decoration: BoxDecoration(
+          color: badgeColor,
+          shape: BoxShape.circle,
+        ),
+      ),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? AppColors.primary : context.textPrimary,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          fontSize: 15,
+        ),
+      ),
+      trailing: isSelected
+          ? Icon(Iconsax.tick_circle, color: AppColors.primary, size: 20)
+          : null,
+      onTap: () {
+        setState(() => _filterContentType = value);
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  // ==================== Build ====================
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasActiveFilter = _filterContentType != null;
 
     return Column(
       children: [
@@ -362,17 +609,194 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
               fontSize: 14,
               fontWeight: FontWeight.normal,
             ),
-            tabs: const [
-              Tab(text: 'Canaux Sources'),
-              Tab(text: 'Canaux de Publication'),
+            tabs: [
+              Tab(text: l10n.channelSourcesTab),
+              Tab(text: l10n.channelPubTab),
             ],
           ),
         ),
 
-        // Search bar
-        SearchFilterBar(
-          hintText: l10n.channelSearchHint,
-          onSearchChanged: (v) => setState(() => _searchQuery = v),
+        // Search + Sort/Filter bar
+        Container(
+          color: context.cardBg,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              // Search button / expanded search
+              if (_searchExpanded)
+                Expanded(
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: context.subtleBg,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: context.borderColor),
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 14),
+                        Icon(
+                          Iconsax.search_normal,
+                          size: 18,
+                          color: context.textTertiary,
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 1,
+                          height: 20,
+                          color: context.borderColor,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            focusNode: _searchFocusNode,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: context.textPrimary,
+                            ),
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            onChanged: (v) => setState(() => _searchQuery = v),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _searchExpanded = false;
+                              _searchQuery = '';
+                              _searchController.clear();
+                              _searchFocusNode.unfocus();
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Icon(
+                              Icons.close,
+                              size: 18,
+                              color: context.textTertiary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else ...[
+                Container(
+                  width: 56,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: context.subtleBg,
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(22),
+                      onTap: () {
+                        setState(() => _searchExpanded = true);
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          _searchFocusNode.requestFocus();
+                        });
+                      },
+                      child: Center(
+                        child: Icon(
+                          Iconsax.search_normal,
+                          size: 20,
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+              ],
+
+              const SizedBox(width: 12),
+
+              // Sort + Filter combined pill
+              Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  color: context.subtleBg,
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Sort button
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(22),
+                        ),
+                        onTap: _showSortBottomSheet,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: Icon(
+                            PhosphorIcons.sortAscending(PhosphorIconsStyle.bold),
+                            size: 20,
+                            color: _sortOption != SortOption.lastAdded
+                                ? AppColors.primary
+                                : context.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Divider
+                    Container(
+                      width: 1,
+                      height: 20,
+                      color: context.borderColor,
+                    ),
+                    // Filter button
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: const BorderRadius.horizontal(
+                          right: Radius.circular(22),
+                        ),
+                        onTap: _showFilterBottomSheet,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Icon(
+                                PhosphorIcons.funnel(PhosphorIconsStyle.bold),
+                                size: 20,
+                                color: hasActiveFilter
+                                    ? AppColors.primary
+                                    : context.textSecondary,
+                              ),
+                              if (hasActiveFilter)
+                                Positioned(
+                                  top: -2,
+                                  right: -4,
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
 
         // Tab Views
@@ -391,12 +815,16 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
 
   Widget _buildSourceChannelsList() {
     final channelsAsync = ref.watch(sourceChannelsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return channelsAsync.when(
       data: (allChannels) {
-        final channels = _searchQuery.isEmpty
-            ? allChannels
-            : allChannels.where((c) => c.channelName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+        final channels = _applySortAndFilter<SourceChannel>(
+          allChannels,
+          getName: (c) => c.channelName,
+          getVideos: (c) => c.totalVideos,
+          getContentType: (c) => c.contentType,
+        );
 
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(sourceChannelsProvider),
@@ -412,13 +840,15 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                           Icon(Iconsax.video_circle, size: 64, color: context.iconSubtle),
                           const SizedBox(height: 16),
                           Text(
-                            _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal source',
+                            _searchQuery.isNotEmpty || _filterContentType != null
+                                ? l10n.channelNoResults
+                                : l10n.channelNoSource,
                             style: TextStyle(fontSize: 16, color: context.textTertiary),
                           ),
-                          if (_searchQuery.isEmpty) ...[
+                          if (_searchQuery.isEmpty && _filterContentType == null) ...[
                             const SizedBox(height: 8),
                             Text(
-                              'Ajoutez un canal pour commencer',
+                              l10n.channelAddToStart,
                               style: TextStyle(fontSize: 14, color: context.textHint),
                             ),
                           ],
@@ -440,14 +870,6 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                       contentType: channel.contentType,
                       totalVideos: channel.totalVideos,
                       isSourceChannel: true,
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.channelSelected(channel.channelName)),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      },
                       onEdit: () {
                         _showEditSourceChannelDialog(channel);
                       },
@@ -461,7 +883,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
       },
       loading: () => const LoadingIndicator(message: 'Chargement des canaux...'),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement des canaux',
+        message: l10n.channelLoadingError,
         onRetry: () => ref.invalidate(sourceChannelsProvider),
       ),
     );
@@ -469,12 +891,16 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
 
   Widget _buildAdminChannelsList() {
     final channelsAsync = ref.watch(adminChannelsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return channelsAsync.when(
       data: (allChannels) {
-        final channels = _searchQuery.isEmpty
-            ? allChannels
-            : allChannels.where((c) => c.channelName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+        final channels = _applySortAndFilter<AdminChannel>(
+          allChannels,
+          getName: (c) => c.channelName,
+          getVideos: (c) => c.totalVideos,
+          getContentType: (c) => c.contentType ?? '',
+        );
 
         return RefreshIndicator(
           onRefresh: () async => ref.invalidate(adminChannelsProvider),
@@ -490,13 +916,15 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                           Icon(Iconsax.video_circle, size: 64, color: context.iconSubtle),
                           const SizedBox(height: 16),
                           Text(
-                            _searchQuery.isNotEmpty ? 'Aucun canal trouve' : 'Aucun canal de publication',
+                            _searchQuery.isNotEmpty || _filterContentType != null
+                                ? l10n.channelNoResults
+                                : l10n.channelNoPub,
                             style: TextStyle(fontSize: 16, color: context.textTertiary),
                           ),
-                          if (_searchQuery.isEmpty) ...[
+                          if (_searchQuery.isEmpty && _filterContentType == null) ...[
                             const SizedBox(height: 8),
                             Text(
-                              'Ajoutez un canal pour publier',
+                              l10n.channelAddToPublish,
                               style: TextStyle(fontSize: 14, color: context.textHint),
                             ),
                           ],
@@ -519,14 +947,6 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
                       totalVideos: channel.totalVideos,
                       subscriberCount: channel.subscriberCount,
                       isSourceChannel: false,
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.channelSelected(channel.channelName)),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      },
                       onDelete: () {
                         _showDeleteAdminChannelDialog(channel);
                       },
@@ -537,7 +957,7 @@ class _AdminChannelsPageState extends ConsumerState<AdminChannelsPage>
       },
       loading: () => const LoadingIndicator(message: 'Chargement des canaux...'),
       error: (error, _) => ErrorDisplay(
-        message: 'Erreur lors du chargement des canaux',
+        message: l10n.channelLoadingError,
         onRetry: () => ref.invalidate(adminChannelsProvider),
       ),
     );

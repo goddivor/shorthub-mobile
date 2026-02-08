@@ -975,4 +975,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String channelSelected(String name) {
     return 'Channel: $name';
   }
+
+  @override
+  String get sortTitle => 'Sort by';
+
+  @override
+  String get sortLastAdded => 'Last added';
+
+  @override
+  String get sortNameAZ => 'Name (A-Z)';
+
+  @override
+  String get sortNameZA => 'Name (Z-A)';
+
+  @override
+  String get sortMostVideos => 'Most videos';
+
+  @override
+  String get sortLeastVideos => 'Least videos';
+
+  @override
+  String get filterByType => 'Filter by type';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get channelSourcesTab => 'Source Channels';
+
+  @override
+  String get channelPubTab => 'Publication Channels';
+
+  @override
+  String get channelNoResults => 'No channels found';
+
+  @override
+  String get channelNoPub => 'No publication channels';
+
+  @override
+  String get channelAddToStart => 'Add a channel to get started';
+
+  @override
+  String get channelAddToPublish => 'Add a channel to publish';
+
+  @override
+  String get channelLoadingError => 'Error loading channels';
 }

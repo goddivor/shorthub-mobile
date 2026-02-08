@@ -966,7 +966,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get channelNoSource => 'Aucune chaîne source';
+  String get channelNoSource => 'Aucun canal source';
 
   @override
   String channelAddedSuccess(String name) {
@@ -982,4 +982,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String channelSelected(String name) {
     return 'Canal : $name';
   }
+
+  @override
+  String get sortTitle => 'Trier par';
+
+  @override
+  String get sortLastAdded => 'Dernier ajouté';
+
+  @override
+  String get sortNameAZ => 'Nom (A-Z)';
+
+  @override
+  String get sortNameZA => 'Nom (Z-A)';
+
+  @override
+  String get sortMostVideos => 'Plus de vidéos';
+
+  @override
+  String get sortLeastVideos => 'Moins de vidéos';
+
+  @override
+  String get filterByType => 'Filtrer par type';
+
+  @override
+  String get filterAll => 'Tous';
+
+  @override
+  String get channelSourcesTab => 'Canaux Sources';
+
+  @override
+  String get channelPubTab => 'Canaux de Publication';
+
+  @override
+  String get channelNoResults => 'Aucun canal trouvé';
+
+  @override
+  String get channelNoPub => 'Aucun canal de publication';
+
+  @override
+  String get channelAddToStart => 'Ajoutez un canal pour commencer';
+
+  @override
+  String get channelAddToPublish => 'Ajoutez un canal pour publier';
+
+  @override
+  String get channelLoadingError => 'Erreur lors du chargement des canaux';
 }

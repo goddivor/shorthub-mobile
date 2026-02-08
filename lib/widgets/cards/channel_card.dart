@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../config/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 import '../../config/theme/theme_extensions.dart';
@@ -15,7 +16,6 @@ class ChannelCard extends StatelessWidget {
   final int? totalVideos;
   final int? subscriberCount;
   final bool isSourceChannel;
-  final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
@@ -29,10 +29,16 @@ class ChannelCard extends StatelessWidget {
     this.totalVideos,
     this.subscriberCount,
     this.isSourceChannel = true,
-    this.onTap,
     this.onEdit,
     this.onDelete,
   });
+
+  Future<void> _openYouTubeChannel() async {
+    final url = Uri.parse('https://www.youtube.com/channel/$channelId');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +58,7 @@ class ChannelCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
+          onTap: () => _openYouTubeChannel(),
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -219,20 +225,6 @@ class ChannelCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'view',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Iconsax.eye,
-                            size: 18,
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.channelViewChannel),
-                        ],
-                      ),
-                    ),
                     if (isSourceChannel)
                       PopupMenuItem(
                         value: 'edit',
@@ -248,7 +240,7 @@ class ChannelCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                    const PopupMenuDivider(),
+                    if (isSourceChannel) const PopupMenuDivider(),
                     PopupMenuItem(
                       value: 'delete',
                       child: Row(
@@ -269,9 +261,6 @@ class ChannelCard extends StatelessWidget {
                   ],
                   onSelected: (value) {
                     switch (value) {
-                      case 'view':
-                        onTap?.call();
-                        break;
                       case 'edit':
                         onEdit?.call();
                         break;

@@ -347,5 +347,22 @@
   "usersCreatedSuccess": "User {name} created successfully",
   "@usersCreatedSuccess": { "placeholders": { "name": { "type": "String" } } },
   "channelSelected": "Channel: {name}",
-  "@channelSelected": { "placeholders": { "name": { "type": "String" } } }
+  "@channelSelected": { "placeholders": { "name": { "type": "String" } } },
+
+  "sortTitle": "Sort by",
+  "sortLastAdded": "Last added",
+  "sortNameAZ": "Name (A-Z)",
+  "sortNameZA": "Name (Z-A)",
+  "sortMostVideos": "Most videos",
+  "sortLeastVideos": "Least videos",
+  "filterByType": "Filter by type",
+  "filterAll": "All",
+  "channelSourcesTab": "Source Channels",
+  "channelPubTab": "Publication Channels",
+  "channelNoResults": "No channels found",
+  "channelNoSource": "No source channels",
+  "channelNoPub": "No publication channels",
+  "channelAddToStart": "Add a channel to get started",
+  "channelAddToPublish": "Add a channel to publish",
+  "channelLoadingError": "Error loading channels"
 }
