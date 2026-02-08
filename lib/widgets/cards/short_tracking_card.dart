@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
@@ -190,7 +191,7 @@ class ShortTrackingCard extends StatelessWidget {
                   ],
                   if (short.hasFile) ...[
                     const Spacer(),
-                    Icon(Iconsax.document_upload, size: 12, color: AppColors.success),
+                    Icon(PhosphorIcons.shareFat(PhosphorIconsStyle.bold), size: 12, color: AppColors.success),
                     const SizedBox(width: 4),
                     Text(
                       'Fichier',

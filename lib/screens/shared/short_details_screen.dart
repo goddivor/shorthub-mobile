@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../config/routes/app_routes.dart' show AppRoutes;
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
@@ -15,6 +17,7 @@ import '../../widgets/modals/validate_short_modal.dart';
 import '../../widgets/modals/reject_short_modal.dart';
 import '../../widgets/comments/comment_list.dart';
 import '../../widgets/comments/comment_input.dart';
+import '../../widgets/common/youtube_play_button.dart';
 import '../../l10n/app_localizations.dart';
 
 class ShortDetailsScreen extends ConsumerWidget {
@@ -61,32 +64,38 @@ class _ShortDetailsBody extends ConsumerWidget {
           backgroundColor: AppColors.gray900,
           foregroundColor: Colors.white,
           flexibleSpace: FlexibleSpaceBar(
-            background: Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.network(
-                  'https://img.youtube.com/vi/${short.videoId}/hqdefault.jpg',
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: AppColors.gray800,
-                    child: Icon(Iconsax.video, color: AppColors.gray400, size: 64),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+            background: GestureDetector(
+              onTap: () => _playVideo(context),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    'https://img.youtube.com/vi/${short.videoId}/hqdefault.jpg',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: AppColors.gray800,
+                      child: Icon(Iconsax.video, color: AppColors.gray400, size: 64),
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+                      ),
+                    ),
+                  ),
+                  const Center(
+                    child: YouTubePlayButton(size: 64),
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
             IconButton(
-              icon: Icon(Iconsax.export_1, color: Colors.white),
+              icon: Icon(PhosphorIcons.shareFat(PhosphorIconsStyle.bold), color: Colors.white),
               onPressed: () => _openOnYouTube(context),
             ),
           ],
@@ -270,7 +279,7 @@ class _ShortDetailsBody extends ConsumerWidget {
                   _buildSection(
                     context,
                     title: AppLocalizations.of(context)!.shortVideoFile,
-                    icon: Iconsax.document_upload,
+                    icon: PhosphorIcons.shareFat(PhosphorIconsStyle.bold),
                     child: Column(
                       children: [
                         _buildInfoRow(context, AppLocalizations.of(context)!.shortFileName, short.fileName ?? 'N/A'),
@@ -447,7 +456,7 @@ class _ShortDetailsBody extends ConsumerWidget {
       Expanded(
         child: OutlinedButton.icon(
           onPressed: () => _openOnYouTube(context),
-          icon: Icon(Iconsax.export_1, size: 16, color: AppColors.primary),
+          icon: Icon(PhosphorIcons.shareFat(PhosphorIconsStyle.bold), size: 16, color: AppColors.primary),
           label: const Text('YouTube'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
@@ -551,6 +560,14 @@ class _ShortDetailsBody extends ConsumerWidget {
     if (actions.isEmpty) return const SizedBox.shrink();
 
     return Row(children: actions);
+  }
+
+  void _playVideo(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.youtubePlayer,
+      arguments: {'videoId': short.videoId, 'title': short.title ?? short.videoId},
+    );
   }
 
   void _openOnYouTube(BuildContext context) async {

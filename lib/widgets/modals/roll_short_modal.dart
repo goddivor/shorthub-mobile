@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../config/routes/app_routes.dart';
 import '../../config/theme/app_colors.dart';
+import '../common/youtube_play_button.dart';
 import '../../config/theme/theme_extensions.dart';
 import '../../core/models/short.dart';
 import '../../core/models/source_channel.dart';
@@ -96,6 +98,14 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
         );
       }
     }
+  }
+
+  void _playVideo(String videoId, String? title) {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.youtubePlayer,
+      arguments: {'videoId': videoId, 'title': title ?? videoId},
+    );
   }
 
   @override
@@ -216,16 +226,27 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Image.network(
-              thumbnailUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: context.borderColor,
-                child: Icon(Iconsax.video, color: context.iconSubtle, size: 48),
+        GestureDetector(
+          onTap: () => _playVideo(short.videoId, short.title),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    thumbnailUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: context.borderColor,
+                      child: Icon(Iconsax.video, color: context.iconSubtle, size: 48),
+                    ),
+                  ),
+                  const Center(
+                    child: YouTubePlayButton(size: 56),
+                  ),
+                ],
               ),
             ),
           ),
@@ -238,11 +259,14 @@ class _RollShortModalState extends ConsumerState<RollShortModal> {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        Text(
-          short.videoUrl,
-          style: TextStyle(fontSize: 12, color: context.textHint),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        GestureDetector(
+          onTap: () => _playVideo(short.videoId, short.title),
+          child: Text(
+            short.videoUrl,
+            style: TextStyle(fontSize: 12, color: AppColors.primary.withValues(alpha: 0.7)),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         const SizedBox(height: 20),
         Row(
