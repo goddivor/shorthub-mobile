@@ -1066,4 +1066,53 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get filterWithoutEdit => 'Sans Edit';
+
+  @override
+  String get trackingStatsTotal => 'Total';
+
+  @override
+  String get trackingStatsAssigned => 'Assignés';
+
+  @override
+  String get trackingStatsInProgress => 'En cours';
+
+  @override
+  String get trackingStatsCompleted => 'Terminés';
+
+  @override
+  String get trackingStatsValidated => 'Validés';
+
+  @override
+  String get trackingStatsRejected => 'Rejetés';
+
+  @override
+  String get trackingStatsPublished => 'Publiés';
+
+  @override
+  String get trackingAllStatuses => 'Tous les statuts';
+
+  @override
+  String get trackingSearchHint => 'Rechercher un short...';
+
+  @override
+  String get trackingLoading => 'Chargement des shorts...';
+
+  @override
+  String get trackingLoadingError => 'Erreur chargement des shorts';
+
+  @override
+  String get trackingNoShortsFiltered =>
+      'Aucun short ne correspond aux filtres';
+
+  @override
+  String get trackingNoShorts => 'Aucun short dans le workflow';
+
+  @override
+  String get usersLoading => 'Chargement des utilisateurs...';
+
+  @override
+  String get usersLoadingError => 'Erreur lors du chargement des utilisateurs';
+
+  @override
+  String get usersIrreversible => 'Cette action est irréversible';
 }

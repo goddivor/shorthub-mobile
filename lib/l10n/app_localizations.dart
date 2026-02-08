@@ -2089,6 +2089,102 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sans Edit'**
   String get filterWithoutEdit;
+
+  /// No description provided for @trackingStatsTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get trackingStatsTotal;
+
+  /// No description provided for @trackingStatsAssigned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assignés'**
+  String get trackingStatsAssigned;
+
+  /// No description provided for @trackingStatsInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get trackingStatsInProgress;
+
+  /// No description provided for @trackingStatsCompleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminés'**
+  String get trackingStatsCompleted;
+
+  /// No description provided for @trackingStatsValidated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validés'**
+  String get trackingStatsValidated;
+
+  /// No description provided for @trackingStatsRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejetés'**
+  String get trackingStatsRejected;
+
+  /// No description provided for @trackingStatsPublished.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publiés'**
+  String get trackingStatsPublished;
+
+  /// No description provided for @trackingAllStatuses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les statuts'**
+  String get trackingAllStatuses;
+
+  /// No description provided for @trackingSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un short...'**
+  String get trackingSearchHint;
+
+  /// No description provided for @trackingLoading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des shorts...'**
+  String get trackingLoading;
+
+  /// No description provided for @trackingLoadingError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur chargement des shorts'**
+  String get trackingLoadingError;
+
+  /// No description provided for @trackingNoShortsFiltered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun short ne correspond aux filtres'**
+  String get trackingNoShortsFiltered;
+
+  /// No description provided for @trackingNoShorts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun short dans le workflow'**
+  String get trackingNoShorts;
+
+  /// No description provided for @usersLoading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des utilisateurs...'**
+  String get usersLoading;
+
+  /// No description provided for @usersLoadingError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors du chargement des utilisateurs'**
+  String get usersLoadingError;
+
+  /// No description provided for @usersIrreversible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est irréversible'**
+  String get usersIrreversible;
 }
 
 class _AppLocalizationsDelegate

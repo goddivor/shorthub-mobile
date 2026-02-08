@@ -378,5 +378,23 @@
   "rollingLoadingError": "Error loading channels",
   "rollingNoChannels": "No source channels",
   "filterWithEdit": "With Edit",
-  "filterWithoutEdit": "No Edit"
+  "filterWithoutEdit": "No Edit",
+
+  "trackingStatsTotal": "Total",
+  "trackingStatsAssigned": "Assigned",
+  "trackingStatsInProgress": "In progress",
+  "trackingStatsCompleted": "Completed",
+  "trackingStatsValidated": "Validated",
+  "trackingStatsRejected": "Rejected",
+  "trackingStatsPublished": "Published",
+  "trackingAllStatuses": "All statuses",
+  "trackingSearchHint": "Search a short...",
+  "trackingLoading": "Loading shorts...",
+  "trackingLoadingError": "Error loading shorts",
+  "trackingNoShortsFiltered": "No shorts match the filters",
+  "trackingNoShorts": "No shorts in the workflow",
+
+  "usersLoading": "Loading users...",
+  "usersLoadingError": "Error loading users",
+  "usersIrreversible": "This action is irreversible"
 }

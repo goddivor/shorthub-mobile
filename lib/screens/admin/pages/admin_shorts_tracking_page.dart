@@ -10,6 +10,7 @@ import '../../../widgets/common/stat_badge.dart';
 import '../../../widgets/common/loading_indicator.dart';
 import '../../../widgets/common/error_widget.dart';
 import '../../../widgets/cards/short_tracking_card.dart';
+import '../../../widgets/common/search_filter_bar.dart';
 import '../../../widgets/modals/validate_short_modal.dart';
 import '../../../widgets/modals/reject_short_modal.dart';
 import '../../../config/routes/app_routes.dart';
@@ -25,16 +26,6 @@ class AdminShortsTrackingPage extends ConsumerStatefulWidget {
 class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPage> {
   String _searchQuery = '';
   String _statusFilter = 'ALL';
-
-  final _statusOptions = const [
-    {'value': 'ALL', 'label': 'Tous les statuts'},
-    {'value': 'ASSIGNED', 'label': 'Assignes'},
-    {'value': 'IN_PROGRESS', 'label': 'En cours'},
-    {'value': 'COMPLETED', 'label': 'Termines'},
-    {'value': 'VALIDATED', 'label': 'Valides'},
-    {'value': 'REJECTED', 'label': 'Rejetes'},
-    {'value': 'PUBLISHED', 'label': 'Publies'},
-  ];
 
   List<Short> _filterShorts(List<Short> shorts) {
     return shorts.where((s) {
@@ -146,15 +137,34 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
     Navigator.pushNamed(context, AppRoutes.shortDetails, arguments: short.id);
   }
 
+  List<Map<String, String>> _getStatusOptions(AppLocalizations l10n) {
+    return [
+      {'value': 'ALL', 'label': l10n.trackingAllStatuses},
+      {'value': 'ASSIGNED', 'label': l10n.statusAssigned},
+      {'value': 'IN_PROGRESS', 'label': l10n.statusInProgress},
+      {'value': 'COMPLETED', 'label': l10n.statusCompleted},
+      {'value': 'VALIDATED', 'label': l10n.statusValidated},
+      {'value': 'REJECTED', 'label': l10n.statusRejected},
+      {'value': 'PUBLISHED', 'label': l10n.statusPublished},
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final shortsAsync = ref.watch(allShortsProvider);
     final statsAsync = ref.watch(shortsStatsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         _buildStatsRow(statsAsync),
-        _buildSearchAndFilter(),
+        SearchFilterBar(
+          hintText: l10n.trackingSearchHint,
+          onSearchChanged: (v) => setState(() => _searchQuery = v),
+          filterValue: _statusFilter,
+          filterOptions: _getStatusOptions(l10n),
+          onFilterChanged: (v) => setState(() => _statusFilter = v ?? 'ALL'),
+        ),
         Expanded(
           child: shortsAsync.when(
             data: (shorts) {
@@ -168,8 +178,8 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                       const SizedBox(height: 16),
                       Text(
                         _searchQuery.isNotEmpty || _statusFilter != 'ALL'
-                            ? 'Aucun short correspond aux filtres'
-                            : 'Aucun short dans le workflow',
+                            ? l10n.trackingNoShortsFiltered
+                            : l10n.trackingNoShorts,
                         style: TextStyle(fontSize: 16, color: context.textTertiary),
                       ),
                     ],
@@ -198,9 +208,9 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
                 ),
               );
             },
-            loading: () => const LoadingIndicator(message: 'Chargement des shorts...'),
+            loading: () => LoadingIndicator(message: l10n.trackingLoading),
             error: (error, _) => ErrorDisplay(
-              message: 'Erreur chargement des shorts',
+              message: l10n.trackingLoadingError,
               onRetry: () => ref.invalidate(allShortsProvider),
             ),
           ),
@@ -211,6 +221,7 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
 
   Widget _buildStatsRow(AsyncValue<ShortsStats> statsAsync) {
     final stats = statsAsync.valueOrNull;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       color: context.cardBg,
@@ -220,87 +231,24 @@ class _AdminShortsTrackingPageState extends ConsumerState<AdminShortsTrackingPag
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
-            StatBadge(label: 'Total', value: '${stats?.total ?? 0}', icon: Iconsax.document_text, color: AppColors.gray600),
+            StatBadge(label: l10n.trackingStatsTotal, value: '${stats?.total ?? 0}', icon: Iconsax.document_text, color: AppColors.gray600),
             const SizedBox(width: 8),
-            StatBadge(label: 'Assignes', value: '${stats?.assigned ?? 0}', icon: Iconsax.user_tick, color: AppColors.statusAssigned),
+            StatBadge(label: l10n.trackingStatsAssigned, value: '${stats?.assigned ?? 0}', icon: Iconsax.user_tick, color: AppColors.statusAssigned),
             const SizedBox(width: 8),
-            StatBadge(label: 'En cours', value: '${stats?.inProgress ?? 0}', icon: Iconsax.timer_1, color: AppColors.statusInProgress),
+            StatBadge(label: l10n.trackingStatsInProgress, value: '${stats?.inProgress ?? 0}', icon: Iconsax.timer_1, color: AppColors.statusInProgress),
             const SizedBox(width: 8),
-            StatBadge(label: 'Termines', value: '${stats?.completed ?? 0}', icon: Iconsax.tick_circle, color: AppColors.statusCompleted),
+            StatBadge(label: l10n.trackingStatsCompleted, value: '${stats?.completed ?? 0}', icon: Iconsax.tick_circle, color: AppColors.statusCompleted),
             const SizedBox(width: 8),
-            StatBadge(label: 'Valides', value: '${stats?.validated ?? 0}', icon: Iconsax.shield_tick, color: AppColors.statusValidated),
+            StatBadge(label: l10n.trackingStatsValidated, value: '${stats?.validated ?? 0}', icon: Iconsax.shield_tick, color: AppColors.statusValidated),
             const SizedBox(width: 8),
-            StatBadge(label: 'Rejetes', value: '${stats?.rejected ?? 0}', icon: Iconsax.close_circle, color: AppColors.statusRejected),
+            StatBadge(label: l10n.trackingStatsRejected, value: '${stats?.rejected ?? 0}', icon: Iconsax.close_circle, color: AppColors.statusRejected),
             const SizedBox(width: 8),
-            StatBadge(label: 'Publies', value: '${stats?.published ?? 0}', icon: Iconsax.global, color: Colors.deepPurple),
+            StatBadge(label: l10n.trackingStatsPublished, value: '${stats?.published ?? 0}', icon: Iconsax.global, color: Colors.deepPurple),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSearchAndFilter() {
-    final l10n = AppLocalizations.of(context)!;
-    return Container(
-      color: context.cardBg,
-      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
-      child: Row(
-        children: [
-          // Search
-          Expanded(
-            flex: 3,
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: l10n.commonSearchHint,
-                hintStyle: TextStyle(fontSize: 13, color: context.textHint),
-                prefixIcon: Icon(Iconsax.search_normal, size: 18, color: context.iconSubtle),
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: context.borderColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: context.borderColor),
-                ),
-                filled: true,
-                fillColor: context.subtleBg,
-                isDense: true,
-              ),
-              style: const TextStyle(fontSize: 13),
-              onChanged: (v) => setState(() => _searchQuery = v),
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Status filter
-          Expanded(
-            flex: 2,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                border: Border.all(color: context.borderColor),
-                borderRadius: BorderRadius.circular(8),
-                color: context.subtleBg,
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _statusFilter,
-                  isExpanded: true,
-                  isDense: true,
-                  style: TextStyle(fontSize: 12, color: context.textSecondary),
-                  icon: Icon(Iconsax.arrow_down_1, size: 16, color: context.iconSubtle),
-                  items: _statusOptions.map((opt) => DropdownMenuItem(
-                    value: opt['value'],
-                    child: Text(opt['label']!, style: const TextStyle(fontSize: 12)),
-                  )).toList(),
-                  onChanged: (v) => setState(() => _statusFilter = v ?? 'ALL'),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 

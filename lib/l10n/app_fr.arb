@@ -453,5 +453,23 @@
   "rollingLoadingError": "Erreur chargement des chaînes",
   "rollingNoChannels": "Aucune chaîne source",
   "filterWithEdit": "Avec Edit",
-  "filterWithoutEdit": "Sans Edit"
+  "filterWithoutEdit": "Sans Edit",
+
+  "trackingStatsTotal": "Total",
+  "trackingStatsAssigned": "Assignés",
+  "trackingStatsInProgress": "En cours",
+  "trackingStatsCompleted": "Terminés",
+  "trackingStatsValidated": "Validés",
+  "trackingStatsRejected": "Rejetés",
+  "trackingStatsPublished": "Publiés",
+  "trackingAllStatuses": "Tous les statuts",
+  "trackingSearchHint": "Rechercher un short...",
+  "trackingLoading": "Chargement des shorts...",
+  "trackingLoadingError": "Erreur chargement des shorts",
+  "trackingNoShortsFiltered": "Aucun short ne correspond aux filtres",
+  "trackingNoShorts": "Aucun short dans le workflow",
+
+  "usersLoading": "Chargement des utilisateurs...",
+  "usersLoadingError": "Erreur lors du chargement des utilisateurs",
+  "usersIrreversible": "Cette action est irréversible"
 }

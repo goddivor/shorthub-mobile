@@ -48,9 +48,9 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
 
     final roleOptions = [
       {'value': 'ALL', 'label': l10n.usersAllRoles},
-      {'value': 'ADMIN', 'label': 'Admin'},
-      {'value': 'VIDEASTE', 'label': 'Videaste'},
-      {'value': 'ASSISTANT', 'label': 'Assistant'},
+      {'value': 'ADMIN', 'label': l10n.roleAdmin},
+      {'value': 'VIDEASTE', 'label': l10n.roleVideaste},
+      {'value': 'ASSISTANT', 'label': l10n.roleAssistant},
     ];
 
     return Column(
@@ -127,9 +127,9 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                       ),
               );
             },
-            loading: () => const LoadingIndicator(message: 'Chargement des utilisateurs...'),
+            loading: () => LoadingIndicator(message: l10n.usersLoading),
             error: (error, _) => ErrorDisplay(
-              message: 'Erreur lors du chargement des utilisateurs',
+              message: l10n.usersLoadingError,
               onRetry: () => ref.invalidate(allUsersProvider),
             ),
           ),
@@ -448,10 +448,10 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                   children: [
                     Icon(Iconsax.info_circle, color: AppColors.error, size: 20),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Cette action est irr\u00e9versible',
-                        style: TextStyle(
+                        l10n.usersIrreversible,
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
