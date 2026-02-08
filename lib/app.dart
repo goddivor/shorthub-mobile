@@ -8,17 +8,37 @@ import 'l10n/app_localizations.dart';
 import 'config/theme/app_theme.dart';
 import 'config/routes/app_routes.dart';
 import 'core/graphql/graphql_client.dart';
+import 'core/services/storage_service.dart';
 import 'providers/theme_provider.dart';
 import 'providers/locale_provider.dart';
 
 /// Global navigator key for deep-linking from push notifications
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class ShortHubApp extends ConsumerWidget {
+class ShortHubApp extends ConsumerStatefulWidget {
   const ShortHubApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ShortHubApp> createState() => _ShortHubAppState();
+}
+
+class _ShortHubAppState extends ConsumerState<ShortHubApp> {
+  @override
+  void initState() {
+    super.initState();
+    GraphQLClientService.onAuthFailure = _handleAuthFailure;
+  }
+
+  void _handleAuthFailure() {
+    StorageService.clearAuthTokens();
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      AppRoutes.login,
+      (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
 

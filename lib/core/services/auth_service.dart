@@ -1,5 +1,7 @@
 // lib/core/services/auth_service.dart
+import 'dart:io';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import '../graphql/graphql_client.dart';
 import '../graphql/queries.dart';
 import '../graphql/mutations.dart';
@@ -12,12 +14,33 @@ class AuthService {
   // Use a getter instead of a final field to always get the latest client
   GraphQLClient get _client => GraphQLClientService.client;
 
+  /// Get device info string for session tracking
+  static Future<String> _getDeviceInfo() async {
+    try {
+      final deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        final info = await deviceInfo.androidInfo;
+        return '${info.brand} ${info.model} (Android ${info.version.release})';
+      } else if (Platform.isIOS) {
+        final info = await deviceInfo.iosInfo;
+        return '${info.name} (iOS ${info.systemVersion})';
+      }
+    } catch (e) {
+      AppLogger.warning('Failed to get device info: $e');
+    }
+    return 'Flutter Mobile';
+  }
+
   /// Login with username and password
   Future<AuthPayload> login(String username, String password) async {
     try {
+      final deviceInfo = await _getDeviceInfo();
+
       AppLogger.graphqlMutation('login', {
         'username': username,
         'password': '***',
+        'platform': 'MOBILE',
+        'deviceInfo': deviceInfo,
       });
 
       final result = await _client.mutate(
@@ -26,6 +49,8 @@ class AuthService {
           variables: {
             'username': username,
             'password': password,
+            'platform': 'MOBILE',
+            'deviceInfo': deviceInfo,
           },
         ),
       );
@@ -63,21 +88,25 @@ class AuthService {
   /// Logout
   Future<void> logout() async {
     try {
-      AppLogger.graphqlMutation('logout', null);
+      final refreshToken = await StorageService.getRefreshToken();
 
-      // Call logout mutation
-      await _client.mutate(
-        MutationOptions(
-          document: gql(logoutMutation),
-        ),
-      );
+      if (refreshToken != null) {
+        AppLogger.graphqlMutation('logout', {'refreshToken': '***'});
 
-      AppLogger.graphqlSuccess('logout', 'User logged out successfully');
+        await _client.mutate(
+          MutationOptions(
+            document: gql(logoutMutation),
+            variables: {
+              'refreshToken': refreshToken,
+            },
+          ),
+        );
+
+        AppLogger.graphqlSuccess('logout', 'User logged out successfully');
+      }
     } catch (e) {
       AppLogger.warning('Logout mutation failed, continuing with local cleanup');
-      // Continue logout even if mutation fails
     } finally {
-      // Clear local storage
       await StorageService.clearAuthTokens();
       await GraphQLClientService.clearCache();
       await GraphQLClientService.updateAuthToken(null);
@@ -195,12 +224,17 @@ class AuthService {
         return null;
       }
 
+      final deviceInfo = await _getDeviceInfo();
       AppLogger.graphqlMutation('refreshToken', {'token': '***'});
 
       final result = await _client.mutate(
         MutationOptions(
           document: gql(refreshTokenMutation),
-          variables: {'token': currentRefreshToken},
+          variables: {
+            'token': currentRefreshToken,
+            'platform': 'MOBILE',
+            'deviceInfo': deviceInfo,
+          },
         ),
       );
 

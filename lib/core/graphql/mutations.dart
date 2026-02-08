@@ -7,8 +7,8 @@ library;
 // ==================== Auth ====================
 
 const String loginMutation = r'''
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
+  mutation Login($username: String!, $password: String!, $platform: Platform, $deviceInfo: String) {
+    login(username: $username, password: $password, platform: $platform, deviceInfo: $deviceInfo) {
       token
       refreshToken
       user {
@@ -31,14 +31,14 @@ const String loginMutation = r'''
 ''';
 
 const String logoutMutation = r'''
-  mutation Logout {
-    logout
+  mutation Logout($refreshToken: String!) {
+    logout(refreshToken: $refreshToken)
   }
 ''';
 
 const String refreshTokenMutation = r'''
-  mutation RefreshToken($token: String!) {
-    refreshToken(token: $token) {
+  mutation RefreshToken($token: String!, $platform: Platform, $deviceInfo: String) {
+    refreshToken(token: $token, platform: $platform, deviceInfo: $deviceInfo) {
       token
       refreshToken
       user {

@@ -1,13 +1,20 @@
 // lib/core/graphql/graphql_client.dart
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import '../services/storage_service.dart';
 import '../utils/logger.dart';
+import 'mutations.dart';
 
 class GraphQLClientService {
   static GraphQLClient? _client;
   static ValueNotifier<GraphQLClient>? _clientNotifier;
+  static bool _isRefreshing = false;
+
+  /// Callback triggered when refresh token fails (user must re-login)
+  static VoidCallback? onAuthFailure;
 
   /// Get GraphQL endpoint from environment
   static String get graphqlEndpoint =>
@@ -36,7 +43,6 @@ class GraphQLClientService {
       final AuthLink authLink = AuthLink(
         getToken: () async {
           final token = await StorageService.getAuthToken();
-          AppLogger.debug('AuthLink getToken called, token present: ${token != null}');
           return token != null ? 'Bearer $token' : '';
         },
       );
@@ -81,7 +87,6 @@ class GraphQLClientService {
     } catch (e) {
       AppLogger.warning('Failed to initialize with HiveStore, falling back to InMemoryStore: $e');
 
-      // If initialization fails, create a basic client without cache
       final HttpLink httpLink = HttpLink(
         graphqlEndpoint,
         defaultHeaders: {
@@ -92,7 +97,6 @@ class GraphQLClientService {
       final AuthLink authLink = AuthLink(
         getToken: () async {
           final token = await StorageService.getAuthToken();
-          AppLogger.debug('AuthLink getToken called (fallback), token present: ${token != null}');
           return token != null ? 'Bearer $token' : '';
         },
       );
@@ -147,6 +151,105 @@ class GraphQLClientService {
 
     // Reinitialize client with new token
     await initialize();
+  }
+
+  /// Try to refresh the access token using the stored refresh token.
+  /// Returns the new access token on success, null on failure.
+  static Future<String?> _tryRefreshToken() async {
+    if (_isRefreshing) return null;
+    _isRefreshing = true;
+
+    try {
+      final currentRefreshToken = await StorageService.getRefreshToken();
+      if (currentRefreshToken == null) return null;
+
+      String deviceInfo = 'Flutter Mobile';
+      try {
+        final deviceInfoPlugin = DeviceInfoPlugin();
+        if (Platform.isAndroid) {
+          final info = await deviceInfoPlugin.androidInfo;
+          deviceInfo = '${info.brand} ${info.model} (Android ${info.version.release})';
+        } else if (Platform.isIOS) {
+          final info = await deviceInfoPlugin.iosInfo;
+          deviceInfo = '${info.name} (iOS ${info.systemVersion})';
+        }
+      } catch (_) {}
+
+      AppLogger.info('Attempting token refresh...');
+
+      final result = await client.mutate(
+        MutationOptions(
+          document: gql(refreshTokenMutation),
+          variables: {
+            'token': currentRefreshToken,
+            'platform': 'MOBILE',
+            'deviceInfo': deviceInfo,
+          },
+        ),
+      );
+
+      if (result.hasException || result.data?['refreshToken'] == null) {
+        AppLogger.warning('Token refresh failed');
+        return null;
+      }
+
+      final data = result.data!['refreshToken'];
+      final newToken = data['token'] as String;
+      final newRefreshToken = data['refreshToken'] as String;
+
+      await StorageService.setAuthToken(newToken);
+      await StorageService.setRefreshToken(newRefreshToken);
+      await initialize();
+
+      AppLogger.success('Token refreshed successfully');
+      return newToken;
+    } catch (e) {
+      AppLogger.error('Token refresh error', e);
+      return null;
+    } finally {
+      _isRefreshing = false;
+    }
+  }
+
+  /// Check if an exception contains an UNAUTHENTICATED error
+  static bool _isAuthError(OperationException exception) {
+    for (final error in exception.graphqlErrors) {
+      final code = error.extensions?['code'];
+      if (code == 'UNAUTHENTICATED') return true;
+    }
+    return false;
+  }
+
+  /// Execute a query with automatic token refresh on auth failure
+  static Future<QueryResult> queryWithRefresh(QueryOptions options) async {
+    final result = await client.query(options);
+
+    if (result.hasException && _isAuthError(result.exception!)) {
+      final newToken = await _tryRefreshToken();
+      if (newToken != null) {
+        AppLogger.info('Retrying query after token refresh');
+        return await client.query(options);
+      }
+      onAuthFailure?.call();
+    }
+
+    return result;
+  }
+
+  /// Execute a mutation with automatic token refresh on auth failure
+  static Future<QueryResult> mutateWithRefresh(MutationOptions options) async {
+    final result = await client.mutate(options);
+
+    if (result.hasException && _isAuthError(result.exception!)) {
+      final newToken = await _tryRefreshToken();
+      if (newToken != null) {
+        AppLogger.info('Retrying mutation after token refresh');
+        return await client.mutate(options);
+      }
+      onAuthFailure?.call();
+    }
+
+    return result;
   }
 
   /// Clear cache

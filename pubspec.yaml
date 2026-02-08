@@ -79,6 +79,7 @@ dependencies:
   # Icons
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4
+  device_info_plus: ^12.3.0
 
 flutter_launcher_icons:
   android: true
