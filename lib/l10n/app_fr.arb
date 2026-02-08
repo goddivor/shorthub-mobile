@@ -439,5 +439,19 @@
   "channelNoPub": "Aucun canal de publication",
   "channelAddToStart": "Ajoutez un canal pour commencer",
   "channelAddToPublish": "Ajoutez un canal pour publier",
-  "channelLoadingError": "Erreur lors du chargement des canaux"
+  "channelLoadingError": "Erreur lors du chargement des canaux",
+
+  "rollingStatsRolled": "Rollés",
+  "rollingStatsRetained": "Retenus",
+  "rollingStatsAssigned": "Assignés",
+  "rollingStatsInProgress": "En cours",
+  "rollingStatsCompleted": "Terminés",
+  "rollingStatsValidated": "Validés",
+  "rollingStatsPublished": "Publiés",
+  "rollingStatsRejected": "Rejetés",
+  "rollingLoadingChannels": "Chargement des chaînes...",
+  "rollingLoadingError": "Erreur chargement des chaînes",
+  "rollingNoChannels": "Aucune chaîne source",
+  "filterWithEdit": "Avec Edit",
+  "filterWithoutEdit": "Sans Edit"
 }

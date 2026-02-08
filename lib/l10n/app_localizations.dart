@@ -2011,6 +2011,84 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Erreur lors du chargement des canaux'**
   String get channelLoadingError;
+
+  /// No description provided for @rollingStatsRolled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rollés'**
+  String get rollingStatsRolled;
+
+  /// No description provided for @rollingStatsRetained.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retenus'**
+  String get rollingStatsRetained;
+
+  /// No description provided for @rollingStatsAssigned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Assignés'**
+  String get rollingStatsAssigned;
+
+  /// No description provided for @rollingStatsInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get rollingStatsInProgress;
+
+  /// No description provided for @rollingStatsCompleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminés'**
+  String get rollingStatsCompleted;
+
+  /// No description provided for @rollingStatsValidated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validés'**
+  String get rollingStatsValidated;
+
+  /// No description provided for @rollingStatsPublished.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publiés'**
+  String get rollingStatsPublished;
+
+  /// No description provided for @rollingStatsRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejetés'**
+  String get rollingStatsRejected;
+
+  /// No description provided for @rollingLoadingChannels.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des chaînes...'**
+  String get rollingLoadingChannels;
+
+  /// No description provided for @rollingLoadingError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur chargement des chaînes'**
+  String get rollingLoadingError;
+
+  /// No description provided for @rollingNoChannels.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune chaîne source'**
+  String get rollingNoChannels;
+
+  /// No description provided for @filterWithEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avec Edit'**
+  String get filterWithEdit;
+
+  /// No description provided for @filterWithoutEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans Edit'**
+  String get filterWithoutEdit;
 }
 
 class _AppLocalizationsDelegate

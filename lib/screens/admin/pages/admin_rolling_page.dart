@@ -91,7 +91,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
                     children: [
                       Icon(Iconsax.video_slash, size: 64, color: AppColors.gray300),
                       const SizedBox(height: 16),
-                      Text(AppLocalizations.of(context)!.channelNoSource, style: TextStyle(fontSize: 16, color: context.textTertiary)),
+                      Text(AppLocalizations.of(context)!.rollingNoChannels, style: TextStyle(fontSize: 16, color: context.textTertiary)),
                     ],
                   ),
                 );
@@ -105,7 +105,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 0.85,
+                      childAspectRatio: 0.88,
                     ),
                     itemCount: filtered.length,
                     itemBuilder: (context, index) => _buildChannelCard(filtered[index]),
@@ -123,9 +123,9 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
                 ],
               );
             },
-            loading: () => const LoadingIndicator(message: 'Chargement des chaines...'),
+            loading: () => LoadingIndicator(message: AppLocalizations.of(context)!.rollingLoadingChannels),
             error: (error, _) => ErrorDisplay(
-              message: 'Erreur chargement des chaines',
+              message: AppLocalizations.of(context)!.rollingLoadingError,
               onRetry: () => ref.invalidate(sourceChannelsProvider),
             ),
           ),
@@ -136,6 +136,7 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
 
   Widget _buildStatsRow(AsyncValue<ShortsStats> statsAsync) {
     final stats = statsAsync.valueOrNull;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       color: context.cardBg,
@@ -145,21 +146,21 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
-            StatBadge(label: 'Rolles', value: '${stats?.rolled ?? 0}', icon: Iconsax.video_play, color: AppColors.gray600),
+            StatBadge(label: l10n.rollingStatsRolled, value: '${stats?.rolled ?? 0}', icon: Iconsax.video_play, color: AppColors.gray600),
             const SizedBox(width: 8),
-            StatBadge(label: 'Retenus', value: '${stats?.retained ?? 0}', icon: Iconsax.archive_tick, color: AppColors.info),
+            StatBadge(label: l10n.rollingStatsRetained, value: '${stats?.retained ?? 0}', icon: Iconsax.archive_tick, color: AppColors.info),
             const SizedBox(width: 8),
-            StatBadge(label: 'Assignes', value: '${stats?.assigned ?? 0}', icon: Iconsax.user_tick, color: AppColors.primary),
+            StatBadge(label: l10n.rollingStatsAssigned, value: '${stats?.assigned ?? 0}', icon: Iconsax.user_tick, color: AppColors.primary),
             const SizedBox(width: 8),
-            StatBadge(label: 'En cours', value: '${stats?.inProgress ?? 0}', icon: Iconsax.timer_1, color: AppColors.warning),
+            StatBadge(label: l10n.rollingStatsInProgress, value: '${stats?.inProgress ?? 0}', icon: Iconsax.timer_1, color: AppColors.warning),
             const SizedBox(width: 8),
-            StatBadge(label: 'Termines', value: '${stats?.completed ?? 0}', icon: Iconsax.tick_circle, color: AppColors.success),
+            StatBadge(label: l10n.rollingStatsCompleted, value: '${stats?.completed ?? 0}', icon: Iconsax.tick_circle, color: AppColors.success),
             const SizedBox(width: 8),
-            StatBadge(label: 'Valides', value: '${stats?.validated ?? 0}', icon: Iconsax.shield_tick, color: Colors.teal),
+            StatBadge(label: l10n.rollingStatsValidated, value: '${stats?.validated ?? 0}', icon: Iconsax.shield_tick, color: Colors.teal),
             const SizedBox(width: 8),
-            StatBadge(label: 'Publies', value: '${stats?.published ?? 0}', icon: Iconsax.global, color: Colors.deepPurple),
+            StatBadge(label: l10n.rollingStatsPublished, value: '${stats?.published ?? 0}', icon: Iconsax.global, color: Colors.deepPurple),
             const SizedBox(width: 8),
-            StatBadge(label: 'Rejetes', value: '${stats?.rejected ?? 0}', icon: Iconsax.close_circle, color: AppColors.error),
+            StatBadge(label: l10n.rollingStatsRejected, value: '${stats?.rejected ?? 0}', icon: Iconsax.close_circle, color: AppColors.error),
           ],
         ),
       ),
@@ -167,26 +168,47 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
   }
 
   Widget _buildFilters() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       color: context.cardBg,
-      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            spacing: 8,
-            children: [
-              _buildFilterChip('Tous', _languageFilter == 'ALL', () => setState(() => _languageFilter = 'ALL')),
+      padding: const EdgeInsets.only(bottom: 14),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            // Language group
+            _buildFilterGroup([
+              _buildFilterChip(l10n.filterAll, _languageFilter == 'ALL', () => setState(() => _languageFilter = 'ALL')),
               _buildFilterChip('VF', _languageFilter == 'VF', () => setState(() => _languageFilter = 'VF')),
               _buildFilterChip('VA', _languageFilter == 'VA', () => setState(() => _languageFilter = 'VA')),
               _buildFilterChip('VO', _languageFilter == 'VO', () => setState(() => _languageFilter = 'VO')),
-              const SizedBox(width: 8),
-              _buildFilterChip('Tous', _editFilter == 'ALL', () => setState(() => _editFilter = 'ALL')),
-              _buildFilterChip('Avec Edit', _editFilter == 'AVEC', () => setState(() => _editFilter = 'AVEC')),
-              _buildFilterChip('Sans Edit', _editFilter == 'SANS', () => setState(() => _editFilter = 'SANS')),
-            ],
-          ),
-        ],
+            ]),
+            const SizedBox(width: 10),
+            // Edit group
+            _buildFilterGroup([
+              _buildFilterChip(l10n.filterAll, _editFilter == 'ALL', () => setState(() => _editFilter = 'ALL')),
+              _buildFilterChip(l10n.filterWithEdit, _editFilter == 'AVEC', () => setState(() => _editFilter = 'AVEC')),
+              _buildFilterChip(l10n.filterWithoutEdit, _editFilter == 'SANS', () => setState(() => _editFilter = 'SANS')),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterGroup(List<Widget> chips) {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: context.subtleBg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: context.borderColor.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: chips,
       ),
     );
   }
@@ -194,18 +216,21 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
   Widget _buildFilterChip(String label, bool selected, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Chip(
-        label: Text(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
           label,
           style: TextStyle(
             fontSize: 12,
             color: selected ? Colors.white : context.textTertiary,
-            fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
-        backgroundColor: selected ? AppColors.primary : context.chipBg,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }
@@ -214,10 +239,10 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
     return GestureDetector(
       onTap: () => _openRollModal(channel),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         decoration: BoxDecoration(
           color: context.cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -229,60 +254,98 @@ class _AdminRollingPageState extends ConsumerState<AdminRollingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: channel.profileImageUrl != null
-                  ? NetworkImage(channel.profileImageUrl!)
-                  : null,
-              backgroundColor: context.borderColor,
-              child: channel.profileImageUrl == null
-                  ? Icon(Iconsax.video_circle, color: context.iconSubtle, size: 28)
-                  : null,
+            // Avatar with generate button overlay
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CircleAvatar(
+                  radius: 36,
+                  backgroundImage: channel.profileImageUrl != null
+                      ? NetworkImage(channel.profileImageUrl!)
+                      : null,
+                  backgroundColor: context.borderColor,
+                  child: channel.profileImageUrl == null
+                      ? Icon(Iconsax.video_circle, color: context.iconSubtle, size: 32)
+                      : null,
+                ),
+                // Generate button
+                Positioned(
+                  top: -4,
+                  right: -8,
+                  child: GestureDetector(
+                    onTap: () => _openRollModal(channel),
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: context.cardBg, width: 2.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        PhosphorIcons.shuffle(PhosphorIconsStyle.bold),
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.secondary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                channel.contentTypeLabel,
-                style: TextStyle(fontSize: 9, color: AppColors.secondary, fontWeight: FontWeight.w600),
-              ),
-            ),
-            const SizedBox(height: 6),
+            // Channel name
             Text(
               channel.channelName,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: context.textPrimary,
+              ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            if (channel.totalVideos != null) ...[
-              const SizedBox(height: 4),
+            const SizedBox(height: 4),
+            // Video count
+            if (channel.totalVideos != null)
               Text(
                 '${channel.totalVideos} videos',
                 style: TextStyle(fontSize: 11, color: context.textHint),
               ),
-            ],
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => _openRollModal(channel),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  textStyle: const TextStyle(fontSize: 12),
+            const SizedBox(height: 6),
+            // Content type badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: _getContentTypeColor(channel.contentType).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                channel.contentTypeLabel,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: _getContentTypeColor(channel.contentType),
+                  fontWeight: FontWeight.w600,
                 ),
-                child: Text(AppLocalizations.of(context)!.rollingGenerate),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Color _getContentTypeColor(String contentType) {
+    if (contentType.startsWith('VA')) return AppColors.primary;
+    if (contentType.startsWith('VF')) return AppColors.success;
+    if (contentType.startsWith('VO')) return AppColors.secondary;
+    return AppColors.gray500;
   }
 }

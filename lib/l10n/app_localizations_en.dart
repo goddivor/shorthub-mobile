@@ -1020,4 +1020,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get channelLoadingError => 'Error loading channels';
+
+  @override
+  String get rollingStatsRolled => 'Rolled';
+
+  @override
+  String get rollingStatsRetained => 'Retained';
+
+  @override
+  String get rollingStatsAssigned => 'Assigned';
+
+  @override
+  String get rollingStatsInProgress => 'In progress';
+
+  @override
+  String get rollingStatsCompleted => 'Completed';
+
+  @override
+  String get rollingStatsValidated => 'Validated';
+
+  @override
+  String get rollingStatsPublished => 'Published';
+
+  @override
+  String get rollingStatsRejected => 'Rejected';
+
+  @override
+  String get rollingLoadingChannels => 'Loading channels...';
+
+  @override
+  String get rollingLoadingError => 'Error loading channels';
+
+  @override
+  String get rollingNoChannels => 'No source channels';
+
+  @override
+  String get filterWithEdit => 'With Edit';
+
+  @override
+  String get filterWithoutEdit => 'No Edit';
 }
