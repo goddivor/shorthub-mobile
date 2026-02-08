@@ -326,6 +326,18 @@ abstract class AppLocalizations {
   /// **'Aucun email'**
   String get drawerNoEmail;
 
+  /// No description provided for @drawerChangeBanner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer la bannière'**
+  String get drawerChangeBanner;
+
+  /// No description provided for @drawerRemoveBanner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la bannière'**
+  String get drawerRemoveBanner;
+
   /// No description provided for @roleAdmin.
   ///
   /// In fr, this message translates to:

@@ -43,6 +43,8 @@
   "drawerLogout": "Déconnexion",
   "drawerLogoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
   "drawerNoEmail": "Aucun email",
+  "drawerChangeBanner": "Changer la bannière",
+  "drawerRemoveBanner": "Supprimer la bannière",
 
   "roleAdmin": "Administrateur",
   "roleVideaste": "Vidéaste",

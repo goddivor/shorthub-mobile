@@ -126,6 +126,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get drawerNoEmail => 'Aucun email';
 
   @override
+  String get drawerChangeBanner => 'Changer la bannière';
+
+  @override
+  String get drawerRemoveBanner => 'Supprimer la bannière';
+
+  @override
   String get roleAdmin => 'Administrateur';
 
   @override

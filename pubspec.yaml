@@ -76,6 +76,10 @@ dependencies:
   # Env
   flutter_dotenv: ^5.2.1
 
+  # Image & Files
+  image_picker: ^1.1.2
+  path_provider: ^2.1.0
+
   # Icons
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4

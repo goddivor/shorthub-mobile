@@ -43,6 +43,8 @@
   "drawerLogout": "Logout",
   "drawerLogoutConfirm": "Are you sure you want to log out?",
   "drawerNoEmail": "No email",
+  "drawerChangeBanner": "Change banner",
+  "drawerRemoveBanner": "Remove banner",
 
   "roleAdmin": "Administrator",
   "roleVideaste": "Videographer",

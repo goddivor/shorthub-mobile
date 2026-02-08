@@ -123,6 +123,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerNoEmail => 'No email';
 
   @override
+  String get drawerChangeBanner => 'Change banner';
+
+  @override
+  String get drawerRemoveBanner => 'Remove banner';
+
+  @override
   String get roleAdmin => 'Administrator';
 
   @override

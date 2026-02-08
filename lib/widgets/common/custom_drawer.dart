@@ -1,4 +1,6 @@
 // lib/widgets/common/custom_drawer.dart
+import 'dart:io';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
@@ -7,9 +9,10 @@ import '../../config/theme/theme_extensions.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/models/user.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/banner_provider.dart';
 import '../../l10n/app_localizations.dart';
 
-class CustomDrawer extends ConsumerWidget {
+class CustomDrawer extends ConsumerStatefulWidget {
   final User user;
 
   const CustomDrawer({
@@ -18,13 +21,39 @@ class CustomDrawer extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends ConsumerState<CustomDrawer>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ringController;
+
+  @override
+  void initState() {
+    super.initState();
+    _ringController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ringController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return Drawer(
+      backgroundColor: context.isDark
+          ? Theme.of(context).scaffoldBackgroundColor
+          : Colors.white,
       child: Column(
         children: [
-          // Header
+          // Header with banner + centered avatar
           _buildDrawerHeader(context),
 
           // Menu items
@@ -81,92 +110,256 @@ class CustomDrawer extends ConsumerWidget {
   }
 
   Widget _buildDrawerHeader(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final user = widget.user;
+    final bannerPath = ref.watch(bannerProvider);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 60, 24, 28),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.primary,
-            AppColors.primary.withValues(alpha: 0.85),
-            AppColors.secondary.withValues(alpha: 0.7),
-          ],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return SizedBox(
+      height: 270,
+      child: Stack(
         children: [
-          // Avatar
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
-            ),
-            child: CircleAvatar(
-              radius: 36,
-              backgroundColor: Colors.white.withValues(alpha: 0.15),
-              backgroundImage: user.profileImage != null && user.profileImage!.isNotEmpty
-                  ? NetworkImage(user.profileImage!)
-                  : null,
-              child: user.profileImage == null || user.profileImage!.isEmpty
-                  ? Text(
-                      user.username.isNotEmpty
-                          ? user.username[0].toUpperCase()
-                          : '?',
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+          // Banner background (custom image or gradient fallback)
+          Positioned.fill(
+            bottom: 40,
+            child: GestureDetector(
+              onTap: () => _showBannerOptions(context),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (bannerPath != null && File(bannerPath).existsSync())
+                    ClipRect(
+                      child: Image.file(
+                        File(bannerPath),
+                        fit: BoxFit.cover,
                       ),
                     )
-                  : null,
+                  else
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.primary,
+                            AppColors.primary.withValues(alpha: 0.85),
+                            AppColors.secondary.withValues(alpha: 0.8),
+                          ],
+                        ),
+                      ),
+                      child: CustomPaint(
+                        painter: _BannerPatternPainter(
+                          color: Colors.white.withValues(alpha: 0.06),
+                        ),
+                      ),
+                    ),
+
+                  // Dark overlay for text readability (when image is set)
+                  if (bannerPath != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.1),
+                            Colors.black.withValues(alpha: 0.5),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  // Camera icon button
+                  Positioned(
+                    right: 12,
+                    bottom: 12,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Iconsax.camera,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
 
-          // Username
-          Text(
-            user.username,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          // Username + role on banner
+          Positioned(
+            left: 20,
+            bottom: 56,
+            right: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  user.username,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    _getRoleLabel(user.role ?? '', context),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
 
-          // Email
-          Text(
-            user.email ?? l10n.drawerNoEmail,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white.withValues(alpha: 0.8),
-            ),
-          ),
-          const SizedBox(height: 12),
+          // Centered avatar with spinning ring (more spacing)
+          Positioned(
+            top: 46,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SizedBox(
+                width: 92,
+                height: 92,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Spinning gradient ring
+                    AnimatedBuilder(
+                      animation: _ringController,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _ringController.value * 2 * math.pi,
+                          child: Container(
+                            width: 92,
+                            height: 92,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: SweepGradient(
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.secondary,
+                                  AppColors.success,
+                                  AppColors.warning,
+                                  AppColors.primary,
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
 
-          // Role badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            child: Text(
-              _getRoleLabel(user.role ?? '', context),
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+                    // Inner circle (gap between ring and avatar)
+                    Container(
+                      width: 82,
+                      height: 82,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: context.isDark
+                            ? Theme.of(context).scaffoldBackgroundColor
+                            : Colors.white,
+                      ),
+                    ),
+
+                    // Actual avatar
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundColor:
+                          AppColors.primary.withValues(alpha: 0.15),
+                      backgroundImage: user.profileImage != null &&
+                              user.profileImage!.isNotEmpty
+                          ? NetworkImage(user.profileImage!)
+                          : null,
+                      child: user.profileImage == null ||
+                              user.profileImage!.isEmpty
+                          ? Text(
+                              user.username.isNotEmpty
+                                  ? user.username[0].toUpperCase()
+                                  : '?',
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : null,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showBannerOptions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final hasBanner = ref.read(bannerProvider) != null;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.cardBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: context.borderColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: Icon(Iconsax.gallery, color: AppColors.primary),
+              title: Text(
+                l10n.drawerChangeBanner,
+                style: TextStyle(color: context.textPrimary),
+              ),
+              onTap: () async {
+                Navigator.pop(ctx);
+                await ref.read(bannerProvider.notifier).pickBannerImage();
+              },
+            ),
+            if (hasBanner)
+              ListTile(
+                leading: Icon(Iconsax.trash, color: AppColors.error),
+                title: Text(
+                  l10n.drawerRemoveBanner,
+                  style: const TextStyle(color: AppColors.error),
+                ),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await ref.read(bannerProvider.notifier).removeBannerImage();
+                },
+              ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -210,7 +403,8 @@ class CustomDrawer extends ConsumerWidget {
                 ),
               ),
               if (!isDestructive)
-                Icon(Iconsax.arrow_right_3, size: 18, color: context.iconSubtle),
+                Icon(Iconsax.arrow_right_3,
+                    size: 18, color: context.iconSubtle),
             ],
           ),
         ),
@@ -261,4 +455,48 @@ class CustomDrawer extends ConsumerWidget {
         return role;
     }
   }
+}
+
+/// Custom painter for subtle geometric pattern on the banner
+class _BannerPatternPainter extends CustomPainter {
+  final Color color;
+
+  _BannerPatternPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    canvas.drawCircle(
+      Offset(size.width * 0.85, size.height * 0.2),
+      60,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.1, size.height * 0.7),
+      40,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.6, size.height * 0.85),
+      30,
+      paint,
+    );
+
+    final dotPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    for (var i = 0; i < 8; i++) {
+      final x = (size.width * 0.15) + (i * size.width * 0.1);
+      final y = size.height * 0.15 + (i % 3) * 20;
+      canvas.drawCircle(Offset(x, y), 2, dotPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
