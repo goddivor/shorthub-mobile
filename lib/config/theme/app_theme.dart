@@ -344,4 +344,125 @@ class AppTheme {
       space: 1,
     ),
   );
+
+  /// Black (AMOLED) theme
+  static ThemeData blackTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+
+    // Color Scheme
+    colorScheme: ColorScheme.dark(
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
+      surface: AppColors.surfaceBlack,
+      error: AppColors.error,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: AppColors.gray100,
+      onError: Colors.white,
+    ),
+
+    // Scaffold
+    scaffoldBackgroundColor: AppColors.backgroundBlack,
+
+    // AppBar
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColors.backgroundBlack,
+      foregroundColor: AppColors.gray100,
+      elevation: 0,
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.inter(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: AppColors.gray100,
+      ),
+      iconTheme: const IconThemeData(color: AppColors.gray100),
+    ),
+
+    // Card
+    cardTheme: CardThemeData(
+      color: AppColors.surfaceBlack,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Color(0xFF2A2A2A), width: 1),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+    ),
+
+    // Text Theme (black mode)
+    textTheme: TextTheme(
+      displayLarge: GoogleFonts.inter(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: AppColors.gray100,
+      ),
+      displayMedium: GoogleFonts.inter(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: AppColors.gray100,
+      ),
+      displaySmall: GoogleFonts.inter(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: AppColors.gray100,
+      ),
+      headlineMedium: GoogleFonts.inter(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: AppColors.gray100,
+      ),
+      headlineSmall: GoogleFonts.inter(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: AppColors.gray100,
+      ),
+      titleLarge: GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: AppColors.gray100,
+      ),
+      titleMedium: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AppColors.gray100,
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: AppColors.gray300,
+      ),
+      bodyMedium: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.normal,
+        color: AppColors.gray300,
+      ),
+      bodySmall: GoogleFonts.inter(
+        fontSize: 12,
+        fontWeight: FontWeight.normal,
+        color: AppColors.gray400,
+      ),
+      labelLarge: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.gray300,
+      ),
+    ),
+
+    // Bottom Navigation Bar (black)
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppColors.backgroundBlack,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.gray500,
+      type: BottomNavigationBarType.fixed,
+      elevation: 0,
+    ),
+
+    // Divider (black)
+    dividerTheme: const DividerThemeData(
+      color: Color(0xFF2A2A2A),
+      thickness: 1,
+      space: 1,
+    ),
+  );
 }

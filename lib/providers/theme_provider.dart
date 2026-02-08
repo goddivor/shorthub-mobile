@@ -1,31 +1,41 @@
 // lib/providers/theme_provider.dart
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/services/storage_service.dart';
 
-class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(ThemeMode.light) {
+enum AppThemeMode { light, dark, black }
+
+class ThemeModeNotifier extends StateNotifier<AppThemeMode> {
+  ThemeModeNotifier() : super(AppThemeMode.light) {
     _loadTheme();
   }
 
   void _loadTheme() {
     final stored = StorageService.getThemeMode();
-    if (stored == 'dark') {
-      state = ThemeMode.dark;
-    } else {
-      state = ThemeMode.light;
+    switch (stored) {
+      case 'dark':
+        state = AppThemeMode.dark;
+      case 'black':
+        state = AppThemeMode.black;
+      default:
+        state = AppThemeMode.light;
     }
   }
 
-  Future<void> toggle() async {
-    final newMode = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    state = newMode;
-    await StorageService.setThemeMode(newMode == ThemeMode.dark ? 'dark' : 'light');
+  Future<void> setTheme(AppThemeMode mode) async {
+    state = mode;
+    await StorageService.setThemeMode(mode.name);
   }
 
-  bool get isDark => state == ThemeMode.dark;
+  Future<void> toggle() async {
+    final newMode =
+        state == AppThemeMode.light ? AppThemeMode.dark : AppThemeMode.light;
+    await setTheme(newMode);
+  }
+
+  bool get isDark => state != AppThemeMode.light;
 }
 
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(
+final themeModeProvider =
+    StateNotifierProvider<ThemeModeNotifier, AppThemeMode>(
   (ref) => ThemeModeNotifier(),
 );

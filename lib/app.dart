@@ -39,8 +39,16 @@ class _ShortHubAppState extends ConsumerState<ShortHubApp> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeModeProvider);
+    final appThemeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+
+    final flutterThemeMode = appThemeMode == AppThemeMode.light
+        ? ThemeMode.light
+        : ThemeMode.dark;
+
+    final darkTheme = appThemeMode == AppThemeMode.black
+        ? AppTheme.blackTheme
+        : AppTheme.darkTheme;
 
     return GraphQLProvider(
       client: GraphQLClientService.clientNotifier,
@@ -54,8 +62,8 @@ class _ShortHubAppState extends ConsumerState<ShortHubApp> {
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
             theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeMode,
+            darkTheme: darkTheme,
+            themeMode: flutterThemeMode,
             locale: locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,

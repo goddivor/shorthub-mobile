@@ -311,8 +311,11 @@
   "settingsLanguageLabel": "Langue de l'application",
   "settingsLanguageFrench": "Français",
   "settingsLanguageEnglish": "English",
-  "settingsDarkMode": "Mode sombre",
-  "settingsDarkModeDesc": "Basculer entre le thème clair et sombre",
+  "settingsTheme": "Thème",
+  "settingsThemeDesc": "Choisir l'apparence de l'application",
+  "settingsThemeLight": "Clair",
+  "settingsThemeDark": "Sombre",
+  "settingsThemeBlack": "Noir",
   "settingsAbout": "À propos",
   "settingsVersion": "Version",
 

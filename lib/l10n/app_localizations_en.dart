@@ -679,10 +679,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageEnglish => 'English';
 
   @override
-  String get settingsDarkMode => 'Dark mode';
+  String get settingsTheme => 'Theme';
 
   @override
-  String get settingsDarkModeDesc => 'Switch between light and dark theme';
+  String get settingsThemeDesc => 'Choose the app appearance';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsThemeBlack => 'Black';
 
   @override
   String get settingsAbout => 'About';

@@ -14,7 +14,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
+    final currentTheme = ref.watch(themeModeProvider);
     final currentLocale = ref.watch(localeProvider).languageCode;
 
     return Scaffold(
@@ -45,22 +45,24 @@ class SettingsScreen extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                // Dark mode
-                SwitchListTile(
-                  secondary: Container(
+                // Theme selector
+                ListTile(
+                  leading: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: AppColors.secondary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
-                      isDark ? Iconsax.moon5 : Iconsax.sun_15,
+                      currentTheme == AppThemeMode.light
+                          ? Iconsax.sun_15
+                          : Iconsax.moon5,
                       color: AppColors.secondary,
                       size: 22,
                     ),
                   ),
                   title: Text(
-                    l10n.settingsDarkMode,
+                    l10n.settingsTheme,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -68,15 +70,45 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                   subtitle: Text(
-                    l10n.settingsDarkModeDesc,
+                    l10n.settingsThemeDesc,
                     style: TextStyle(fontSize: 12, color: context.textHint),
                   ),
-                  value: isDark,
-                  activeTrackColor: AppColors.secondary,
-                  onChanged: (_) {
-                    ref.read(themeModeProvider.notifier).toggle();
-                  },
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 72, right: 16, bottom: 12),
+                  child: Row(
+                    children: [
+                      _buildThemeChip(
+                        context,
+                        ref,
+                        label: l10n.settingsThemeLight,
+                        icon: Iconsax.sun_15,
+                        mode: AppThemeMode.light,
+                        isSelected: currentTheme == AppThemeMode.light,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildThemeChip(
+                        context,
+                        ref,
+                        label: l10n.settingsThemeDark,
+                        icon: Iconsax.moon5,
+                        mode: AppThemeMode.dark,
+                        isSelected: currentTheme == AppThemeMode.dark,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildThemeChip(
+                        context,
+                        ref,
+                        label: l10n.settingsThemeBlack,
+                        icon: Iconsax.mobile,
+                        mode: AppThemeMode.black,
+                        isSelected: currentTheme == AppThemeMode.black,
+                      ),
+                    ],
+                  ),
                 ),
                 Divider(height: 1, indent: 72, color: context.borderColor),
                 // Language
@@ -106,7 +138,8 @@ class SettingsScreen extends ConsumerWidget {
                     style: TextStyle(fontSize: 12, color: context.textHint),
                   ),
                   trailing: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: context.subtleBg,
                       borderRadius: BorderRadius.circular(10),
@@ -123,7 +156,8 @@ class SettingsScreen extends ConsumerWidget {
                           fontWeight: FontWeight.w600,
                           color: context.textPrimary,
                         ),
-                        icon: Icon(Iconsax.arrow_down_1, size: 16, color: context.iconSubtle),
+                        icon: Icon(Iconsax.arrow_down_1,
+                            size: 16, color: context.iconSubtle),
                         items: [
                           DropdownMenuItem(
                             value: 'fr',
@@ -142,7 +176,8 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 ),
               ],
             ),
@@ -184,10 +219,58 @@ class SettingsScreen extends ConsumerWidget {
                 '1.0.0',
                 style: TextStyle(fontSize: 13, color: context.textHint),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThemeChip(
+    BuildContext context,
+    WidgetRef ref, {
+    required String label,
+    required IconData icon,
+    required AppThemeMode mode,
+    required bool isSelected,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => ref.read(themeModeProvider.notifier).setTheme(mode),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: 0.15)
+                : context.subtleBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : context.borderColor,
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: isSelected ? AppColors.primary : context.iconSubtle,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? AppColors.primary : context.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

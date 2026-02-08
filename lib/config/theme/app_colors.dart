@@ -41,8 +41,10 @@ class AppColors {
   static const Color background = Color(0xFFF9FAFB); // Default light background
   static const Color backgroundLight = Color(0xFFFFFFFF);
   static const Color backgroundDark = Color(0xFF0F172A);
+  static const Color backgroundBlack = Color(0xFF000000); // AMOLED pure black
   static const Color surfaceLight = Color(0xFFF9FAFB);
   static const Color surfaceDark = Color(0xFF1E293B);
+  static const Color surfaceBlack = Color(0xFF121212); // AMOLED surface
 
   // Get status color by status
   static Color getStatusColor(String status) {

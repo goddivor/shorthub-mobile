@@ -1376,17 +1376,35 @@ abstract class AppLocalizations {
   /// **'English'**
   String get settingsLanguageEnglish;
 
-  /// No description provided for @settingsDarkMode.
+  /// No description provided for @settingsTheme.
   ///
   /// In fr, this message translates to:
-  /// **'Mode sombre'**
-  String get settingsDarkMode;
+  /// **'Thème'**
+  String get settingsTheme;
 
-  /// No description provided for @settingsDarkModeDesc.
+  /// No description provided for @settingsThemeDesc.
   ///
   /// In fr, this message translates to:
-  /// **'Basculer entre le thème clair et sombre'**
-  String get settingsDarkModeDesc;
+  /// **'Choisir l\'apparence de l\'application'**
+  String get settingsThemeDesc;
+
+  /// No description provided for @settingsThemeLight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clair'**
+  String get settingsThemeLight;
+
+  /// No description provided for @settingsThemeDark.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sombre'**
+  String get settingsThemeDark;
+
+  /// No description provided for @settingsThemeBlack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Noir'**
+  String get settingsThemeBlack;
 
   /// No description provided for @settingsAbout.
   ///
